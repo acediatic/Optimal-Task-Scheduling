@@ -8,6 +8,8 @@ public interface TaskGraph {
 
     public TaskNode getTask(String taskName);
 
+    public TaskGraph getOriginalTaskGraph();
+
     @Override
     public String toString();
     

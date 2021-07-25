@@ -25,6 +25,11 @@ public class ImmutableTaskGraph implements TaskGraph {
     }
 
     @Override
+    public TaskGraph getOriginalTaskGraph() {
+        return this;
+    }
+
+    @Override
     public String toString() {
 
         StringBuilder stringBuilder = new StringBuilder();

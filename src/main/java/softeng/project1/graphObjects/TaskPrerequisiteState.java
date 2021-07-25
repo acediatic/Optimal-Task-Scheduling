@@ -1,6 +1,6 @@
 package softeng.project1.graphObjects;
 
-public class TaskPrerequisiteState implements TaskPrerequisite{
+public class TaskPrerequisiteState implements TaskPrerequisite {
 
     private final int communicationCost;
     private final TaskNode parentTask;
