@@ -17,6 +17,8 @@ public interface TaskNode {
     
     public List<TaskPrerequisite> getChildTaskEdges();
 
+    public TaskNode getOriginalTaskNode();
+
     @Override
     public String toString();
 
