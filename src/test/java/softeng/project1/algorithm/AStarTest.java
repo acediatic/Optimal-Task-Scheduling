@@ -2,11 +2,14 @@ package softeng.project1.algorithm;
 
 import org.junit.jupiter.api.Test;
 
+/**
+ * TODO...
+ */
 public class AStarTest {
 
     @Test
-    void aStarTest() {
-        assert(true);
+    void testAStar() {
+        assert true;
     }
 
 }
