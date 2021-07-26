@@ -1,26 +1,33 @@
-package softeng.project1.graphObjects;
+package softeng.project1.graph;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * TODO...
+ */
 public class ImmutableTaskGraph implements TaskGraph {
 
     private final Map<String, ImmutableTaskNode> taskNodes;
     private final Map<String, ImmutableTaskNode> freeTaskNodes;
 
+    /**
+     * TODO...
+     */
     public ImmutableTaskGraph(Map<String, ImmutableTaskNode> taskNodes, Map<String, ImmutableTaskNode> freeTaskNodes) {
-        this.taskNodes = Collections.unmodifiableMap(taskNodes); // Making these immutable, note that the underlying map can still be changed.
-        this.freeTaskNodes = Collections.unmodifiableMap(freeTaskNodes); 
+        // Making these immutable, note that the underlying map can still be changed.
+        this.taskNodes = Collections.unmodifiableMap(taskNodes);
+        this.freeTaskNodes = Collections.unmodifiableMap(freeTaskNodes);
     }
 
     @Override
-    public List<TaskNode> getFreeTasks() { // Pass a copy of the list instead to stay immutable? would be slower 
+    public List<TaskNode> getFreeTasks() { // Pass a copy of the list instead to stay immutable? would be slower
         return null;
     }
 
     @Override
-    public TaskNode getTask(String taskName) { // TODO... handle instance where task not in graph, currently returns null
+    public TaskNode getTask(String taskName) { // TODO... handle instance where task not in graph
         return this.taskNodes.get(taskName); // Okay to pass object straight as ImmutableTaskNode is also Immutable
     }
 
@@ -39,22 +46,17 @@ public class ImmutableTaskGraph implements TaskGraph {
 
         stringBuilder.append("Free Task Nodes: \n");
         for (TaskNode freeTaskNode: this.freeTaskNodes.values()) {
-            stringBuilder
-            .append(freeTaskNode) // Implicit toString() method call
-            .append("\n");
+            stringBuilder.append(freeTaskNode).append("\n"); // Implicit toString() method call
         }
 
         stringBuilder.append("General Task Nodes: \n");
         for (TaskNode taskNode: this.taskNodes.values()) {
             if (!this.freeTaskNodes.containsKey(taskNode.getTaskName())) {
-                stringBuilder
-                .append(taskNode) // Implicit toString() method call 
-                .append("\n");
+                stringBuilder.append(taskNode).append("\n"); // Implicit toString() method call
             }
         }
 
         stringBuilder.append("-----------------------------\n");
         return stringBuilder.toString();
     }
-    
 }

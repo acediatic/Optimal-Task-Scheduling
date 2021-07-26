@@ -39,6 +39,7 @@ Thumbs.db
 .idea/gradle.xml
 *.iml
 build/
+target/
 .navigation
 captures/
 output.json
