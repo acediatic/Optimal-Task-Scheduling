@@ -6,11 +6,13 @@ package softeng.project1.graph;
  */
 public interface TaskNode {
 
-    String getTaskName();
+    int getTaskID();
 
     int getTaskCost();
 
     TaskNode getOriginalTaskNode();
+
+    int getProcessorPrerequisite(int processorID);
 
     @Override
     String toString();
