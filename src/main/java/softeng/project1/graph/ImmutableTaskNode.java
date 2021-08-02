@@ -5,20 +5,21 @@ package softeng.project1.graph;
  */
 public class ImmutableTaskNode implements TaskNode {
 
-    private final String taskName;
+    private final int taskID;
     private final int taskCost;
 
     /**
      * TODO...
      */
-    public ImmutableTaskNode(String taskName, int taskCost) {
-        this.taskName = taskName;
+    public ImmutableTaskNode(int taskID, int taskCost) {
+        this.taskID = taskID;
         this.taskCost = taskCost;
     }
 
+
     @Override
-    public String getTaskName() {
-        return this.taskName;
+    public int getTaskID() {
+        return this.taskID;
     }
 
     @Override
@@ -32,6 +33,11 @@ public class ImmutableTaskNode implements TaskNode {
     }
 
     @Override
+    public int getProcessorPrerequisite(int processorID) {
+        return 0; //TODO..
+    }
+
+    @Override
     public String toString() {
         @SuppressWarnings("StringBufferReplaceableByString") StringBuilder stringBuilder = new StringBuilder();
 
@@ -39,7 +45,7 @@ public class ImmutableTaskNode implements TaskNode {
 
         stringBuilder
             .append("Immutable Task Node:\n")
-            .append("Task Name: ").append(this.taskName).append("\n")
+            .append("Task ID: ").append(this.taskID).append("\n")
             .append("Task Cost: ").append(this.taskCost).append("\n");
         stringBuilder.append("######################\n");
 

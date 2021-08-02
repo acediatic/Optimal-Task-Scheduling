@@ -1,5 +1,8 @@
 package softeng.project1.graph.processors;
 
+/**
+ *
+ */
 public interface ProcessorNode {
 
     int getNextTaskID();

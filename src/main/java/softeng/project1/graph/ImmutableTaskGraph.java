@@ -51,7 +51,7 @@ public class ImmutableTaskGraph implements TaskGraph {
 
         stringBuilder.append("General Task Nodes: \n");
         for (TaskNode taskNode: this.taskNodes.values()) {
-            if (!this.freeTaskNodes.containsKey(taskNode.getTaskName())) {
+            if (!this.freeTaskNodes.containsKey(taskNode.getTaskID())) {
                 stringBuilder.append(taskNode).append("\n"); // Implicit toString() method call
             }
         }

@@ -2,9 +2,12 @@ package softeng.project1.graph.processors;
 
 import softeng.project1.graph.TaskNode;
 
+/**
+ *
+ */
 public interface Processor {
 
-    ProcessorNode getHeadNode();
+//    ProcessorNode getHeadNode();
 
     int getNumNodes();
 
