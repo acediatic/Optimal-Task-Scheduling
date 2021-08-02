@@ -1,8 +1,20 @@
 package softeng.project1.graph.processors;
 
-public class ProcessorsState implements Processors{
+/**
+ * ProcessorsState implements the Processors interface and is used to keep track of all the
+ * different Processor objects.
+ */
+public class ProcessorsState implements Processors {
 
-    private Processor[] processors;
+    private final Processor[] processors;
+
+    /**
+     * ProcessorsState contructor which gets the Processor objects passed in as an array.
+     * @param initialProcessors
+     */
+    ProcessorsState(Processor[] initialProcessors) {
+        processors = initialProcessors;
+    }
 
     @Override
     public Processor getProcessor(int processorID) {
@@ -16,6 +28,11 @@ public class ProcessorsState implements Processors{
 
     @Override
     public boolean deepEquals(Processors otherProcessors) {
-        return this.processors.equals(otherProcessors);
+        for (int i = 0; i < processors.length; i++) {
+            if (!otherProcessors.getProcessor(i).deepEquals(processors[i])) {
+                return false;
+            }
+        }
+        return true;
     }
 }
