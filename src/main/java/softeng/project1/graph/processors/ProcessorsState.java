@@ -25,7 +25,23 @@ public class ProcessorsState implements Processors {
 
     @Override
     public long murmurHash() {
-        return 0; // default dummy code
+        
+        int numBytesNeeded = 0;
+
+        for (Processor processor: processors) {
+            // we multiply by 3 because each space has 3 values
+            numBytesNeeded = numBytesNeeded + processor.getNumSpaces()*3;
+        }
+        // Kind of dirty to do this with two loops
+        byte[] byteArrayForHash = new byte[numBytesNeeded];
+        int index = 0;
+        for (Processor processor: processors) {
+            processor.asByteArray(index, byteArrayForHash);
+            index = index + processor.getNumSpaces()*3;
+        }
+        // could replace this with hash32 as hash64 is deprecated
+        return MurmurHash3.hash64(byteArrayForHash);
+
     }
 
     @Override
