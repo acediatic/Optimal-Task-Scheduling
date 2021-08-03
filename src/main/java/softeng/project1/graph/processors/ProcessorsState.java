@@ -1,5 +1,7 @@
 package softeng.project1.graph.processors;
 
+import softeng.project1.graph.processors.processor.Processor;
+
 /**
  * ProcessorsState implements the Processors interface and is used to keep track of all the
  * different Processor objects.

@@ -1,8 +1,9 @@
-package softeng.project1.graph.processors;
+package softeng.project1.graph.processors.processor;
 
 import java.util.Arrays;
 
 import softeng.project1.graph.TaskNode;
+import static softeng.project1.graph.processors.processor.ProcessorHelper.fillProcessorSpace;
 
 /**
  *
@@ -24,10 +25,6 @@ public class ProcessorState implements Processor {
 
     public int getNumSpaces() {
         return processorSpaces.length;
-    }
-
-    private int[][] getProcessorSpaces() {
-        return this.processorSpaces;
     }
 
     @Override
@@ -139,12 +136,6 @@ public class ProcessorState implements Processor {
         
     }
 
-    private void fillProcessorSpace(int[][] newProcessorSpaces, int index, int start, int length, int taskID) {
-        newProcessorSpaces[index][0] = start;
-        newProcessorSpaces[index][1] = length;
-        newProcessorSpaces[index][2] = taskID;
-    }
-
     private int[][] copyRestOfSpaces(int index, int[][] newProcessorSpaces) {
 
         for (int i = index; i < this.processorSpaces.length; i++) {
@@ -161,9 +152,11 @@ public class ProcessorState implements Processor {
         
         try {
             // DeepEquals should handle the fact that we're comparing two dimensional arrays
+            ProcessorState otherProcessorState = (ProcessorState) otherProcessor;
             return 
-                Arrays.deepEquals(((ProcessorState) otherProcessor).getProcessorSpaces(),(this.processorSpaces)) 
-                && this.processorID = otherProcessor.processorID;
+                Arrays.deepEquals(otherProcessorState.processorSpaces,this.processorSpaces) 
+                && 
+                this.processorID == otherProcessorState.processorID;
         } catch (ClassCastException e) {
             return false; // This is allowed because ProcessorStates will never directly equal OriginalProcessors
         }

@@ -1,4 +1,4 @@
-package softeng.project1.graph.processors;
+package softeng.project1.graph.processors.processor;
 
 import softeng.project1.graph.TaskNode;
 

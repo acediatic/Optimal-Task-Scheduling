@@ -1,5 +1,7 @@
 package softeng.project1.graph.processors;
 
+import softeng.project1.graph.processors.processor.Processor;
+
 /**
  *
  */
