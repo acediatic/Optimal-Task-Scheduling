@@ -62,7 +62,7 @@
             <configuration>
               <rules>
                 <requireMavenVersion>
-                  <version>3.6.3</version>
+                  <version>3.0.3</version>
                 </requireMavenVersion>
               </rules>
               <fail>true</fail>
@@ -88,7 +88,7 @@
           <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
-            <version>20041127.091804</version>
+            <version>1.15</version>
           </dependency>
         </dependencies>
         <configuration>
