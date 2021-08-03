@@ -2,6 +2,7 @@ package softeng.project1.graph.processors;
 
 import softeng.project1.graph.processors.processor.OriginalProcessorState;
 import softeng.project1.graph.processors.processor.Processor;
+import static commons.codec.digest.MurmurHash3;
 
 public class OriginalProcessorsState implements Processors {
 
@@ -23,7 +24,19 @@ public class OriginalProcessorsState implements Processors {
 
     @Override
     public long murmurHash() {
-        return 0; // TODO...
+
+        // We know that every Processor in originalProcessors is actually an OriginalProcessor,
+        // so only 3 bytes needed each
+        byte[] byteArrayForHash = new byte[3*originalProcessors.length];
+
+        for (int i = 0; i < originalProcessors.length; i++) {
+            // assuming that i passes its value not its reference
+            originalProcessors[i].asByteArray(i*3, byteArrayForHash);
+        }
+
+        // could replace with hash32 as hash64 is deprecated
+        return MurmurHash3.hash64(byteArrayForHash); 
+
     }
 
     @Override
@@ -31,7 +44,7 @@ public class OriginalProcessorsState implements Processors {
 
         try {
             // Directly accessing field as we're checking an object of the same type
-            return this.originalProcessors.length == ((OriginalProcessorState) otherProcessors).originalProcessors.length;
+            return this.originalProcessors.length == ((OriginalProcessorsState) otherProcessors).originalProcessors.length;
         } catch (ClassCastException e) {
             return false; // OriginalProcessorsState will never equal ProcessorsState 
         }
