@@ -1,5 +1,7 @@
 package softeng.project1.graph.processors;
 
+import java.util.Arrays;
+
 import softeng.project1.graph.processors.processor.Processor;
 
 /**
@@ -21,6 +23,14 @@ public class ProcessorsState implements Processors {
     @Override
     public Processor getProcessor(int processorID) {
         return processors[processorID];
+    }
+
+    @Override
+    public ProcessorsState copyAndAddProcessor(Processor newProcessor) {
+        // No need to recreate processor objects which haven't changed because they're immutable.
+        Processor[] newProcessors = Arrays.copyOf(processors, processors.length);
+        newProcessors[newProcessor.getID()] = newProcessor;
+        return new ProcessorsState(newProcessors);
     }
 
     @Override

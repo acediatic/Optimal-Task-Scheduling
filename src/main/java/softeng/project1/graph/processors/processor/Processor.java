@@ -7,6 +7,8 @@ import softeng.project1.graph.TaskNode;
  */
 public interface Processor {
 
+    int getID();
+
     int getNumSpaces();
 
     Processor copyAndInsert(TaskNode taskNode);

@@ -1,5 +1,7 @@
 package softeng.project1.graph.processors;
 
+import java.util.Arrays;
+
 import org.apache.commons.codec.digest.MurmurHash3;
 
 import softeng.project1.graph.processors.processor.OriginalProcessorState;
@@ -21,6 +23,17 @@ public class OriginalProcessorsState implements Processors {
     @Override
     public Processor getProcessor(int processorID) {
         return originalProcessors[processorID];
+    }
+
+    @Override
+    public Processors copyAndAddProcessor(Processor newProcessor) {
+        // No need to recreate unchanged processor objects
+        Processor[] newProcessors = Arrays.copyOf(originalProcessors, originalProcessors.length);
+        newProcessors[newProcessor.getID()] = newProcessor;
+
+        // This is the only location where ProcessorsState objects should be instantiated 
+        // outside of ProcessorsState itself.
+        return new ProcessorsState(newProcessors);
     }
 
     @Override

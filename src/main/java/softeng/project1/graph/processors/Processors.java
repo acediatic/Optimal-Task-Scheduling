@@ -9,6 +9,8 @@ public interface Processors {
 
     Processor getProcessor(int processorID);
 
+    Processors copyAndAddProcessor(Processor processor);
+
     long murmurHash();
 
     boolean deepEquals(Processors otherProcessors);
