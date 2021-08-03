@@ -161,7 +161,9 @@ public class ProcessorState implements Processor {
         
         try {
             // DeepEquals should handle the fact that we're comparing two dimensional arrays
-            return Arrays.deepEquals(((ProcessorState) otherProcessor).getProcessorSpaces(),(this.processorSpaces));
+            return 
+                Arrays.deepEquals(((ProcessorState) otherProcessor).getProcessorSpaces(),(this.processorSpaces)) 
+                && this.processorID = otherProcessor.processorID;
         } catch (ClassCastException e) {
             return false; // This is allowed because ProcessorStates will never directly equal OriginalProcessors
         }
