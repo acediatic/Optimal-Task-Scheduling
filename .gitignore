@@ -21,6 +21,11 @@ proguard/
 # Eclipse Metadata
 .metadata/
 
+# VS Code Metadata
+.classpath
+.project
+.settings/
+
 # Windows thumbnail db
 Thumbs.db
 
