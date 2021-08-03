@@ -14,7 +14,7 @@ public class ProcessorsState implements Processors {
      * ProcessorsState contructor which gets the Processor objects passed in as an array.
      * @param initialProcessors
      */
-    ProcessorsState(Processor[] initialProcessors) {
+    protected ProcessorsState(Processor[] initialProcessors) {
         processors = initialProcessors;
     }
 

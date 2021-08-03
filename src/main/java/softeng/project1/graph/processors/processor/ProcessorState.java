@@ -18,7 +18,7 @@ public class ProcessorState implements Processor {
      * @param processorID
      * @param processorSpaces
      */
-    public ProcessorState(int processorID, int[][] processorSpaces) {
+    protected ProcessorState(int processorID, int[][] processorSpaces) {
         this.processorID = processorID;
         this.processorSpaces = processorSpaces;
     }
