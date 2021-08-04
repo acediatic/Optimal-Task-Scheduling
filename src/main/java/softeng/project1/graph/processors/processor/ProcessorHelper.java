@@ -8,6 +8,9 @@ package softeng.project1.graph.processors.processor;
  */
 class ProcessorHelper {
 
+    private static final int FINAL_SPACE_LENGTH = 0;
+    private static final int FINAL_SPACE_TASK_ID = -1;
+
     /** 
      * Static helper method that correctly inserts data into the 'Space'
      * array format. 
@@ -23,6 +26,15 @@ class ProcessorHelper {
         newProcessorSpaces[index][0] = start;
         newProcessorSpaces[index][1] = length;
         newProcessorSpaces[index][2] = taskID;
+    }
+
+    static void addFinalSpace(int[][] newProcessorSpaces, int start) {
+        // Unsure if this is faster than the method used above
+        newProcessorSpaces[newProcessorSpaces.length-1] = new int[]{
+            start,
+            FINAL_SPACE_LENGTH,
+            FINAL_SPACE_TASK_ID
+        };
     }
 
 
