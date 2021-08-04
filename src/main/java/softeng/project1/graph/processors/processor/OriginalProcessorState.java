@@ -3,12 +3,17 @@ package softeng.project1.graph.processors.processor;
 import softeng.project1.graph.TaskNode;
 import static softeng.project1.graph.processors.processor.ProcessorHelper.fillProcessorSpace;
 
-public class OriginalProcessorState implements Processor{
+public class OriginalProcessorState implements Processor {
 
     private final int processorID;
 
     public OriginalProcessorState(int processorID) {
         this.processorID = processorID;
+    }
+
+    @Override
+    public int getID() {
+        return this.processorID;
     }
 
     @Override

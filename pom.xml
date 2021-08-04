@@ -12,7 +12,7 @@
     <maven-checkstyle-plugin.version>3.1.0</maven-checkstyle-plugin.version>
     <checkstyle.version>8.29</checkstyle.version>
     <checkstyle-rules.version>4.0.1</checkstyle-rules.version>
-    <skipTests>true</skipTests>
+    <skipTests>false</skipTests> <!-- TODO... Turn this back on -->
     <maven-surefire-plugin.version>3.0.0-M4</maven-surefire-plugin.version>
     <jacoco-maven-plugin.version>0.8.4</jacoco-maven-plugin.version>
     <maven-javadoc-plugin.version>3.0.0</maven-javadoc-plugin.version>
@@ -24,7 +24,12 @@
     <jacoco.unit-tests.limit.method-complexity>5</jacoco.unit-tests.limit.method-complexity>
     <javafx.version>16</javafx.version>
   </properties>
-  <dependencies>
+  <dependencies> <!-- PUT DEPENDENCIES HERE, NOT DOWN IN THE PLUGINS SECTION -->
+    <dependency>
+      <groupId>com.sangupta</groupId>
+      <artifactId>murmur</artifactId>
+      <version>1.0.0</version>
+    </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-api</artifactId>
@@ -49,7 +54,7 @@
     </dependency>
   </dependencies>
   <build>
-    <plugins>
+    <plugins> <!-- DO NOT PUT DEPENDENCIES BELOW THIS LINE UNLESS YOU KNOW WHAT YOU'RE DOING -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>
@@ -84,11 +89,6 @@
             <groupId>com.github.ngeor</groupId>
             <artifactId>checkstyle-rules</artifactId>
             <version>${checkstyle-rules.version}</version>
-          </dependency>
-          <dependency>
-            <groupId>commons-codec</groupId>
-            <artifactId>commons-codec</artifactId>
-            <version>1.15</version>
           </dependency>
         </dependencies>
         <configuration>

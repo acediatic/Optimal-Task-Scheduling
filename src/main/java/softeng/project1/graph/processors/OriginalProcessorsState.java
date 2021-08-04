@@ -2,7 +2,7 @@ package softeng.project1.graph.processors;
 
 import java.util.Arrays;
 
-import org.apache.commons.codec.digest.MurmurHash3;
+import com.sangupta.murmur.Murmur3;
 
 import softeng.project1.graph.processors.processor.OriginalProcessorState;
 import softeng.project1.graph.processors.processor.Processor;
@@ -47,9 +47,8 @@ public class OriginalProcessorsState implements Processors {
             // assuming that i passes its value not its reference
             originalProcessors[i].asByteArray(i*3, byteArrayForHash);
         }
-        // could replace with hash32 as hash64 is deprecated
-        return MurmurHash3.hash64(byteArrayForHash); 
-
+        // https://github.com/sangupta/murmur 
+        return Murmur3.hash_x86_32(byteArrayForHash, byteArrayForHash.length, 0); 
     }
 
     @Override

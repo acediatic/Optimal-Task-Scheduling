@@ -23,6 +23,12 @@ public class ProcessorState implements Processor {
         this.processorSpaces = processorSpaces;
     }
 
+    @Override
+    public int getID() {
+        return this.processorID;
+    }
+
+    @Override
     public int getNumSpaces() {
         return processorSpaces.length;
     }

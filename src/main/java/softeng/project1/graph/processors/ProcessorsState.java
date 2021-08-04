@@ -2,6 +2,8 @@ package softeng.project1.graph.processors;
 
 import java.util.Arrays;
 
+import com.sangupta.murmur.Murmur3;
+
 import softeng.project1.graph.processors.processor.Processor;
 
 /**
@@ -49,8 +51,8 @@ public class ProcessorsState implements Processors {
             processor.asByteArray(index, byteArrayForHash);
             index = index + processor.getNumSpaces()*3;
         }
-        // could replace this with hash32 as hash64 is deprecated
-        return MurmurHash3.hash64(byteArrayForHash);
+        // https://github.com/sangupta/murmur
+        return Murmur3.hash_x86_32(byteArrayForHash, byteArrayForHash.length, 0);
 
     }
 
