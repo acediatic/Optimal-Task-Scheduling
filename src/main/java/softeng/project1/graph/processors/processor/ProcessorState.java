@@ -68,6 +68,9 @@ public class ProcessorState implements Processor {
             // has the prereq been passed?
             if (diffPrereqStartPosition <= 0 && diffNodeTaskLength >= 0) {
                 
+                // We've found the insert position so copy the first half of array across
+                System.arraycopy(this.processorSpaces, 0, newProcessorSpaces, 0, i-1);
+                
                 // prereq was passed so new 0 length space starts at beginning of now-filled old space
                 fillProcessorSpace(newProcessorSpaces, i,
                     this.processorSpaces[i][0], // start
@@ -83,10 +86,21 @@ public class ProcessorState implements Processor {
                 );
 
                 // copying rest of array
-                return copyRestOfSpaces(++i, newProcessorSpaces);
+                i++;
+                System.arraycopy(
+                    this.processorSpaces,           // source
+                    i,                              // source start
+                    newProcessorSpaces,             // destination
+                    i+1,                            // destination start - one after source because of added spot in middle
+                    this.processorSpaces.length - i // length of copied section
+                );;
+                return newProcessorSpaces;
 
                 // is the node long enough to compensate for the prerequisite position? 
             } else if (diffDiffNTPS >= 0) {
+
+                // We've found the insert position so copy the first half of array across
+                System.arraycopy(this.processorSpaces, 0, newProcessorSpaces, 0, i-1);
                 
                 // task fits even though prereq is after space start so we add new space before inserted task
                 fillProcessorSpace(newProcessorSpaces, i,
@@ -101,16 +115,17 @@ public class ProcessorState implements Processor {
                     diffDiffNTPS,                                                       // length
                     this.processorSpaces[i][2]                                          // next task ID
                 ); 
-
                 // copying rest of array
-                return copyRestOfSpaces(++i, newProcessorSpaces);
-
-
-                // node doesn't fit in here :( so we just copy old array and move onto next index
-            } else {
-                // weird stuff might be happening with pointers here because not using Arrays.copyOf, should be fine...
-                newProcessorSpaces[i] = this.processorSpaces[i];
-            }
+                i++;
+                System.arraycopy(
+                    this.processorSpaces,           // source
+                    i,                              // source start
+                    newProcessorSpaces,             // destination
+                    i+1,                            // destination start - one after source because of added spot in middle
+                    this.processorSpaces.length - i // length of copied section
+                );
+                return newProcessorSpaces;
+            } 
         }
 
         // We've reached the end of the array without returning, so we're just going bang the space right on the end.
@@ -140,17 +155,6 @@ public class ProcessorState implements Processor {
         // returning completed array
         return newProcessorSpaces;
         
-    }
-
-    private int[][] copyRestOfSpaces(int index, int[][] newProcessorSpaces) {
-
-        for (int i = index; i < this.processorSpaces.length; i++) {
-            // new array is one step ahead due to insertion
-            // weird stuff might be happening with pointers here because not using Arrays.copyOf, should be fine...
-            newProcessorSpaces[i+1] = this.processorSpaces[i]; 
-        }
-        return newProcessorSpaces;
-
     }
 
     @Override
