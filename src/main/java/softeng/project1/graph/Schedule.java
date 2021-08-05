@@ -7,6 +7,8 @@ public interface Schedule {
 
     public boolean processorEquals();
 
+    public int getMaxDataReadyTime();
+
     public List<Schedule> expand();
 
 }

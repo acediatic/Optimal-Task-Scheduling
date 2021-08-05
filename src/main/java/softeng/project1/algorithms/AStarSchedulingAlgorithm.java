@@ -1,6 +1,7 @@
 package softeng.project1.algorithms;
 
 import softeng.project1.algorithms.heuristics.HeuristicManager;
+import softeng.project1.algorithms.heuristics.PriorityQueueHeuristicManager;
 import softeng.project1.graph.Schedule;
 import softeng.project1.graph.ScheduleState;
 
