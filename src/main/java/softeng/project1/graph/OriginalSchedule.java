@@ -7,15 +7,15 @@ import java.util.Map;
 /**
  * TODO...
  */
-public class ImmutableTaskGraph implements TaskGraph {
+public class OriginalSchedule implements TaskGraph {
 
-    private final Map<String, ImmutableTaskNode> taskNodes;
-    private final Map<String, ImmutableTaskNode> freeTaskNodes;
+    private final Map<String, OriginalTaskNode> taskNodes;
+    private final Map<String, OriginalTaskNode> freeTaskNodes;
 
     /**
      * TODO...
      */
-    public ImmutableTaskGraph(Map<String, ImmutableTaskNode> taskNodes, Map<String, ImmutableTaskNode> freeTaskNodes) {
+    public OriginalSchedule(Map<String, OriginalTaskNode> taskNodes, Map<String, OriginalTaskNode> freeTaskNodes) {
         // Making these immutable, note that the underlying map can still be changed.
         this.taskNodes = Collections.unmodifiableMap(taskNodes);
         this.freeTaskNodes = Collections.unmodifiableMap(freeTaskNodes);
