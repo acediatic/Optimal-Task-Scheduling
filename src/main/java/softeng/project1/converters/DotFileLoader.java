@@ -1,6 +1,7 @@
 package softeng.project1.converters;
 
 import org.graphstream.graph.Graph;
+import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.DefaultGraph;
 import org.graphstream.stream.file.FileSource;
 import org.graphstream.stream.file.FileSourceFactory;
@@ -26,6 +27,13 @@ public class DotFileLoader {
             e.printStackTrace();
             System.out.println("IOException thrown for file source path");
         }
+    }
+
+    public void drawGraph() {
+        for (Node node : graph) {
+            node.setAttribute("ui.label", node.getId());
+        }
+        graph.display();
     }
 
 }
