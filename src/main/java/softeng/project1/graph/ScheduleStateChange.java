@@ -11,15 +11,5 @@ public class ScheduleStateChange {
         this.insertedTaskNode = insertedTaskNode;
         this.processorID = processorID;
         this.insertionTime = insertionTime;
-
-        int previousBottomLevel = previousChange.getBottomLevel();
-
-
-
-
-    }
-
-    public int getBottomLevel() {
-
     }
 }
