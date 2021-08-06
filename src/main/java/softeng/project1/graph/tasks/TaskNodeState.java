@@ -1,35 +1,13 @@
 package softeng.project1.graph.tasks;
 
-import softeng.project1.graph.tasks.TaskNode;
+public abstract class TaskNodeState implements TaskNode {
 
-/**
- * TODO...
- */
-public class TaskNodeState implements TaskNode {
+    protected final int numLinks;
+    protected final int[] processorPrerequisites;
 
-    private final TaskNode originalTaskNode;
-    private final int numLinks;
-    private final int[] processorPrerequisites;
-
-    protected TaskNodeState(TaskNode originalTaskNode, int numLinks, int[] processorPrerequisites) {
-        this.originalTaskNode = originalTaskNode;
+    protected TaskNodeState(int numLinks, int[] processorPrerequisites) {
         this.numLinks = numLinks;
         this.processorPrerequisites = processorPrerequisites;
-    }
-
-    @Override
-    public int getTaskID() {
-        return originalTaskNode.getTaskID();
-    }
-
-    @Override
-    public int getTaskCost() {
-        return originalTaskNode.getTaskCost();
-    }
-
-    @Override
-    public TaskNode getOriginalTaskNode() {
-        return this.originalTaskNode;
     }
 
     @Override
@@ -48,20 +26,18 @@ public class TaskNodeState implements TaskNode {
     }
 
     @Override
-    public TaskNode copyAndSetPrerequisite(int[] parentPrerequisites) {
-        int[] newPrerequisites = new int[this.processorPrerequisites.length];
+    public String toString() {
 
-        for (int i = 0; i < this.processorPrerequisites.length; i++) {
-            newPrerequisites[i] = Math.max(
-                    this.processorPrerequisites[i],
-                    parentPrerequisites[i]
-            );
+        StringBuilder builder = new StringBuilder();
+
+        builder.append("TaskNodeState:\n")
+                .append("numLinks: ").append(this.numLinks).append("\n")
+                .append("Processor Prerequisites:\n");
+
+        for (int i = 0; i < processorPrerequisites.length; i++) {
+            builder.append(i).append(" - ").append(processorPrerequisites[i]);
         }
-
-        return new TaskNodeState(
-                this.originalTaskNode,
-                this.numLinks - 1,
-                newPrerequisites
-        );
+        return builder.toString();
     }
+
 }

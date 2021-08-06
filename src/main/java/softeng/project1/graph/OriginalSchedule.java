@@ -2,7 +2,7 @@ package softeng.project1.graph;
 
 import softeng.project1.graph.processors.OriginalProcessorsState;
 import softeng.project1.graph.processors.Processors;
-import softeng.project1.graph.tasks.OriginalTaskNode;
+import softeng.project1.graph.tasks.OriginalTaskNodeState;
 import softeng.project1.graph.tasks.TaskNode;
 
 import java.util.Collections;
@@ -14,14 +14,14 @@ import java.util.Map;
  */
 public class OriginalSchedule implements Schedule {
 
-    private final Map<Integer, OriginalTaskNode> taskNodes;
-    private final Map<Integer, OriginalTaskNode> freeTaskNodes;
+    private final Map<Integer, OriginalTaskNodeState> taskNodes;
+    private final Map<Integer, OriginalTaskNodeState> freeTaskNodes;
     private final Processors processors;
 
     /**
      * TODO...
      */
-    public OriginalSchedule(Map<Integer, OriginalTaskNode> taskNodes, Map<Integer, OriginalTaskNode> freeTaskNodes, int numProcessors) {
+    public OriginalSchedule(Map<Integer, OriginalTaskNodeState> taskNodes, Map<Integer, OriginalTaskNodeState> freeTaskNodes, int numProcessors) {
         // Making these immutable, note that the underlying map can still be changed.
         this.taskNodes = Collections.unmodifiableMap(taskNodes);
         this.freeTaskNodes = Collections.unmodifiableMap(freeTaskNodes);
