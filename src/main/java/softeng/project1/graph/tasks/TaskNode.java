@@ -45,9 +45,9 @@ public interface TaskNode {
     int getTaskCost();
 
     /**
-     * TODO... Find out if this is actually needed.
+     * TODO...
      */
-    TaskNode getOriginalTaskNode();
+    int[][] getChildLinks();
 
     /**
      * Returns whether or not the task is in a 'free' state. A task if free if all of it's parents have been scheduled.

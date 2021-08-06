@@ -7,14 +7,16 @@ public class OriginalTaskNodeState extends TaskNodeState {
 
     private final int taskID;
     private final int taskCost;
+    private final int[][] childLinks;
 
     /**
      * TODO...
      */
-    public OriginalTaskNodeState(int taskID, int taskCost, int numLinks, int numProcessors) {
+    public OriginalTaskNodeState(int taskID, int taskCost, int numLinks, int[][] childLinks, int numProcessors) {
         super(numLinks, new int[numProcessors]);
         this.taskID = taskID;
         this.taskCost = taskCost;
+        this.childLinks = childLinks;
     }
 
     @Override
@@ -28,8 +30,8 @@ public class OriginalTaskNodeState extends TaskNodeState {
     }
 
     @Override
-    public TaskNode getOriginalTaskNode() {
-        return this;
+    public int[][] getChildLinks() {
+        return this.childLinks;
     }
 
     @Override

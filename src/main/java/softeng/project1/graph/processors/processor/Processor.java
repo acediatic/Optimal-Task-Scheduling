@@ -56,6 +56,11 @@ public interface Processor {
     int getNumSpaces();
 
     /**
+     * // TODO...
+     */
+    int getLastInsert();
+
+    /**
      * Generates a Processor object representing the state of the specific 
      * processor (represented by the called Processor) after a new Task 
      * has been greedily scheduled into the earliest possible space.

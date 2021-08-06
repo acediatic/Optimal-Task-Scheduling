@@ -23,8 +23,8 @@ public class ChangedTaskNodeState extends TaskNodeState {
     }
 
     @Override
-    public TaskNode getOriginalTaskNode() {
-        return this.originalTaskNode;
+    public int[][] getChildLinks() {
+        return this.originalTaskNode.getChildLinks();
     }
 
     @Override
