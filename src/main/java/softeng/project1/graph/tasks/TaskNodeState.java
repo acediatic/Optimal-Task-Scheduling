@@ -1,4 +1,6 @@
-package softeng.project1.graph;
+package softeng.project1.graph.tasks;
+
+import softeng.project1.graph.tasks.TaskNode;
 
 /**
  * TODO...

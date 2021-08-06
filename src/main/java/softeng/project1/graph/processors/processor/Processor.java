@@ -1,6 +1,6 @@
 package softeng.project1.graph.processors.processor;
 
-import softeng.project1.graph.TaskNode;
+import softeng.project1.graph.tasks.TaskNode;
 
 /**
  * @author Remus Courtenay

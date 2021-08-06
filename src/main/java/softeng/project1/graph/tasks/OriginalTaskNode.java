@@ -1,9 +1,9 @@
-package softeng.project1.graph;
+package softeng.project1.graph.tasks;
 
 /**
  * TODO...
  */
-public class ImmutableTaskNode implements TaskNode {
+public class OriginalTaskNode implements TaskNode {
 
     private final int taskID;
     private final int taskCost;
@@ -11,7 +11,7 @@ public class ImmutableTaskNode implements TaskNode {
     /**
      * TODO...
      */
-    public ImmutableTaskNode(int taskID, int taskCost) {
+    public OriginalTaskNode(int taskID, int taskCost) {
         this.taskID = taskID;
         this.taskCost = taskCost;
     }
