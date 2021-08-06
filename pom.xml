@@ -55,8 +55,7 @@
     <dependency>
       <artifactId>gs-core</artifactId>
       <groupId>org.graphstream</groupId>
-      <version>1.0</version>
-      <optional>false</optional>
+      <version>2.0</version>
     </dependency>
   </dependencies>
   <build>
