@@ -1,4 +1,4 @@
-package softeng.project1.graph;
+package softeng.project1.graph.tasks;
 
 /**
  * TODO...

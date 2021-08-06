@@ -2,7 +2,7 @@ package softeng.project1.graph.processors.processor;
 
 import java.util.Arrays;
 
-import softeng.project1.graph.TaskNode;
+import softeng.project1.graph.tasks.TaskNode;
 import static softeng.project1.graph.processors.processor.ProcessorHelper.fillProcessorSpace;
 
 /**

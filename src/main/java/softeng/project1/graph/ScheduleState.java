@@ -1,6 +1,7 @@
 package softeng.project1.graph;
 
 import softeng.project1.graph.processors.Processors;
+import softeng.project1.graph.tasks.TaskNode;
 
 import java.util.HashMap;
 import java.util.List;

@@ -1,5 +1,8 @@
 package softeng.project1.graph;
 
+import softeng.project1.graph.tasks.OriginalTaskNode;
+import softeng.project1.graph.tasks.TaskNode;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -7,7 +10,7 @@ import java.util.Map;
 /**
  * TODO...
  */
-public class OriginalSchedule implements TaskGraph {
+public class OriginalSchedule implements Schedule {
 
     private final Map<String, OriginalTaskNode> taskNodes;
     private final Map<String, OriginalTaskNode> freeTaskNodes;
@@ -22,18 +25,24 @@ public class OriginalSchedule implements TaskGraph {
     }
 
     @Override
-    public List<TaskNode> getFreeTasks() { // Pass a copy of the list instead to stay immutable? would be slower
-        return null;
+    public long getHashKey() {
+        return 0; // TODO...
     }
 
     @Override
-    public TaskNode getTask(String taskName) { // TODO... handle instance where task not in graph
-        return this.taskNodes.get(taskName); // Okay to pass object straight as ImmutableTaskNode is also Immutable
+    public boolean deepEquals(Schedule otherSchedule) {
+        // We directly check the object as the only object with the same values as the original is itself.
+        return this == otherSchedule;
     }
 
     @Override
-    public TaskGraph getOriginalTaskGraph() {
-        return this;
+    public int getMaxDataReadyTime() {
+        return 0; // TODO...
+    }
+
+    @Override
+    public List<Schedule> expand() {
+        return null; // TODO...
     }
 
     @Override

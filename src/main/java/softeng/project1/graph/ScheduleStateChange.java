@@ -1,5 +1,7 @@
 package softeng.project1.graph;
 
+import softeng.project1.graph.tasks.TaskNode;
+
 public class ScheduleStateChange {
     private ScheduleStateChange previousChange;
     private TaskNode insertedTaskNode;
