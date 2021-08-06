@@ -11,8 +11,8 @@ public class ScheduleState {
     private HashMap<Integer, TaskNode> taskNodes;
     private HashMap<Integer, TaskNode> freeNodes;
     private Processors processors;
-    private int maxBottomLevel = 0;
-    private int idleTime = 0;
+    int maxBottomLevel;
+    int idleTime;
 
     // TODO
     // calculate bottom level, idle time increment for each added task here too.
@@ -20,5 +20,13 @@ public class ScheduleState {
     public List<ScheduleStateChange> expand() {
 
         return null;
+    }
+
+    public int getIdleTime() {
+        return idleTime;
+    }
+
+    public int getMaxBottomLevel() {
+        return maxBottomLevel;
     }
 }

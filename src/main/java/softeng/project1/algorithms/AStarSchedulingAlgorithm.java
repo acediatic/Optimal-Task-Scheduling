@@ -17,8 +17,11 @@ public class AStarSchedulingAlgorithm implements SchedulingAlgorithm{
     private final Map<Long, ScheduleState> closedSchedules;
 
     public AStarSchedulingAlgorithm(Schedule originalSchedule) {
+        short taskLengthsSum = 0; // initialise to value of graph.
+
+
         this.originalSchedule = originalSchedule;
-        this.heuristicManager = new PriorityQueueHeuristicManager();
+        this.heuristicManager = new PriorityQueueHeuristicManager(taskLengthsSum);
         this.closedSchedules = new ConcurrentHashMap<>();
     }
 
