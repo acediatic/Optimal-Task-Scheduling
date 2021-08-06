@@ -1,39 +1,36 @@
 package softeng.project1.converters;
 
-import org.graphstream.graph.Graph;
-import org.graphstream.graph.Node;
-import org.graphstream.graph.implementations.DefaultGraph;
-import org.graphstream.stream.file.FileSource;
-import org.graphstream.stream.file.FileSourceFactory;
-
+import org.graphstream.graph.*;
+import org.graphstream.graph.implementations.*;
 import java.io.IOException;
+import org.graphstream.stream.file.FileSourceDOT;
 
-/**
- * DotFileLoader uses GraphStream to read the DOT file and adds it to it's graph representation.
- */
 public class DotFileLoader {
     private Graph graph = new DefaultGraph("graph");
-    private FileSource fileSource;
-    //FileSource fs = FileSourceFactory.sourceFor("path/to/my/file");
 
-    public DotFileLoader() {
-        //
-    }
+    /**
+     * DotFileLoader Constructor
+     * @param path String containing path to the DOT file for given graph
+     */
     public DotFileLoader(String path) {
+        System.setProperty("org.graphstream.ui", "swing");
+        FileSourceDOT fileSource = new FileSourceDOT();
+        fileSource.addSink(graph);
+
+        //Reads DOT file into graph object
         try {
-            fileSource = FileSourceFactory.sourceFor(path);
-            fileSource.addSink(graph);
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.out.println("IOException thrown for file source path");
+            fileSource.readAll(path);
+        } catch( IOException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            fileSource.removeSink(graph);
         }
     }
 
-    public void drawGraph() {
-        for (Node node : graph) {
-            node.setAttribute("ui.label", node.getId());
-        }
+    /**
+     * Displays Graph in a Java Swing window
+     */
+    public void displayGraph(){
         graph.display();
     }
-
 }
