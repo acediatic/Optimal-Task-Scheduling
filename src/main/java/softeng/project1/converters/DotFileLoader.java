@@ -3,10 +3,15 @@ package softeng.project1.converters;
 import org.graphstream.graph.*;
 import org.graphstream.graph.implementations.*;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.graphstream.stream.file.FileSourceDOT;
+import org.graphstream.algorithm.TopologicalSortDFS;
 
 public class DotFileLoader {
     private Graph graph = new DefaultGraph("graph");
+    private List<Node> topologicalOrdering;
 
     /**
      * DotFileLoader Constructor
@@ -25,6 +30,13 @@ public class DotFileLoader {
         } finally {
             fileSource.removeSink(graph);
         }
+
+
+        //Generates topological ordering for nodes in the graph.
+        TopologicalSortDFS sort = new TopologicalSortDFS();
+        sort.init(graph);
+        sort.compute();
+        topologicalOrdering = sort.getSortedNodes();
     }
 
     /**
