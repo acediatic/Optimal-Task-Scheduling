@@ -59,6 +59,10 @@ public class OriginalSchedule implements Schedule {
         return null; // TODO...
     }
 
+    protected TaskNode getTaskNode(int taskID) {
+       return this.taskNodes.get(taskID);
+    }
+
     @Override
     public String toString() {
 

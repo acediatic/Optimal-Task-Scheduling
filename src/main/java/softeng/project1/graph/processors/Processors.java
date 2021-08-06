@@ -32,6 +32,11 @@ public interface Processors {
     Processor getProcessor(int processorID);
 
     /**
+     * TODO...
+     */
+    int getNumProcessors();
+
+    /**
      * Creates a new Processors object which is functionally a 
      * copy of the current except for one Processor which is
      * overwritten by the given Processor. Processor objects
