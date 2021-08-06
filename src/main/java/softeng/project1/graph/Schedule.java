@@ -5,7 +5,7 @@ import java.util.List;
 public interface Schedule {
     long getHashKey();
 
-    boolean processorEquals();
+    boolean deepEquals(Schedule otherSchedule);
 
     int getMaxDataReadyTime();
 

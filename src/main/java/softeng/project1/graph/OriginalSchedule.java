@@ -34,6 +34,16 @@ public class OriginalSchedule implements Schedule {
     }
 
     @Override
+    public int getIdleTime() {
+        return 0; // TODO...
+    }
+
+    @Override
+    public int getMaxBottomLevel() {
+        return 0; // TODO...
+    }
+
+    @Override
     public boolean deepEquals(Schedule otherSchedule) {
         // We directly check the object as the only object with the same values as the original is itself.
         return this == otherSchedule;

@@ -1,6 +1,8 @@
 package softeng.project1.graph;
 
 import softeng.project1.graph.processors.Processors;
+import softeng.project1.graph.tasks.TaskNode;
+
 import java.util.List;
 import java.util.Map;
 
@@ -53,7 +55,8 @@ public class ScheduleState implements Schedule{
     // TODO
     // calculate bottom level, idle time increment for each added task here too.
     // Data Transfer time from ProcessorPrerequisite of each TaskNodeState.
-    public List<ScheduleStateChange> expand() {
+    @Override
+    public List<Schedule> expand() {
 
         return null;
     }
