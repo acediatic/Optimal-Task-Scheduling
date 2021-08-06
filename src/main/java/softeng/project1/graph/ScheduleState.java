@@ -1,9 +1,6 @@
 package softeng.project1.graph;
 
 import softeng.project1.graph.processors.Processors;
-import softeng.project1.graph.tasks.TaskNode;
-
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -11,7 +8,6 @@ import java.util.Map;
  * TODO...
  */
 public class ScheduleState implements Schedule{
-
     private final OriginalSchedule originalSchedule;
     private final ScheduleStateChange change;
     private final Map<Integer, TaskNode> taskNodes;
@@ -57,8 +53,16 @@ public class ScheduleState implements Schedule{
     // TODO
     // calculate bottom level, idle time increment for each added task here too.
     // Data Transfer time from ProcessorPrerequisite of each TaskNodeState.
-    @Override
-    public List<Schedule> expand() {
+    public List<ScheduleStateChange> expand() {
+
         return null;
+    }
+
+    public int getIdleTime() {
+        return idleTime;
+    }
+
+    public int getMaxBottomLevel() {
+        return maxBottomLevel;
     }
 }

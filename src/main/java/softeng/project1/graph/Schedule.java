@@ -3,12 +3,16 @@ package softeng.project1.graph;
 import java.util.List;
 
 public interface Schedule {
-    public long getHashKey();
+    long getHashKey();
 
-    public boolean deepEquals(Schedule otherSchedule);
+    boolean processorEquals();
 
-    public int getMaxDataReadyTime();
+    int getMaxDataReadyTime();
 
-    public List<Schedule> expand();
+    List<Schedule> expand();
+
+    int getIdleTime();
+
+    int getMaxBottomLevel();
 
 }
