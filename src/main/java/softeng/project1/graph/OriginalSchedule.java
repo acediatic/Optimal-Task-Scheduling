@@ -12,16 +12,18 @@ import java.util.Map;
  */
 public class OriginalSchedule implements Schedule {
 
-    private final Map<String, OriginalTaskNode> taskNodes;
-    private final Map<String, OriginalTaskNode> freeTaskNodes;
+    private final Map<Integer, OriginalTaskNode> taskNodes;
+    private final Map<Integer, OriginalTaskNode> freeTaskNodes;
+    private final int numProcessors;
 
     /**
      * TODO...
      */
-    public OriginalSchedule(Map<String, OriginalTaskNode> taskNodes, Map<String, OriginalTaskNode> freeTaskNodes) {
+    public OriginalSchedule(Map<Integer, OriginalTaskNode> taskNodes, Map<Integer, OriginalTaskNode> freeTaskNodes, int numProcessors) {
         // Making these immutable, note that the underlying map can still be changed.
         this.taskNodes = Collections.unmodifiableMap(taskNodes);
         this.freeTaskNodes = Collections.unmodifiableMap(freeTaskNodes);
+        this.numProcessors = numProcessors;
     }
 
     @Override
