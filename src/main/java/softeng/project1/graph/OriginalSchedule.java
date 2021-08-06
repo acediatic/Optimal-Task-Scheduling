@@ -1,5 +1,7 @@
 package softeng.project1.graph;
 
+import softeng.project1.graph.processors.OriginalProcessorsState;
+import softeng.project1.graph.processors.Processors;
 import softeng.project1.graph.tasks.OriginalTaskNode;
 import softeng.project1.graph.tasks.TaskNode;
 
@@ -14,7 +16,7 @@ public class OriginalSchedule implements Schedule {
 
     private final Map<Integer, OriginalTaskNode> taskNodes;
     private final Map<Integer, OriginalTaskNode> freeTaskNodes;
-    private final int numProcessors;
+    private final Processors processors;
 
     /**
      * TODO...
@@ -23,7 +25,7 @@ public class OriginalSchedule implements Schedule {
         // Making these immutable, note that the underlying map can still be changed.
         this.taskNodes = Collections.unmodifiableMap(taskNodes);
         this.freeTaskNodes = Collections.unmodifiableMap(freeTaskNodes);
-        this.numProcessors = numProcessors;
+        this.processors = new OriginalProcessorsState(numProcessors);
     }
 
     @Override
@@ -53,7 +55,7 @@ public class OriginalSchedule implements Schedule {
         StringBuilder stringBuilder = new StringBuilder();
 
         stringBuilder.append("-----------------------------\n");
-        stringBuilder.append("Immutable Task Graph:\n");
+        stringBuilder.append("Original Schedule:\n");
 
         stringBuilder.append("Free Task Nodes: \n");
         for (TaskNode freeTaskNode: this.freeTaskNodes.values()) {
