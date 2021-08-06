@@ -8,11 +8,13 @@ import softeng.project1.graph.tasks.TaskNode;
 public class TaskNodeState implements TaskNode {
 
     private final TaskNode originalTaskNode;
-    private int[] processorPrerequisites;
+    private final int numLinks;
+    private final int[] processorPrerequisites;
 
-    public TaskNodeState(TaskNode previousState) {
-        this.originalTaskNode = previousState.getOriginalTaskNode();
-        this.processorPrerequisites = new int[10]; // TODO... base size off of num processors
+    protected TaskNodeState(TaskNode originalTaskNode, int numLinks, int[] processorPrerequisites) {
+        this.originalTaskNode = originalTaskNode;
+        this.numLinks = numLinks;
+        this.processorPrerequisites = processorPrerequisites;
     }
 
     @Override
@@ -31,7 +33,35 @@ public class TaskNodeState implements TaskNode {
     }
 
     @Override
+    public boolean isFree() {
+        return this.numLinks == 0;
+    }
+
+    @Override
     public int getProcessorPrerequisite(int processorID) {
         return this.processorPrerequisites[processorID];
+    }
+
+    @Override
+    public int[] getAllPrerequisites() {
+        return this.processorPrerequisites;
+    }
+
+    @Override
+    public TaskNode copyAndSetPrerequisite(int[] parentPrerequisites) {
+        int[] newPrerequisites = new int[this.processorPrerequisites.length];
+
+        for (int i = 0; i < this.processorPrerequisites.length; i++) {
+            newPrerequisites[i] = Math.max(
+                    this.processorPrerequisites[i],
+                    parentPrerequisites[i]
+            );
+        }
+
+        return new TaskNodeState(
+                this.originalTaskNode,
+                this.numLinks - 1,
+                newPrerequisites
+        );
     }
 }

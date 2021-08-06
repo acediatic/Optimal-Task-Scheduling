@@ -12,7 +12,13 @@ public interface TaskNode {
 
     TaskNode getOriginalTaskNode();
 
+    boolean isFree();
+
     int getProcessorPrerequisite(int processorID);
+
+    int[] getAllPrerequisites();
+
+    TaskNode copyAndSetPrerequisite(int[] parentPrerequisites);
 
     @Override
     String toString();

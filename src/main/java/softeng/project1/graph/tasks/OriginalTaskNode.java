@@ -7,13 +7,17 @@ public class OriginalTaskNode implements TaskNode {
 
     private final int taskID;
     private final int taskCost;
+    private final int numLinks;
+    private final int[] initialProcessorPrerequisites;
 
     /**
      * TODO...
      */
-    public OriginalTaskNode(int taskID, int taskCost) {
+    public OriginalTaskNode(int taskID, int taskCost, int numLinks, int numProcessors) {
         this.taskID = taskID;
         this.taskCost = taskCost;
+        this.numLinks = numLinks;
+        this.initialProcessorPrerequisites = new int[numProcessors];
     }
 
 
@@ -29,12 +33,32 @@ public class OriginalTaskNode implements TaskNode {
 
     @Override
     public TaskNode getOriginalTaskNode() {
-        return null;
+        return this;
+    }
+
+    @Override
+    public boolean isFree() {
+        return numLinks == 0;
     }
 
     @Override
     public int getProcessorPrerequisite(int processorID) {
-        return 0; //TODO..
+        // Always 0 because original task nodes have never had any prerequisites filled
+        return 0;
+    }
+
+    @Override
+    public int[] getAllPrerequisites() {
+        return this.initialProcessorPrerequisites;
+    }
+
+    @Override
+    public TaskNode copyAndSetPrerequisite(int[] parentPrerequisites) {
+        return new TaskNodeState(
+                this,
+                this.numLinks - 1,
+                parentPrerequisites // Don't need to calculate max because original prerequisites all 0
+        );
     }
 
     @Override
