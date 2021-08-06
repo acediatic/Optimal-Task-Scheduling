@@ -58,6 +58,12 @@
       <version>1.0</version>
       <optional>false</optional>
     </dependency>
+    <dependency>
+      <artifactId>gs-algo</artifactId>
+      <groupId>org.graphstream</groupId>
+      <version>2.0</version>
+      <optional>false</optional>
+    </dependency>
   </dependencies>
   <build>
     <plugins> <!-- DO NOT PUT DEPENDENCIES BELOW THIS LINE UNLESS YOU KNOW WHAT YOU'RE DOING -->
