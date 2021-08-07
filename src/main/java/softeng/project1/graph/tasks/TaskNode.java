@@ -1,4 +1,4 @@
-package softeng.project1.graph;
+package softeng.project1.graph.tasks;
 
 /**
  * Interface describing a specific TaskNode in the graph representation of the scheduling problem.
