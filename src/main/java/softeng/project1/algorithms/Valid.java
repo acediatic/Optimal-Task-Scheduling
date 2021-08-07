@@ -72,6 +72,7 @@ public class Valid implements SchedulingAlgorithm {
         }
     }
     private class Task {
+        private List<Task> prerequisites;
         private int weight;
         private int start;
         private String name;
@@ -97,6 +98,10 @@ public class Valid implements SchedulingAlgorithm {
 
         protected int getStart() {
             return this.start;
+        }
+
+        protected List<Task> getPrerequisites() {
+            return this.prerequisites;
         }
 
     }
