@@ -20,7 +20,7 @@ public class IOHandler {
     /**
      * Reads in DOT file from specified path and stores as Graph Object
      */
-    public void readFile(){
+    public Graph readFile(){
         FileSourceDOT fileSource = new FileSourceDOT();
         fileSource.addSink(graph);
 
@@ -33,6 +33,8 @@ public class IOHandler {
         } finally {
             fileSource.removeSink(graph);
         }
+
+        return getGraph();
     }
 
     /**
@@ -40,6 +42,10 @@ public class IOHandler {
      */
     public void writeFile(){
 
+    }
+
+    public Graph getGraph(){
+        return this.graph;
     }
 
 
