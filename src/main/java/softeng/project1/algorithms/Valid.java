@@ -30,6 +30,15 @@ public class Valid implements SchedulingAlgorithm {
         }
     }
 
+    private int getMinTime(Task task) {
+        int min = 0;
+        List<Task> prereqs = task.getPrerequisites();
+        for (Task prereq: prereqs) {
+
+        }
+        return 0;
+    }
+
     private void compareAndAdd (Task task) {
         int min = 0;
         int lowestTime = processors.get(min).getOngoingTime();
@@ -103,6 +112,25 @@ public class Valid implements SchedulingAlgorithm {
         protected List<Task> getPrerequisites() {
             return this.prerequisites;
         }
-
     }
+
+    private class CommunicationCost {
+        private Task taskFrom;
+        private Task taskTo;
+        private int weight;
+        protected CommunicationCost(Task taskFrom, Task taskTo, int weight) {
+            this.taskFrom = taskFrom;
+            this.taskTo = taskTo;
+            this.weight = weight;
+        }
+
+        protected int tellCommunicationCost(Task taskFrom, Task taskTo) {
+            if ((this.taskFrom == taskFrom) && (this.taskTo == taskTo)) {
+                return this.weight;
+            } else {
+                return -1;
+            }
+        }
+    }
+
 }
