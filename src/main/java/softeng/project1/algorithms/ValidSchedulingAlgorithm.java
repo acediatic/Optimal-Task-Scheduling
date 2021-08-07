@@ -1,33 +1,36 @@
 package softeng.project1.algorithms;
 
 import org.graphstream.graph.Graph;
-import org.graphstream.graph.Node;
-import softeng.project1.graph.OriginalScheduleState;
-import softeng.project1.graph.processors.Processors;
-import softeng.project1.graph.processors.processor.Processor;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Valid implements SchedulingAlgorithm {
-    private Graph graph; // Graph to process
-    private List<Task> tasksInTopology; // Need to be implemented from graph data
-    private List<ValidProcessor> processors = new ArrayList<ValidProcessor>();
-    private List<CommunicationCost> communicationCosts = new ArrayList<CommunicationCost>();
-    private static int defaultNumberOfProcessors = 1;  //default number of processors to begin with
-    private int numberOfProcessors;
+public class ValidSchedulingAlgorithm implements SchedulingAlgorithm {
+
+    private static final int DEFAULT_NUMBER_OF_PROCESSORS = 1;  //default number of processors to begin with
+
+    private final Graph graph; // Graph to process
+    private final int numberOfProcessors;
+    private final List<Task> tasksInTopology; // Need to be implemented from graph data
+    private final List<ValidProcessor> processors;
+    private final List<CommunicationCost> communicationCosts;
+
+
 //    private List<Processors> processors = new ArrayList<Processors>();
 
-    public Valid(Graph read) {
-        this(read, defaultNumberOfProcessors);
+    public ValidSchedulingAlgorithm(Graph read) {
+        this(read, DEFAULT_NUMBER_OF_PROCESSORS);
     }
 
-    public Valid(Graph read, int numberOfProcessors) {
+    public ValidSchedulingAlgorithm(Graph read, int numberOfProcessors) {
         this.graph = read;
         this.numberOfProcessors = numberOfProcessors;
+        this.tasksInTopology = null // TODO... get from graph
+        this.processors = new ArrayList<>(numberOfProcessors);
+        this.communicationCosts = new ArrayList<>();
+
         for (int i = 0; i<this.numberOfProcessors; i++) {
-            ValidProcessor processor = new ValidProcessor(i);
-            processors.add(processor);
+            processors.add(new ValidProcessor(i));
         }
     }
 
@@ -41,10 +44,11 @@ public class Valid implements SchedulingAlgorithm {
 
     private int getCostForProcessor(Task task, ValidProcessor processor) {
         int cost = 0;
+        int checkCost;
         List<Task> prereqs = task.getPrerequisites();
         for (Task prereq: prereqs) {
             for (CommunicationCost communicationCost: communicationCosts) {
-                int checkCost = communicationCost.tellCommunicationCost(prereq, task);
+                checkCost = communicationCost.tellCommunicationCost(prereq, task);
                 if (checkCost != -1) {
                     if (!processor.checkTaskIn(prereq)) {
                         cost = cost + checkCost;
@@ -75,8 +79,8 @@ public class Valid implements SchedulingAlgorithm {
     }
 
     private class ValidProcessor {
-        private int id;
-        private List<Task> tasks = new ArrayList<Task>();
+        private final int id;
+        private final List<Task> tasks = new ArrayList<Task>();
         private int ongoingTime = 0;
 
         protected ValidProcessor(int id) {
@@ -98,11 +102,7 @@ public class Valid implements SchedulingAlgorithm {
         }
 
         protected boolean checkTaskIn(Task task) {
-            if (this.tasks.contains(task)) {
-                return true;
-            } else {
-                return false;
-            }
+            return this.tasks.contains(task);
         }
     }
     private class Task {
