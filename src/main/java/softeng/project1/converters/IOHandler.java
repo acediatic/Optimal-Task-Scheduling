@@ -3,34 +3,50 @@ package softeng.project1.converters;
 import org.graphstream.graph.*;
 import org.graphstream.graph.implementations.*;
 import java.io.IOException;
+
 import org.graphstream.stream.file.FileSourceDOT;
 
-public class DotFileLoader {
+
+
+public class IOHandler {
+    private final String GRAPH_FILE_PATH;
     private Graph graph = new DefaultGraph("graph");
 
+
+    public IOHandler(String filePath) {
+        GRAPH_FILE_PATH = filePath;
+    }
+
     /**
-     * DotFileLoader Constructor
-     * @param path String containing path to the DOT file for given graph
+     * Reads in DOT file from specified path and stores as Graph Object
      */
-    public DotFileLoader(String path) {
-        System.setProperty("org.graphstream.ui", "swing");
+    public Graph readFile(){
         FileSourceDOT fileSource = new FileSourceDOT();
         fileSource.addSink(graph);
 
+        System.setProperty("org.graphstream.ui", "swing");
         //Reads DOT file into graph object
         try {
-            fileSource.readAll(path);
+            fileSource.readAll(GRAPH_FILE_PATH);
         } catch( IOException e) {
             System.out.println(e.getMessage());
         } finally {
             fileSource.removeSink(graph);
         }
+
+        return getGraph();
     }
 
     /**
-     * Displays Graph in a Java Swing window
+     * Writes graphObject out as DOT File
      */
-    public void displayGraph(){
-        graph.display();
+    public void writeFile(){
+
     }
+
+    public Graph getGraph(){
+        return this.graph;
+    }
+
+
 }
