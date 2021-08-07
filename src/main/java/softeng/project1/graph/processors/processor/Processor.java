@@ -58,7 +58,13 @@ public interface Processor {
     /**
      * // TODO...
      */
-    int getLastInsert();
+    int getLastInsertLocation();
+
+    int getLength();
+    /**
+     * TODO...
+     */
+    int getChangeInIdleTime();
 
     /**
      * Generates a Processor object representing the state of the specific 

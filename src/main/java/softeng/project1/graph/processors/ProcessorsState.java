@@ -5,6 +5,7 @@ import java.util.Arrays;
 import com.sangupta.murmur.Murmur3;
 
 import softeng.project1.graph.processors.processor.Processor;
+import softeng.project1.graph.tasks.TaskNode;
 
 /**
  * ProcessorsState implements the Processors interface and is used to keep track of all the
@@ -13,13 +14,17 @@ import softeng.project1.graph.processors.processor.Processor;
 public class ProcessorsState implements Processors {
 
     private final Processor[] processors;
+    private final int maxProcessorLength;
+    private final int idleTime;
 
     /**
      * ProcessorsState contructor which gets the Processor objects passed in as an array.
      * @param initialProcessors
      */
-    protected ProcessorsState(Processor[] initialProcessors) {
+    protected ProcessorsState(Processor[] initialProcessors, int maxProcessorLength, int idleTime) {
         processors = initialProcessors;
+        this.maxProcessorLength = maxProcessorLength;
+        this.idleTime = idleTime;
     }
 
     @Override
@@ -28,12 +33,40 @@ public class ProcessorsState implements Processors {
     }
 
     @Override
-    public ProcessorsState copyAndAddProcessor(Processor newProcessor) {
-        // No need to recreate processor objects which haven't changed because they're immutable.
-        Processor[] newProcessors = Arrays.copyOf(processors, processors.length);
-        newProcessors[newProcessor.getID()] = newProcessor;
-        return new ProcessorsState(newProcessors);
+    public int getNumProcessors() {
+        return processors.length;
     }
+
+    @Override
+    public int getIdleTime() {
+        return idleTime;
+    }
+
+    @Override
+    public ProcessorsState copyAndAddProcessor(TaskNode newNode, int processorID) {
+
+        Processor[] newProcessors = Arrays.copyOf(processors, processors.length);
+        Processor newProcessor = this.processors[processorID].copyAndInsert(newNode);
+        newProcessors[processorID] = newProcessor;
+        int newIdleTime;
+        int newMaxProcessorLength;
+
+        int lengthDiff = newProcessor.getLength() - this.maxProcessorLength;
+        if (lengthDiff > 0) {
+            newIdleTime =
+                    this.idleTime + // Old idle time
+                    newProcessor.getChangeInIdleTime() + // Idle time increase from changed processor
+                    ((this.processors.length - 1) * lengthDiff); // Idle time increase from all other processors
+            newMaxProcessorLength = newProcessor.getLength();
+        } else {
+            newIdleTime =
+                    this.idleTime + // Old idle time
+                    newProcessor.getChangeInIdleTime(); // Decrease in idle time from inserted task
+            newMaxProcessorLength = this.maxProcessorLength;
+        }
+        return new ProcessorsState(newProcessors, newMaxProcessorLength, newIdleTime);
+    }
+
 
     @Override
     public long murmurHash() {

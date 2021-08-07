@@ -19,20 +19,24 @@ public class ScheduleState implements Schedule{
     private final Map<Integer, TaskNode> freeNodes;
     private final Processors processors;
 
-    private int maxBottomLevel = 0;
-    private int idleTime = 0;
+    private final int maxBottomLevel;
+    private final int maxDataReadyTime;
 
     protected ScheduleState(
             OriginalSchedule originalSchedule,
             ScheduleStateChange change,
             Map<Integer, TaskNode> taskNodes,
             Map<Integer, TaskNode> freeNodes,
-            Processors processors) {
+            Processors processors,
+            int maxBottomLevel,
+            int maxDataReadyTime) {
         this.originalSchedule = originalSchedule;
         this.change = change;
         this.taskNodes = taskNodes;
         this.freeNodes = freeNodes;
         this.processors = processors;
+        this.maxBottomLevel = maxBottomLevel;
+        this.maxDataReadyTime = maxDataReadyTime;
     }
 
 
@@ -60,59 +64,76 @@ public class ScheduleState implements Schedule{
     // Data Transfer time from ProcessorPrerequisite of each TaskNodeState.
     @Override
     public List<Schedule> expand() {
-        int[] processorPrerequisites = new int[processors.getNumProcessors()];
 
+        // TODO... Handle success state when no free nodes
+
+        // Initialising empty array here for speed reasons
+        int[] processorPrerequisites = new int[processors.getNumProcessors()];
         List<Schedule> expandedSchedules = new ArrayList<>();
 
+        // Iterating through all free tasks
         for (TaskNode freeTask: this.freeNodes.values()) {
 
+            // Iterating through all processors
+            // TODO... Prune unnecessary processors additions
             for (int processorID = 0; processorID < processors.getNumProcessors(); processorID++) {
 
-                Processor newProcessor = processors.getProcessor(processorID).copyAndInsert(freeTask);
-                Processors newProcessors = this.processors.copyAndAddProcessor(newProcessor);
+                // Inserting task into processor and getting new objects
+                Processors newProcessors = this.processors.copyAndAddProcessor(freeTask, processorID);
+                int insertLocation = newProcessors.getProcessor(processorID).getLastInsertLocation();
 
-                int[][] changedChildLinks = freeTask.getChildLinks();
                 Map<Integer, TaskNode> newFreeNodes = new HashMap<>(this.freeNodes); // Shallow copy
                 Map<Integer, TaskNode> newTaskNodes = new HashMap<>(this.taskNodes); // Shallow copy
+                // Inserted task no longer needs to be stored
+                newFreeNodes.remove(freeTask.getTaskID());
+                newTaskNodes.remove(freeTask.getTaskID());
+
+                // Iterating through all changed children
+                int[][] changedChildLinks = freeTask.getChildLinks();
 
                 for (int[] childLink: changedChildLinks) {
+                    // Get old version of changed child from own storage or from original if not in own
                     TaskNode changedChild = this.getTaskNode(childLink[0]);
+                    // Generate array of prerequisite locations
                     fillProcessorPrerequisites(
-                            newProcessor.getLastInsert(),
+                            insertLocation,
                             changedChild.getTaskCost(),
                             processorID,
                             childLink[1],
                             processorPrerequisites
                     );
+                    // Make new version of changed child
                     changedChild = changedChild.copyAndSetPrerequisite(processorPrerequisites);
 
-                    newTaskNodes.put(changedChild.getTaskID(), changedChild); // Should overwrite
+                    // Put new changed child in storage
+                    newTaskNodes.put(changedChild.getTaskID(), changedChild); // Should overwrite old one
                     if (changedChild.isFree()) {
                         newFreeNodes.put(changedChild.getTaskID(), changedChild);
                     }
                 }
 
+                // Make new Schedule object to hold changed data
                 expandedSchedules.add(new ScheduleState(
                         this.originalSchedule,
                         new ScheduleStateChange(
                                 this.change,
                                 freeTask,
-                                newProcessor.getID(),
-                                newProcessor.getLastInsert()
+                                processorID,
+                                insertLocation
                         ),
                         newTaskNodes,
                         newFreeNodes,
-                        newProcessors
+                        newProcessors,
+                        Math.max(this.maxBottomLevel, freeTask.getBottomLevel()),
+                        Math.max(this.maxDataReadyTime, insertLocation + freeTask.getTaskCost() + freeTask.getMaxCommunicationCost())
                 ));
             }
-            return expandedSchedules;
         }
-
-        return null;
+        return expandedSchedules;
     }
 
     public int getIdleTime() {
-        return idleTime;
+        return this.processors.getIdleTime();
     }
 
     public int getMaxBottomLevel() {

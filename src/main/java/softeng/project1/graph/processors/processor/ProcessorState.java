@@ -25,8 +25,9 @@ public class ProcessorState implements Processor {
     // Immutable fields describing the state of the specific processor
     private final int processorID;
     private final int[][] processorSpaces;
-    private final int lastInsert;
+    private final int lastInsertLocation;
     private int currentInsert;
+    private int changeInIdleTime;
 
     /**
      * Protected constructor for the generation of new ProcessorState objects.
@@ -39,10 +40,10 @@ public class ProcessorState implements Processor {
      * @param processorID : The processor that the object represents a state of.
      * @param processorSpaces : The current set of spaces between tasks assigned to the processor.
      */
-    protected ProcessorState(int processorID, int[][] processorSpaces, int lastInsert) {
+    protected ProcessorState(int processorID, int[][] processorSpaces, int lastInsertLocation) {
         this.processorID = processorID;
         this.processorSpaces = processorSpaces;
-        this.lastInsert = lastInsert;
+        this.lastInsertLocation = lastInsertLocation;
     }
 
     /**
@@ -69,8 +70,18 @@ public class ProcessorState implements Processor {
     }
 
     @Override
-    public int getLastInsert() {
-        return this.lastInsert;
+    public int getLastInsertLocation() {
+        return this.lastInsertLocation;
+    }
+
+    @Override
+    public int getLength() {
+        return processorSpaces[processorSpaces.length - 1][0]; // Start of zero length final space
+    }
+
+    @Override
+    public int getChangeInIdleTime() {
+        return this.changeInIdleTime;
     }
 
     /**
@@ -151,6 +162,7 @@ public class ProcessorState implements Processor {
 
                 // Can insert task directly into start of space
                 this.currentInsert = this.processorSpaces[i][0];
+                this.changeInIdleTime = -taskLength;
                 
                 // We've found the insert position so copy the first half of array across
                 System.arraycopy(this.processorSpaces, 0, newProcessorSpaces, 0, i-1);
@@ -185,6 +197,7 @@ public class ProcessorState implements Processor {
 
                 // We can insert task directly at prerequisite location as the space is big enough
                 this.currentInsert = prerequisite;
+                this.changeInIdleTime = -taskLength;
 
                 // We've found the insert position so copy the first half of array across
                 System.arraycopy(this.processorSpaces, 0, newProcessorSpaces, 0, i-1);
@@ -220,11 +233,12 @@ public class ProcessorState implements Processor {
         // Getting where to put it
         int lastSpaceIndex = this.processorSpaces.length - 1; // -1 for 0 indexed array
         this.currentInsert = Math.max(prerequisite, this.processorSpaces[lastSpaceIndex][0]);
+        this.changeInIdleTime = currentInsert - this.processorSpaces[lastSpaceIndex][0];
 
         // updating old final space to now stretch to insertPoint
         fillProcessorSpace(newProcessorSpaces, lastSpaceIndex,
             processorSpaces[lastSpaceIndex][0],                         // start
-            this.currentInsert - processorSpaces[lastSpaceIndex][0],    // length
+            changeInIdleTime,                                           // length
             taskID                                                      // nextTaskID
         );
         

@@ -14,17 +14,27 @@ public class ChangedTaskNodeState extends TaskNodeState {
 
     @Override
     public int getTaskID() {
-        return originalTaskNode.getTaskID();
+        return this.originalTaskNode.getTaskID();
     }
 
     @Override
     public int getTaskCost() {
-        return originalTaskNode.getTaskCost();
+        return this.originalTaskNode.getTaskCost();
     }
 
     @Override
     public int[][] getChildLinks() {
         return this.originalTaskNode.getChildLinks();
+    }
+
+    @Override
+    public int getBottomLevel() {
+        return this.originalTaskNode.getBottomLevel();
+    }
+
+    @Override
+    public int getMaxCommunicationCost() {
+        return this.originalTaskNode.getMaxCommunicationCost();
     }
 
     @Override

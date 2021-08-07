@@ -1,6 +1,7 @@
 package softeng.project1.graph.processors;
 
 import softeng.project1.graph.processors.processor.Processor;
+import softeng.project1.graph.tasks.TaskNode;
 
 /**
  * @author Remus Courtenay
@@ -36,17 +37,19 @@ public interface Processors {
      */
     int getNumProcessors();
 
+    int getIdleTime();
+
     /**
      * Creates a new Processors object which is functionally a 
      * copy of the current except for one Processor which is
      * overwritten by the given Processor. Processor objects
      * overwrite the earlier version with the same ID. 
      * 
-     * @param processor : The new Processor to place into the copied
-     *                   Processors object.
+     // * @param processor : The new Processor to place into the copied TODO...
+     // *                   Processors object.
      * @return : Copy of current Processors with one Processor replaced.
      */
-    Processors copyAndAddProcessor(Processor processor);
+    Processors copyAndAddProcessor(TaskNode newNode, int processorID);
 
     /**
      * Generates a valid hash key long for use in a HashTable or HashMap

@@ -49,6 +49,10 @@ public interface TaskNode {
      */
     int[][] getChildLinks();
 
+    int getBottomLevel();
+
+    int getMaxCommunicationCost();
+
     /**
      * Returns whether or not the task is in a 'free' state. A task if free if all of it's parents have been scheduled.
      *

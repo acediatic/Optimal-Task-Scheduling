@@ -6,6 +6,7 @@ import com.sangupta.murmur.Murmur3;
 
 import softeng.project1.graph.processors.processor.OriginalProcessorState;
 import softeng.project1.graph.processors.processor.Processor;
+import softeng.project1.graph.tasks.TaskNode;
 
 public class OriginalProcessorsState implements Processors {
 
@@ -26,14 +27,26 @@ public class OriginalProcessorsState implements Processors {
     }
 
     @Override
-    public Processors copyAndAddProcessor(Processor newProcessor) {
+    public int getNumProcessors() {
+        return originalProcessors.length;
+    }
+
+    @Override
+    public int getIdleTime() {
+        return 0; // Always 0 for original
+    }
+
+
+    @Override
+    public Processors copyAndAddProcessor(TaskNode newNode, int processorID) {
         // No need to recreate unchanged processor objects
         Processor[] newProcessors = Arrays.copyOf(originalProcessors, originalProcessors.length);
-        newProcessors[newProcessor.getID()] = newProcessor;
+        Processor newProcessor = this.originalProcessors[processorID].copyAndInsert(newNode);
+        newProcessors[processorID] = newProcessor;
 
-        // This is the only location where ProcessorsState objects should be instantiated 
-        // outside of ProcessorsState itself.
-        return new ProcessorsState(newProcessors);
+        // We don't bother checking that getLength() and getChangeInIdleTime() are larger than stored because stored
+        // is always 0
+        return new ProcessorsState(newProcessors, newProcessor.getLength(), newProcessor.getChangeInIdleTime());
     }
 
     @Override

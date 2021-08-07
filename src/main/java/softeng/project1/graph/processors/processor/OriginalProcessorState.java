@@ -24,7 +24,7 @@ public class OriginalProcessorState implements Processor {
         (byte) -1 // ID of next task
     };
 
-    private static Map<Integer, OriginalProcessorState> ORIGINAL_PROCESSORS = new HashMap<>(); 
+    private static final Map<Integer, OriginalProcessorState> ORIGINAL_PROCESSORS = new HashMap<>();
 
     // Immutable Processor ID. ID's should be unique within the 
     // OriginalProcessorState set.
@@ -71,6 +71,21 @@ public class OriginalProcessorState implements Processor {
         return ORIGINAL_NUM_SPACES; // Always one space which represents the empty space at the end of the processor
     }
 
+    @Override
+    public int getLastInsertLocation() {
+        return 0; // TODO... Should this throw an error?
+    }
+
+    @Override
+    public int getLength() {
+        return 0; // Always 0 for original
+    }
+
+    @Override
+    public int getChangeInIdleTime() {
+        return 0; // TODO... Should this throw an error?
+    }
+
     /**
      * Fast implementation of Processor's method.
      * No calculation is needed to insert the first task in the schedule,
@@ -92,7 +107,8 @@ public class OriginalProcessorState implements Processor {
             taskNode.getProcessorPrerequisite(this.processorID) + taskNode.getTaskCost()
         );
 
-        return new ProcessorState(this.processorID, newSpaceArray);
+        // Insert location always 0
+        return new ProcessorState(this.processorID, newSpaceArray, 0);
     }
 
     /**
@@ -106,8 +122,8 @@ public class OriginalProcessorState implements Processor {
      *   all other implementations can only be instantiated via copyAndInsert().
      *   Thus they'll never be equal.
      * 
-     * @param : The Processor object that's being equated to this one.
-     * @return: Whether or not the input stores the same values as this one. 
+     * @param otherProcessor : The Processor object that's being equated to this one.
+     * @return : Whether or not the input stores the same values as this one.
      */
     @Override
     public boolean deepEquals(Processor otherProcessor) {
