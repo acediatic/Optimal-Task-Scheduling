@@ -39,25 +39,33 @@ public class Valid implements SchedulingAlgorithm {
 
     }
 
-    private int getMinTime(Task task) {
-        int min = 0;
+    private int getCostForProcessor(Task task, ValidProcessor processor) {
+        int cost = 0;
         List<Task> prereqs = task.getPrerequisites();
         for (Task prereq: prereqs) {
-
+            for (CommunicationCost communicationCost: communicationCosts) {
+                int checkCost = communicationCost.tellCommunicationCost(prereq, task);
+                if (checkCost != -1) {
+                    if (!processor.checkTaskIn(prereq)) {
+                        cost = cost + checkCost;
+                    }
+                }
+            }
         }
-        return 0;
+        return cost;
     }
 
     private void compareAndAdd (Task task) {
-        int min = 0;
-        int lowestTime = processors.get(min).getOngoingTime();
+        int minId = 0;
+        int lowestTime = processors.get(minId).getOngoingTime();
         for (ValidProcessor processor: processors) {
-            if (processor.getOngoingTime() < lowestTime) {
-                lowestTime = processor.getOngoingTime();
-                min = processor.getId();
+            int time = processor.getOngoingTime() + getCostForProcessor(task, processor);
+            if (time < lowestTime) {
+                lowestTime = time;
+                minId = processor.getId();
             }
         }
-        processors.get(min).addTask(task);
+        processors.get(minId).addTask(task);
     }
 
     public void schedule() {
@@ -87,6 +95,14 @@ public class Valid implements SchedulingAlgorithm {
 
         protected int getId() {
             return this.id;
+        }
+
+        protected boolean checkTaskIn(Task task) {
+            if (this.tasks.contains(task)) {
+                return true;
+            } else {
+                return false;
+            }
         }
     }
     private class Task {
