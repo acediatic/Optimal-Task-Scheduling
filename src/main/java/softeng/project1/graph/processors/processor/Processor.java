@@ -1,6 +1,6 @@
 package softeng.project1.graph.processors.processor;
 
-import softeng.project1.graph.TaskNode;
+import softeng.project1.graph.tasks.TaskNode;
 
 /**
  * @author Remus Courtenay
@@ -54,6 +54,17 @@ public interface Processor {
      *           maximum of n + 1 where n is the total number of tasks.
      */
     int getNumSpaces();
+
+    /**
+     * // TODO...
+     */
+    int getLastInsertLocation();
+
+    int getLength();
+    /**
+     * TODO...
+     */
+    int getChangeInIdleTime();
 
     /**
      * Generates a Processor object representing the state of the specific 

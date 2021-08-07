@@ -1,68 +1,52 @@
 package softeng.project1.graph.processors;
 
+import softeng.project1.graph.processors.processor.Processor;
+import softeng.project1.graph.tasks.TaskNode;
+
 import java.util.Arrays;
 
-import com.sangupta.murmur.Murmur3;
+public abstract class ProcessorsState implements Processors {
 
-import softeng.project1.graph.processors.processor.Processor;
+    protected final Processor[] processors;
+    protected final int idleTime;
 
-/**
- * ProcessorsState implements the Processors interface and is used to keep track of all the
- * different Processor objects.
- */
-public class ProcessorsState implements Processors {
-
-    private final Processor[] processors;
-
-    /**
-     * ProcessorsState contructor which gets the Processor objects passed in as an array.
-     * @param initialProcessors
-     */
-    protected ProcessorsState(Processor[] initialProcessors) {
-        processors = initialProcessors;
+    protected ProcessorsState(Processor[] processors, int idleTime) {
+        this.processors = processors;
+        this.idleTime = idleTime;
     }
 
     @Override
     public Processor getProcessor(int processorID) {
-        return processors[processorID];
+        return this.processors[processorID];
     }
 
     @Override
-    public ProcessorsState copyAndAddProcessor(Processor newProcessor) {
-        // No need to recreate processor objects which haven't changed because they're immutable.
-        Processor[] newProcessors = Arrays.copyOf(processors, processors.length);
-        newProcessors[newProcessor.getID()] = newProcessor;
-        return new ProcessorsState(newProcessors);
+    public int getNumProcessors() {
+        return this.processors.length;
     }
 
     @Override
-    public long murmurHash() {
-        
-        int numBytesNeeded = 0;
-
-        for (Processor processor: processors) {
-            // we multiply by 3 because each space has 3 values
-            numBytesNeeded = numBytesNeeded + processor.getNumSpaces()*3;
-        }
-        // Kind of dirty to do this with two loops
-        byte[] byteArrayForHash = new byte[numBytesNeeded];
-        int index = 0;
-        for (Processor processor: processors) {
-            processor.asByteArray(index, byteArrayForHash);
-            index = index + processor.getNumSpaces()*3;
-        }
-        // https://github.com/sangupta/murmur
-        return Murmur3.hash_x86_32(byteArrayForHash, byteArrayForHash.length, 0);
-
+    public int getIdleTime() {
+        return this.idleTime;
     }
 
     @Override
-    public boolean deepEquals(Processors otherProcessors) {
-        for (int i = 0; i < processors.length; i++) {
-            if (!otherProcessors.getProcessor(i).deepEquals(processors[i])) {
-                return false;
-            }
-        }
-        return true;
+    public Processors copyAndAddProcessor(TaskNode newNode, int processorID) {
+        Processor[] newProcessors = Arrays.copyOf(this.processors, this.processors.length);
+        Processor newProcessor = this.processors[processorID].copyAndInsert(newNode);
+        newProcessors[processorID] = newProcessor;
+
+        return new ChangedProcessorsState(
+                newProcessors,
+                calculateMaxProcessorLength(newProcessor),
+                calculateIdleTime(newProcessor)
+        );
     }
+
+    protected abstract int calculateMaxProcessorLength(Processor newProcessor);
+
+    protected abstract int calculateIdleTime(Processor newProcessor);
+
+
+
 }
