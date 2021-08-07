@@ -11,8 +11,9 @@ import java.util.List;
 
 public class Valid implements SchedulingAlgorithm {
     private Graph graph; // Graph to process
-    List<Task> tasksInTopology; // Need to be implemented from graph data
+    private List<Task> tasksInTopology; // Need to be implemented from graph data
     private List<ValidProcessor> processors = new ArrayList<ValidProcessor>();
+    private List<CommunicationCost> communicationCosts = new ArrayList<CommunicationCost>();
     private static int defaultNumberOfProcessors = 1;  //default number of processors to begin with
     private int numberOfProcessors;
 //    private List<Processors> processors = new ArrayList<Processors>();
@@ -28,6 +29,14 @@ public class Valid implements SchedulingAlgorithm {
             ValidProcessor processor = new ValidProcessor(i);
             processors.add(processor);
         }
+    }
+
+    public void graphToTaskAndCC() {
+
+    }
+
+    public void scheduleToGraph() {
+
     }
 
     private int getMinTime(Task task) {
