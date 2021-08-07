@@ -56,12 +56,10 @@ public class ScheduleState implements Schedule{
 
     @Override
     public int getMaxDataReadyTime() {
-        return 0; // TODO...
+        return this.maxDataReadyTime;
     }
 
-    // TODO
-    // calculate bottom level, idle time increment for each added task here too.
-    // Data Transfer time from ProcessorPrerequisite of each TaskNodeState.
+
     @Override
     public List<Schedule> expand() {
 
@@ -164,8 +162,5 @@ public class ScheduleState implements Schedule{
             return this.originalSchedule.getTaskNode(taskID);
         }
     }
-
-
-
 
 }
