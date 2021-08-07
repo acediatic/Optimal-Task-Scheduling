@@ -8,57 +8,33 @@ import softeng.project1.graph.processors.processor.OriginalProcessorState;
 import softeng.project1.graph.processors.processor.Processor;
 import softeng.project1.graph.tasks.TaskNode;
 
-public class OriginalProcessorsState implements Processors {
+public class OriginalProcessorsState extends ProcessorsState {
 
-    private final Processor[] originalProcessors;
+    private static final int ORIGINAL_PROCESSORS_IDLE_TIME = 0;
 
     public OriginalProcessorsState(int numProcessors) {
-        this.originalProcessors = new Processor[numProcessors];
+        super(generateOriginalProcessors(numProcessors), ORIGINAL_PROCESSORS_IDLE_TIME);
+    }
 
-        for (int i = 0; i < numProcessors; i++) {
-            this.originalProcessors[i] = new OriginalProcessorState(i);
+    private static Processor[] generateOriginalProcessors(int numProcessors) {
+        Processor[] originalProcessors = new Processor[numProcessors];
+        for (int i = 0; i<numProcessors; i++) {
+            originalProcessors[i] = new OriginalProcessorState(i);
         }
-
+        return originalProcessors;
     }
 
-    @Override
-    public Processor getProcessor(int processorID) {
-        return originalProcessors[processorID];
-    }
-
-    @Override
-    public int getNumProcessors() {
-        return originalProcessors.length;
-    }
-
-    @Override
-    public int getIdleTime() {
-        return 0; // Always 0 for original
-    }
-
-
-    @Override
-    public Processors copyAndAddProcessor(TaskNode newNode, int processorID) {
-        // No need to recreate unchanged processor objects
-        Processor[] newProcessors = Arrays.copyOf(originalProcessors, originalProcessors.length);
-        Processor newProcessor = this.originalProcessors[processorID].copyAndInsert(newNode);
-        newProcessors[processorID] = newProcessor;
-
-        // We don't bother checking that getLength() and getChangeInIdleTime() are larger than stored because stored
-        // is always 0
-        return new ProcessorsState(newProcessors, newProcessor.getLength(), newProcessor.getChangeInIdleTime());
-    }
 
     @Override
     public long murmurHash() {
 
         // We know that every Processor in originalProcessors is actually an OriginalProcessor,
         // so only 3 bytes needed each
-        byte[] byteArrayForHash = new byte[3*originalProcessors.length];
+        byte[] byteArrayForHash = new byte[3*this.processors.length];
 
-        for (int i = 0; i < originalProcessors.length; i++) {
+        for (int i = 0; i < this.processors.length; i++) {
             // assuming that i passes its value not its reference
-            originalProcessors[i].asByteArray(i*3, byteArrayForHash);
+            this.processors[i].asByteArray(i*3, byteArrayForHash);
         }
         // https://github.com/sangupta/murmur 
         return Murmur3.hash_x86_32(byteArrayForHash, byteArrayForHash.length, 0); 
@@ -66,16 +42,20 @@ public class OriginalProcessorsState implements Processors {
 
     @Override
     public boolean deepEquals(Processors otherProcessors) {
-
-        try {
-            // Directly accessing field as we're checking an object of the same type
-            return this.originalProcessors.length == ((OriginalProcessorsState) otherProcessors).originalProcessors.length;
-        } catch (ClassCastException e) {
-            return false; // OriginalProcessorsState will never equal ProcessorsState 
-        }
-
+        // OriginalProcessorsState is a singleton class and thus only equal to itself
+        return this == otherProcessors;
     }
 
 
-    
+    @Override
+    protected int calculateMaxProcessorLength(Processor newProcessor) {
+        // No calculation needed
+        return newProcessor.getLength();
+    }
+
+    @Override
+    protected int calculateIdleTime(Processor newProcessor) {
+        // No calculation needed
+        return newProcessor.getChangeInIdleTime();
+    }
 }
