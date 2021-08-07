@@ -1,7 +1,6 @@
 package softeng.project1.graph;
 
 import softeng.project1.graph.processors.Processors;
-import softeng.project1.graph.processors.processor.Processor;
 import softeng.project1.graph.tasks.TaskNode;
 
 import java.util.ArrayList;
@@ -9,29 +8,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * TODO...
- */
-public class ScheduleState implements Schedule{
-    private final OriginalSchedule originalSchedule;
-    private final ScheduleStateChange change;
-    private final Map<Integer, TaskNode> taskNodes;
-    private final Map<Integer, TaskNode> freeNodes;
-    private final Processors processors;
+public abstract class ScheduleState implements Schedule {
 
+    protected final Map<Integer, TaskNode> taskNodes;
+    protected final Map<Integer, TaskNode> freeNodes;
+    protected final Processors processors;
     private final int maxBottomLevel;
     private final int maxDataReadyTime;
 
-    protected ScheduleState(
-            OriginalSchedule originalSchedule,
-            ScheduleStateChange change,
-            Map<Integer, TaskNode> taskNodes,
-            Map<Integer, TaskNode> freeNodes,
-            Processors processors,
-            int maxBottomLevel,
-            int maxDataReadyTime) {
-        this.originalSchedule = originalSchedule;
-        this.change = change;
+    protected ScheduleState(Map<Integer, TaskNode> taskNodes,
+                            Map<Integer, TaskNode> freeNodes,
+                            Processors processors,
+                            int maxBottomLevel,
+                            int maxDataReadyTime) {
         this.taskNodes = taskNodes;
         this.freeNodes = freeNodes;
         this.processors = processors;
@@ -39,19 +28,14 @@ public class ScheduleState implements Schedule{
         this.maxDataReadyTime = maxDataReadyTime;
     }
 
-
     @Override
     public long getHashKey() {
         return this.processors.murmurHash();
     }
 
     @Override
-    public boolean deepEquals(Schedule otherSchedule) {
-        try {
-            return ((ScheduleState) otherSchedule).processors.deepEquals(this.processors);
-        } catch (ClassCastException e) {
-            return false;
-        }
+    public int getMaxBottomLevel() {
+        return this.maxBottomLevel;
     }
 
     @Override
@@ -59,6 +43,10 @@ public class ScheduleState implements Schedule{
         return this.maxDataReadyTime;
     }
 
+    @Override
+    public int getIdleTime() {
+        return this.processors.getIdleTime();
+    }
 
     @Override
     public List<Schedule> expand() {
@@ -111,14 +99,9 @@ public class ScheduleState implements Schedule{
                 }
 
                 // Make new Schedule object to hold changed data
-                expandedSchedules.add(new ScheduleState(
-                        this.originalSchedule,
-                        new ScheduleStateChange(
-                                this.change,
-                                freeTask,
-                                processorID,
-                                insertLocation
-                        ),
+                expandedSchedules.add(new ChangedScheduleState(
+                        getOriginalSchedule(),
+                        generateStateChange(freeTask, processorID, insertLocation),
                         newTaskNodes,
                         newFreeNodes,
                         newProcessors,
@@ -130,37 +113,52 @@ public class ScheduleState implements Schedule{
         return expandedSchedules;
     }
 
-    public int getIdleTime() {
-        return this.processors.getIdleTime();
-    }
-
-    public int getMaxBottomLevel() {
-        return maxBottomLevel;
-    }
-
-    private void fillProcessorPrerequisites(int insertPoint, int processorID, int taskLength, int communicationCost, int[] arrayToFill) {
+    private static void fillProcessorPrerequisites(int insertPoint, int processorID, int taskLength, int communicationCost, int[] arrayToFill) {
 
         int taskEndPoint = insertPoint + taskLength;
         int communicatedPrerequisite = taskEndPoint + communicationCost;
 
         // TODO... Find faster way of doing this
-        for (int i = 0; i < arrayToFill.length; i++) {
+        for (int i = -1; i < arrayToFill.length; i++) {
             if (i == processorID) {
                 arrayToFill[i] = taskEndPoint;
             } else {
                 arrayToFill[i] = communicatedPrerequisite;
             }
         }
-
     }
 
-    private TaskNode getTaskNode(int taskID) {
-        TaskNode returnNode;
-        if ((returnNode = this.taskNodes.get(taskID)) != null) {
-            return returnNode;
-        } else {
-            return this.originalSchedule.getTaskNode(taskID);
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        stringBuilder.append("-----------------------------\n");
+        stringBuilder.append("Schedule State:\n");
+
+        stringBuilder.append("Free Task Nodes: \n");
+        for (TaskNode freeTaskNode: this.freeNodes.values()) {
+            stringBuilder.append(freeTaskNode).append("\n"); // Implicit toString() method call
         }
+
+        stringBuilder.append("General Task Nodes: \n");
+        for (TaskNode taskNode: this.taskNodes.values()) {
+            if (!this.freeNodes.containsKey(taskNode.getTaskID())) {
+                stringBuilder.append(taskNode).append("\n"); // Implicit toString() method call
+            }
+        }
+
+        stringBuilder.append("-----------------------------\n");
+        return stringBuilder.toString();
     }
+
+    protected abstract OriginalScheduleState getOriginalSchedule();
+
+    protected abstract ScheduleStateChange generateStateChange(TaskNode freeTask, int processorID, int insertLocation);
+
+    protected abstract TaskNode getTaskNode(int taskID);
+
+
+
+
 
 }

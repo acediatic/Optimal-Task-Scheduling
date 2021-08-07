@@ -3,18 +3,16 @@ package softeng.project1.algorithms;
 import softeng.project1.algorithms.heuristics.HeuristicManager;
 import softeng.project1.algorithms.heuristics.PriorityQueueHeuristicManager;
 import softeng.project1.graph.Schedule;
-import softeng.project1.graph.ScheduleState;
+import softeng.project1.graph.ChangedScheduleState;
 
-import java.util.Hashtable;
 import java.util.Map;
-import java.util.PriorityQueue;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class AStarSchedulingAlgorithm implements SchedulingAlgorithm{
 
     private final Schedule originalSchedule;
     private final HeuristicManager heuristicManager;
-    private final Map<Long, ScheduleState> closedSchedules;
+    private final Map<Long, ChangedScheduleState> closedSchedules;
 
     public AStarSchedulingAlgorithm(Schedule originalSchedule) {
         short taskLengthsSum = 0; // initialise to value of graph.
