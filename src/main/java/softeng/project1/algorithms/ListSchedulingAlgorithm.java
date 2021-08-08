@@ -1,12 +1,18 @@
 package softeng.project1.algorithms;
 
+import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
+import org.graphstream.graph.Node;
 import softeng.project1.graph.processors.processor.ListProcessor;
 import softeng.project1.graph.tasks.edges.ListCommunicationCost;
 import softeng.project1.graph.tasks.ListTask;
+import org.graphstream.algorithm.TopologicalSortDFS;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * TODO...
@@ -19,6 +25,7 @@ public class ListSchedulingAlgorithm implements SchedulingAlgorithm {
     private final List<ListTask> tasksInTopology; // Need to be implemented from graph data
     private final ListProcessor[] processors;
     private final ListCommunicationCost[][] communicationCosts; // Needs to be retrieved from graph
+    private Map<Node, Integer> idMappings = new HashMap<Node, Integer>();
 
 
     public ListSchedulingAlgorithm(Graph read) {
@@ -38,7 +45,32 @@ public class ListSchedulingAlgorithm implements SchedulingAlgorithm {
 
     // TODO... get these from Henry
     public void graphToTaskAndCC() {
+        //Sorts nodes into a topological ordering
+        TopologicalSortDFS sorter = new TopologicalSortDFS();
+        sorter.init(graph);
+        sorter.compute();
+        List<Node> sortedNodes = sorter.getSortedNodes();
 
+        //Converts Nodes to ListTask
+        for(int i = 0; i < sortedNodes.size(); i++){
+            ListTask task = new ListTask(i, getNodeWeight(sortedNodes.get(i)), processors.length);
+            this.tasksInTopology.add(task);
+            this.idMappings.put(sortedNodes.get(i), i);
+        }
+
+        //Converts edges into communication costs
+        for(Node n: sortedNodes){
+            for(int i = 0; i < n.getOutDegree(); i++){
+                ListTask currentTask = tasksInTopology.get(idMappings.get(n));
+
+                Node child = n.getEdge(i).getNode1();
+                ListTask childTask = tasksInTopology.get(idMappings.get(child));
+
+                int communicationCost = (int) Double.parseDouble(n.getEdge(i).getAttribute("Weight").toString());
+                communicationCosts[idMappings.get(n)][i] = new ListCommunicationCost(currentTask, childTask, communicationCost);
+
+            }
+        }
     }
 
     public void scheduleToGraph() {
@@ -78,5 +110,9 @@ public class ListSchedulingAlgorithm implements SchedulingAlgorithm {
             returnList.add(task.getAsIntArray());
         }
       return returnList;
+    }
+
+    private int getNodeWeight(Node n){
+        return (int) Double.parseDouble(n.getAttribute("Weight").toString());
     }
 }

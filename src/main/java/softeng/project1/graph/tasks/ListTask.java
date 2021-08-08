@@ -16,7 +16,7 @@ public class ListTask {
     private int start;
     private int processor;
 
-    protected ListTask(int taskID, int weight, int numberOfProcessors) {
+    public ListTask(int taskID, int weight, int numberOfProcessors) {
         this.weight = weight;
         this.taskID = taskID;
         this.processorPrerequisites = new int[numberOfProcessors];
