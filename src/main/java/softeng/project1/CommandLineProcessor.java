@@ -2,7 +2,7 @@ package softeng.project1;
 
 import org.apache.commons.cli.*;
 
-import java.io.File;
+import java.io.*;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Paths;
 
@@ -14,6 +14,7 @@ public class CommandLineProcessor {
     private String inputFileName;
     private String outputFileName;
     private boolean isVisual;
+    private String graphName;
 
     public CommandLineProcessor(String[] args) {
         this.args = args;
@@ -33,6 +34,8 @@ public class CommandLineProcessor {
         initNumProcessors();
 
         initOutputFilename();
+
+        initGraphName();
 
         initIsVisual();
 
@@ -89,6 +92,20 @@ public class CommandLineProcessor {
             System.exit(1);
         }
     }
+
+    private void initGraphName() {
+        File input = new File(inputFileName);
+
+        try {
+            BufferedReader fr = new BufferedReader(new FileReader(input));
+            String rawGraphLine = fr.readLine();
+            graphName = rawGraphLine.substring(rawGraphLine.indexOf('"')+1, rawGraphLine.lastIndexOf('"'));
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     /**
      * Determines number of processors available for tasks to be scheduled on.
@@ -154,6 +171,10 @@ public class CommandLineProcessor {
 
     public String getOutputFileName() {
         return outputFileName;
+    }
+
+    public String getGraphName() {
+        return graphName;
     }
 
     public boolean isVisual() {

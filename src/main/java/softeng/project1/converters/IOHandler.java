@@ -54,7 +54,7 @@ public class IOHandler {
             reader.readLine();
 
             // Add new first line (name is surrounded in quotation marks)
-            output.write("digraph \"" + graphName + "\" {\n");
+            output.write("digraph \"" + graphName + "-output\" {\n");
 
             // replace rest of file
             String line;

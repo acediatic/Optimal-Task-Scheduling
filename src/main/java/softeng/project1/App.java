@@ -34,7 +34,7 @@ public final class App {
 
         List<int[]> schedule = listScheduler.generateSchedule();
 
-        IOHandler.writeFile(listScheduler.scheduleToGraph(schedule), clp.getInputFileName(), clp.getOutputFileName());
+        IOHandler.writeFile(listScheduler.scheduleToGraph(schedule), clp.getGraphName(), clp.getOutputFileName());
 
         System.out.println("Successfully created " + clp.getOutputFileName() + '\n');
     }
