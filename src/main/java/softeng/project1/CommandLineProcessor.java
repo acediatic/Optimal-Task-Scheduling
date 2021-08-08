@@ -74,7 +74,11 @@ public class CommandLineProcessor {
             }
         } else {
             // use default.
-            outputFileName = inputFileName.substring(0, inputFileName.length() - 4) + "-output" + inputFileName.substring(inputFileName.length() - 4);
+            File input = new File(inputFileName);
+            String cleanInputName = input.getName();
+            String outputNamePrefix = cleanInputName.substring(0, cleanInputName.length() - 4);
+
+            outputFileName = outputNamePrefix + "-output.dot";
         }
 
         try {
