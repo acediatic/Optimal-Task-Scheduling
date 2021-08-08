@@ -19,6 +19,19 @@ public class CommandLineProcessor {
     public CommandLineProcessor(String[] args) {
         this.args = args;
 
+        switch (args.length) {
+            case 0:
+                throw new IOException();
+                System.exit(2);
+            case 1:
+                throw new IOException();
+                System.exit(2)
+            case 2:
+                break; // Do nothing, correct number of arguments passed
+            default:
+                throw new IOException();
+        }
+
         // attempt to parse arguments
         CommandLineParser parser = new DefaultParser();
         try {
