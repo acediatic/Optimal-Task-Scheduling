@@ -70,8 +70,19 @@ public class ListSchedulingAlgorithm implements SchedulingAlgorithm {
 
     }
 
+    /**
+     * Greedily calculates the earliest possible location on any processor that the task can be inserted and then does
+     * so. Updating of stored data in Processors and Tasks to accommodate scheduling is automatically called from the
+     * method.
+     * Method assumes the following:
+     * - Given Task is 'free' (all parent tasks have already been scheduled).
+     * - Number of processors is at least 1.
+     * - Task is not null.
+     *
+     * @param task: Free ListTask object to be greedily scheduled into the processors.
+     */
     private void compareAndAdd (ListTask task) {
-        int minID = 0;
+        int bestProcessorID = 0;
         int earliestScheduleTime = Integer.MAX_VALUE;
         int earliestProcessorScheduleTime;
 
@@ -80,14 +91,16 @@ public class ListSchedulingAlgorithm implements SchedulingAlgorithm {
             earliestProcessorScheduleTime = getCostForProcessor(task, processor);
             if (earliestProcessorScheduleTime < earliestScheduleTime) {
                 earliestScheduleTime = earliestProcessorScheduleTime;
-                minID = processor.getProcessorID();
+                bestProcessorID = processor.getProcessorID();
             }
         }
-        processors[minID].addTaskAtLocation(task, earliestScheduleTime);
-        task.notifyChildren(minID, earliestScheduleTime, this.communicationCosts[task.getTaskID()]);
+        // Updating stored Processor values
+        processors[bestProcessorID].addTaskAtLocation(task, earliestScheduleTime);
+        // Updating stored Task values
+        task.notifyChildren(bestProcessorID, earliestScheduleTime, this.communicationCosts[task.getTaskID()]);
     }
 
-    private int getCostForProcessor(ListTask task, ListProcessor processor) {
+    private static int getCostForProcessor(ListTask task, ListProcessor processor) {
         return Math.max(
                 task.getPrerequisite(processor.getProcessorID()),
                 processor.getOngoingTime()
