@@ -35,11 +35,9 @@ public class ListSchedulingAlgorithm implements SchedulingAlgorithm {
     private final ListProcessor[] processors;
     private final ListCommunicationCost[][] communicationCosts; // Needs to be retrieved from graph
 
-
-    public ListSchedulingAlgorithm(Graph read) {
-        this(read, DEFAULT_NUMBER_OF_PROCESSORS);
-    }
-
+    /**
+     * TODO...
+     */
     public ListSchedulingAlgorithm(Graph read, int numberOfProcessors) {
         this.graph = read;
         this.tasksInTopology = null; // TODO... get from graph
@@ -51,6 +49,22 @@ public class ListSchedulingAlgorithm implements SchedulingAlgorithm {
         }
     }
 
+    /**
+     * Overloaded constructor that passes in a default value for number of processors.
+     */
+    public ListSchedulingAlgorithm(Graph read) {
+        this(read, DEFAULT_NUMBER_OF_PROCESSORS);
+    }
+
+    /**
+     * Greedily generates a valid, non-optimal schedule for a set of tasks following the constraints described by the
+     * multi-processor task scheduling problem with communication costs.
+     * The schedule is calculated by iterating over a topologically ordered list of tasks and greedily scheduling each
+     * task into the earliest possible location available at that moment.
+     * The scheduler does not take into account the possibility of inserting tasks between other tasks.
+     *
+     * @return : A list of integer arrays describing the location of each task within the schedule.
+     */
     @Override
     public List<int[]> generateSchedule() {
         List<int[]> returnList = new ArrayList<>();
