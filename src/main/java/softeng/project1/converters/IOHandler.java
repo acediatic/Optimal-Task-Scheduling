@@ -54,18 +54,21 @@ public class IOHandler {
             reader.readLine();
 
             // Add new first line
-            output.write("digraph " + graphName + " {");
+            output.write("digraph " + graphName + " {\n");
 
             // replace rest of file
             String line;
             while ((line = reader.readLine()) != null) {
                 output.append(line);
+                output.append('\n');
             }
             output.close();
             reader.close();
 
             // delete original (temp) file
-            oldOutput.delete();
+            if (!oldOutput.delete()) {
+                throw new IOException();
+            }
 
         } catch (IOException e) {
             System.err.println("Error: unable to write output file");
