@@ -52,6 +52,9 @@ public class ListSchedulingAlgorithm implements SchedulingAlgorithm {
             processors[i] = (new ListProcessor(i));
         }
 
+        this.tasksInTopology = new ArrayList<>();
+        this.communicationCosts = new ListCommunicationCost[read.getNodeCount()][];
+
         graphToTaskAndCC();
     }
 
