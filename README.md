@@ -1,6 +1,3 @@
-# project-1-p1t16-outsourced-to-pakistan
-project-1-p1t16-outsourced-to-pakistan created by GitHub Classroom
-
 # SE306 Project 1 - Team 1 : Outsourced to Pakistan
 
 ## Team Members
