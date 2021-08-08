@@ -30,7 +30,7 @@ public final class App {
 
         // use clp here to make choices about what parts to execute.
 
-        ListSchedulingAlgorithm listScheduler = new ListSchedulingAlgorithm(IOHandler.readFile(clp.getInputFileName()));
+        ListSchedulingAlgorithm listScheduler = new ListSchedulingAlgorithm(IOHandler.readFile(clp.getInputFileName()), clp.getNumProcessors());
 
         List<int[]> schedule = listScheduler.generateSchedule();
 
