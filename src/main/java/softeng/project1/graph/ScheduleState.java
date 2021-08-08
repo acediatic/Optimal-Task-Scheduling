@@ -61,7 +61,7 @@ public abstract class ScheduleState implements Schedule {
         for (TaskNode freeTask: this.freeNodes.values()) {
 
             // Iterating through all processors
-            // TODO... Prune unnecessary processors additions
+            // TODO... Prune unnecessary processor additions
             for (int processorID = 0; processorID < processors.getNumProcessors(); processorID++) {
 
                 // Inserting task into processor and getting new objects
