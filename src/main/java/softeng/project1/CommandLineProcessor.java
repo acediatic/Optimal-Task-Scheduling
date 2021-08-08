@@ -5,7 +5,7 @@ import org.apache.commons.cli.*;
 import java.io.File;
 
 public class CommandLineProcessor {
-    private String[] args;
+    private final String[] args;
     private CommandLine cmd;
     private int numProcessors;
     private int numThreads;
@@ -65,9 +65,15 @@ public class CommandLineProcessor {
      * Determines output filename. Default is [<inputname>-output.dot]
      */
     private void initOutputFilename() {
-        // Determine o
-        String defaultOutputName = inputFileName.substring(0, inputFileName.length() - 4) + "-output" + inputFileName.substring(inputFileName.length() - 4);
-        outputFileName = cmd.getOptionValue('o', defaultOutputName);
+        if (cmd.hasOption('o')) {
+            outputFileName = cmd.getOptionValue('o');
+            if (!outputFileName.endsWith(".dot")) {
+                outputFileName += ".dot";
+            }
+        } else {
+            // use default.
+            outputFileName = inputFileName.substring(0, inputFileName.length() - 4) + "-output" + inputFileName.substring(inputFileName.length() - 4);
+        }
     }
 
     /**
