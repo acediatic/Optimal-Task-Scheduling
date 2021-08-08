@@ -66,11 +66,15 @@ public class ValidSchedulingAlgorithm implements SchedulingAlgorithm {
         task.notifyChildren(minID, earliestScheduleTime, this.communicationCosts[task.getTaskID()]);
     }
 
-    public ValidProcessor[] generateSchedule() {
+    @Override
+    public List<int[]> generateSchedule() {
+        List<int[]> returnList = new ArrayList<>();
+
         for (Task task: tasksInTopology) {
             compareAndAdd(task);
+            returnList.add(task.getAsIntArray());
         }
-        return this.processors;
+      return returnList;
     }
 
     private class ValidProcessor {
@@ -104,23 +108,20 @@ public class ValidSchedulingAlgorithm implements SchedulingAlgorithm {
 
         private final int taskID;
         private final int weight;
+        private final int[] processorPrerequisites;
 
-        private int[] processorPrerequisites;
         private int start;
+        private int processor;
 
-        protected Task(int taskID, int weight) {
+        protected Task(int taskID, int weight, int numberOfProcessors) {
             this.weight = weight;
             this.taskID = taskID;
+            this.processorPrerequisites = new int[numberOfProcessors];
         }
 
-        protected Task(int taskID, int weight, int start) {
-            this.weight = weight;
-            this.taskID = taskID;
+        protected void setLocation (int start, int processorID) {
             this.start = start;
-        }
-
-        protected void assignStart (int start) {
-            this.start = start;
+            this.processor = processorID;
         }
 
         public int getTaskID() {
@@ -136,6 +137,8 @@ public class ValidSchedulingAlgorithm implements SchedulingAlgorithm {
         }
 
         protected void notifyChildren(int processorID, int insertPoint, CommunicationCost[] children) {
+
+            this.setLocation(insertPoint, processorID);
 
             int[] fulfilledPrerequisite = new int[this.processorPrerequisites.length];
             int taskEndPoint = insertPoint + this.weight;
@@ -160,9 +163,10 @@ public class ValidSchedulingAlgorithm implements SchedulingAlgorithm {
             return this.processorPrerequisites[processorID];
         }
 
-        protected int[] getPrerequisites() {
-            return this.processorPrerequisites;
+        public int[] getAsIntArray() {
+            return new int[]{this.taskID, this.processor, this.start};
         }
+
     }
 
     private class CommunicationCost {

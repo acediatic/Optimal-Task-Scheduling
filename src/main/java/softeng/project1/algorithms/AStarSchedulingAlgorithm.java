@@ -4,7 +4,9 @@ import softeng.project1.algorithms.heuristics.HeuristicManager;
 import softeng.project1.algorithms.heuristics.PriorityQueueHeuristicManager;
 import softeng.project1.graph.Schedule;
 import softeng.project1.graph.ChangedScheduleState;
+import softeng.project1.graph.processors.processor.Processor;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -21,6 +23,11 @@ public class AStarSchedulingAlgorithm implements SchedulingAlgorithm{
         this.originalSchedule = originalSchedule;
         this.heuristicManager = new PriorityQueueHeuristicManager(taskLengthsSum);
         this.closedSchedules = new ConcurrentHashMap<>();
+    }
+
+    @Override
+    public List<int[]> generateSchedule() {
+        return null; // TODO...
     }
 
 
