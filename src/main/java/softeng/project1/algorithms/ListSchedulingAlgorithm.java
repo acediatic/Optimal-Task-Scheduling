@@ -27,7 +27,7 @@ public class ListSchedulingAlgorithm implements SchedulingAlgorithm {
     private final Graph graph; // Graph to process
     private final List<ListTask> tasksInTopology; // Need to be implemented from graph data
     private final ListProcessor[] processors;
-    private final ListCommunicationCost[][] communicationCosts; // Needs to be retrieved from graph
+    private ListCommunicationCost[][] communicationCosts; // Needs to be retrieved from graph
     private Map<Node, Integer> idMappings = new HashMap<Node, Integer>();
 
 
@@ -37,17 +37,19 @@ public class ListSchedulingAlgorithm implements SchedulingAlgorithm {
 
     public ListSchedulingAlgorithm(Graph read, int numberOfProcessors) {
         this.graph = read;
-        this.tasksInTopology = null; // TODO... get from graph
+        this.tasksInTopology = new ArrayList<ListTask>(); // TODO... get from graph
         this.processors = new ListProcessor[numberOfProcessors];
-        this.communicationCosts = null; // TODO... get from graph
+        this.communicationCosts = new ListCommunicationCost[graph.getNodeCount()][]; // TODO... get from graph
 
         for (int i = 0; i<numberOfProcessors; i++) {
             processors[i] = (new ListProcessor(i));
         }
+
+        graphToTaskAndCC();
     }
 
     // TODO... get these from Henry
-    public void graphToTaskAndCC() {
+    private void graphToTaskAndCC() {
         //Sorts nodes into a topological ordering
         TopologicalSortDFS sorter = new TopologicalSortDFS();
         sorter.init(graph);
@@ -63,7 +65,11 @@ public class ListSchedulingAlgorithm implements SchedulingAlgorithm {
 
         //Converts edges into communication costs
         for(Node n: sortedNodes){
+
+            communicationCosts[idMappings.get(n)] = new ListCommunicationCost[n.getOutDegree()];
+
             for(int i = 0; i < n.getOutDegree(); i++){
+
                 ListTask currentTask = tasksInTopology.get(idMappings.get(n));
 
                 Node child = n.getEdge(i).getNode1();
@@ -83,9 +89,16 @@ public class ListSchedulingAlgorithm implements SchedulingAlgorithm {
             int startTime = task[2];
 
             Node currentNode = findNode(taskID);
+
+            currentNode.setAttribute("Weight", getNodeWeight(currentNode));
             currentNode.setAttribute("Start", startTime);
             currentNode.setAttribute("Processor", processor);
         }
+
+        graph.edges().forEach(e ->{
+            int edgeWeight = (int) Double.parseDouble(e.getAttribute("Weight").toString());
+            e.setAttribute("Weight", edgeWeight);
+        });
 
         return this.graph;
     }

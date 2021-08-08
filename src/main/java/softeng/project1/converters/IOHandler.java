@@ -22,7 +22,6 @@ public class IOHandler {
         FileSourceDOT fileSource = new FileSourceDOT();
         fileSource.addSink(graph);
 
-        System.setProperty("org.graphstream.ui", "swing");
         //Reads DOT file into graph object
         try {
             fileSource.readAll(inputFilePath);
