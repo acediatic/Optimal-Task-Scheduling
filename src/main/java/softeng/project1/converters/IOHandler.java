@@ -53,8 +53,8 @@ public class IOHandler {
             // burn first line, to replace.
             reader.readLine();
 
-            // Add new first line
-            output.write("digraph " + graphName + " {\n");
+            // Add new first line (name is surrounded in quotation marks)
+            output.write("digraph \"" + graphName + "\" {\n");
 
             // replace rest of file
             String line;
