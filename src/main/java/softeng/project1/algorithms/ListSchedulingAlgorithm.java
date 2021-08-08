@@ -1,6 +1,7 @@
 package softeng.project1.algorithms;
 
 import org.graphstream.graph.Graph;
+import org.jetbrains.annotations.NotNull;
 import softeng.project1.graph.processors.processor.ListProcessor;
 import softeng.project1.graph.tasks.edges.ListCommunicationCost;
 import softeng.project1.graph.tasks.ListTask;
@@ -77,11 +78,10 @@ public class ListSchedulingAlgorithm implements SchedulingAlgorithm {
      * Method assumes the following:
      * - Given Task is 'free' (all parent tasks have already been scheduled).
      * - Number of processors is at least 1.
-     * - Task is not null.
      *
      * @param task: Free ListTask object to be greedily scheduled into the processors.
      */
-    private void compareAndAdd (ListTask task) {
+    private void compareAndAdd (@NotNull ListTask task) {
         int bestProcessorID = 0;
         int earliestScheduleTime = Integer.MAX_VALUE;
         int earliestProcessorScheduleTime;
@@ -100,7 +100,16 @@ public class ListSchedulingAlgorithm implements SchedulingAlgorithm {
         task.notifyChildren(bestProcessorID, earliestScheduleTime, this.communicationCosts[task.getTaskID()]);
     }
 
-    private static int getCostForProcessor(ListTask task, ListProcessor processor) {
+    /**
+     * Calculates the earliest possible location in a processor that a specific task could be scheduled.
+     *
+     * @param task : Free ListTask to calculate the earliest possible insert location for.
+     * @param processor : ListProcessor that the Task is being placed in.
+     *
+     * @return : Earliest/lowest possible time/location that the Task could be scheduled in the processor without
+     *           breaking any constraints.
+     */
+    private static int getCostForProcessor(@NotNull ListTask task, @NotNull ListProcessor processor) {
         return Math.max(
                 task.getPrerequisite(processor.getProcessorID()),
                 processor.getOngoingTime()
