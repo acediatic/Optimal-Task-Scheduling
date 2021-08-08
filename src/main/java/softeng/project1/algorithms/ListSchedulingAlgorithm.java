@@ -121,7 +121,7 @@ public class ListSchedulingAlgorithm implements SchedulingAlgorithm {
     public Graph scheduleToGraph(List<int[]> schedule) {
         for(int[] task: schedule){
             int taskID = task[0];
-            int processor = task[1];
+            int processor = task[1] + 1;
             int startTime = task[2];
 
             Node currentNode = findNode(taskID);
