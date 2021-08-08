@@ -64,6 +64,7 @@ public class OriginalTaskNodeState extends TaskNodeState {
         this.childLinks = childLinks;
 
         // Calculating max cost, could possibly be moved out of constructor but not really a big deal
+        // For speed reasons we store this value rather than calculate it every time it's needed
         int tempCommunicationCost = 0;
         for (int[] childLink : childLinks) {
             if (tempCommunicationCost < childLink[1]) {
@@ -102,26 +103,53 @@ public class OriginalTaskNodeState extends TaskNodeState {
 
     // ------ Standard Getter Methods -------
 
+    /**
+     * Returns the ID unique to the wrapped Task.
+     * Note that IDs are NOT unique between TaskNodes as they describe the states of Tasks not just the Tasks themselves
+     * Task IDs should be in the range of 0-255 in order to ensure that issues with hashing do not occur.
+     *
+     * @return : ID of the Task whose state the Task Node represents.
+     */
     @Override
     public int getTaskID() {
         return this.taskID;
     }
 
+    /**
+     * Returns the amount of time required for the task to complete when actively being run on a processor.
+     * Note that task costs/length should exist in the range 0 - 255 to ensure that hashing issues do not occur.
+     *
+     * @return : The processing cost / task length of the Task whose state the Task Node represents.
+     */
     @Override
     public int getTaskCost() {
         return this.taskCost;
     }
 
+    /**
+     * @return : All outgoing child links/edges/prerequisite that stem from the TaskNode. For speed reasons these are
+     *           stored as arrays with the following format:
+     *           childLinks[0] => The task ID of the child task
+     *           childLinks[1] => The cost/time required for communicating/transferring the required data from this task
+     *                            to a DIFFERENT processor than the one this task was scheduled on.
+     */
     @Override
     public int[][] getChildLinks() {
         return this.childLinks.clone();
     }
 
+    /**
+     * @return : // TODO... Remember what bottom level is
+     */
     @Override
     public int getBottomLevel() {
         return this.bottomLevel;
     }
 
+    /**
+     * @return : The largest/longest communication cost out of all the child links that stem from the task. If the task
+     *           has no child links this method returns 0.
+     */
     @Override
     public int getMaxCommunicationCost() {
         return this.maxCommunicationCost;
