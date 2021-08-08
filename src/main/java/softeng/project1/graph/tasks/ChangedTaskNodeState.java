@@ -50,7 +50,7 @@ public class ChangedTaskNodeState extends TaskNodeState {
 
         return new ChangedTaskNodeState(
                 this.originalTaskNode,
-                this.numLinks - 1,
+                this.numUnscheduledLinks - 1,
                 newPrerequisites
         );
     }

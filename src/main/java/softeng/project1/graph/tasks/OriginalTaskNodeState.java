@@ -95,7 +95,7 @@ public class OriginalTaskNodeState extends TaskNodeState {
     public TaskNode copyAndSetPrerequisite(int[] parentPrerequisites) {
         return new ChangedTaskNodeState(
                 this,
-                this.numLinks - 1,
+                this.numUnscheduledLinks - 1,
                 parentPrerequisites // Don't need to calculate max because original prerequisites all 0
         );
     }
