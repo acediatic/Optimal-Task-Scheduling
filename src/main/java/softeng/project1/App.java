@@ -1,8 +1,11 @@
 package softeng.project1;
 
-/**
- * Hello world!
- */
+import softeng.project1.algorithms.ListSchedulingAlgorithm;
+import softeng.project1.converters.IOHandler;
+
+import java.util.List;
+
+
 public final class App {
     private App() {
     }
@@ -25,5 +28,12 @@ public final class App {
         System.out.println(runInformation);
 
         // use clp here to make choices about what parts to execute.
+
+        ListSchedulingAlgorithm listScheduler = new ListSchedulingAlgorithm(IOHandler.readFile(clp.getInputFileName()));
+
+        List<int[]> schedule = listScheduler.generateSchedule();
+
+        IOHandler.writeFile(listScheduler.scheduleToGraph(schedule), clp.getOutputFileName());
+
     }
 }

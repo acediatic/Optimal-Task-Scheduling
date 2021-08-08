@@ -1,13 +1,17 @@
 package softeng.project1.algorithms;
 
+import org.graphstream.algorithm.TopologicalSortDFS;
 import org.graphstream.graph.Graph;
+import org.graphstream.graph.Node;
 import org.jetbrains.annotations.NotNull;
 import softeng.project1.graph.processors.processor.ListProcessor;
 import softeng.project1.graph.tasks.edges.ListCommunicationCost;
 import softeng.project1.graph.tasks.ListTask;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Osama Kashif, Remus Courtenay
@@ -25,28 +29,30 @@ import java.util.List;
  * index 2 - Task's scheduled start point in processor
  * The list is ordered topologically but should be treated as though it is ordered arbitrarily as specific ordering
  * depends on the order of the initial inputted list and thus is inconsistent.
+
  */
 public class ListSchedulingAlgorithm implements SchedulingAlgorithm {
 
     private static final int DEFAULT_NUMBER_OF_PROCESSORS = 1;  //default number of processors to begin with
 
     private final Graph graph; // Graph to process
-    private final List<ListTask> tasksInTopology; // Need to be implemented from graph data
+    private List<ListTask> tasksInTopology; // Need to be implemented from graph data
     private final ListProcessor[] processors;
-    private final ListCommunicationCost[][] communicationCosts; // Needs to be retrieved from graph
+    private ListCommunicationCost[][] communicationCosts; // Needs to be retrieved from graph
+    private final Map<Node, Integer> nodeToIDMap;
 
     /**
      * TODO...
      */
     public ListSchedulingAlgorithm(Graph read, int numberOfProcessors) {
         this.graph = read;
-        this.tasksInTopology = null; // TODO... get from graph
         this.processors = new ListProcessor[numberOfProcessors];
-        this.communicationCosts = null; // TODO... get from graph
-
+        this.nodeToIDMap = new HashMap<Node, Integer>();
         for (int i = 0; i<numberOfProcessors; i++) {
             processors[i] = (new ListProcessor(i));
         }
+
+        graphToTaskAndCC();
     }
 
     /**
@@ -76,13 +82,70 @@ public class ListSchedulingAlgorithm implements SchedulingAlgorithm {
         return returnList;
     }
 
-    // TODO... get these from Henry
-    public void graphToTaskAndCC() {
 
+
+    // TODO... get these from Henry
+    private void graphToTaskAndCC() {
+        //Sorts nodes into a topological ordering
+        TopologicalSortDFS sorter = new TopologicalSortDFS();
+        sorter.init(graph);
+        sorter.compute();
+        List<Node> sortedNodes = sorter.getSortedNodes();
+
+        //Converts Nodes to ListTask
+        for(int i = 0; i < sortedNodes.size(); i++){
+            ListTask task = new ListTask(i, getNodeWeight(sortedNodes.get(i)), processors.length);
+            this.tasksInTopology.add(task);
+            this.nodeToIDMap.put(sortedNodes.get(i), i);
+        }
+
+        //Converts edges into communication costs
+        for(Node n: sortedNodes){
+
+            communicationCosts[nodeToIDMap.get(n)] = new ListCommunicationCost[n.getOutDegree()];
+
+            for(int i = 0; i < n.getOutDegree(); i++){
+
+                ListTask currentTask = tasksInTopology.get(nodeToIDMap.get(n));
+
+                Node child = n.getEdge(i).getNode1();
+                ListTask childTask = tasksInTopology.get(nodeToIDMap.get(child));
+
+                int communicationCost = (int) Double.parseDouble(n.getEdge(i).getAttribute("Weight").toString());
+                communicationCosts[nodeToIDMap.get(n)][i] = new ListCommunicationCost(currentTask, childTask, communicationCost);
+
+            }
+        }
     }
 
-    public void scheduleToGraph() {
+    public Graph scheduleToGraph(List<int[]> schedule) {
+        for(int[] task: schedule){
+            int taskID = task[0];
+            int processor = task[1];
+            int startTime = task[2];
 
+            Node currentNode = findNode(taskID);
+
+            currentNode.setAttribute("Weight", getNodeWeight(currentNode));
+            currentNode.setAttribute("Start", startTime);
+            currentNode.setAttribute("Processor", processor);
+        }
+
+        graph.edges().forEach(e ->{
+            int edgeWeight = (int) Double.parseDouble(e.getAttribute("Weight").toString());
+            e.setAttribute("Weight", edgeWeight);
+        });
+
+        return this.graph;
+    }
+
+    private Node findNode(int i){
+        for(Node n: nodeToIDMap.keySet()){
+            if(nodeToIDMap.get(n) == i){
+                return n;
+            }
+        }
+        return null;
     }
 
     /**
@@ -128,5 +191,9 @@ public class ListSchedulingAlgorithm implements SchedulingAlgorithm {
                 task.getPrerequisite(processor.getProcessorID()),
                 processor.getOngoingTime()
         );
+    }
+
+    private int getNodeWeight(Node n){
+        return (int) Double.parseDouble(n.getAttribute("Weight").toString());
     }
 }
