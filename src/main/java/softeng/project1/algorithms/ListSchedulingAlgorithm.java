@@ -9,7 +9,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * TODO...
+ * @author Osama Kashif, Remus Courtenay
+ * @version 1.0
+ * @since 1.8
+ *
+ * Valid but incomplete and non-optimal implementation of Scheduling Algorithm.
+ * List Scheduling Algorithm works by first ordering all nodes topologically, then greedily inserting nodes into
+ * the earliest possible location available on any processor.
+ *
+ * ListSchedulingAlgorithm returns a list of int[] with each int[] containing the location of a scheduled task.
+ * Specifically:
+ * index 0 - Task ID
+ * index 1 - Processor ID
+ * index 2 - Task's scheduled start point in processor
+ * The list is ordered topologically but should be treated as though it is ordered arbitrarily as specific ordering
+ * depends on the order of the initial inputted list and thus is inconsistent.
  */
 public class ListSchedulingAlgorithm implements SchedulingAlgorithm {
 
