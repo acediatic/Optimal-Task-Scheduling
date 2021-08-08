@@ -33,12 +33,10 @@ import java.util.Map;
  */
 public class ListSchedulingAlgorithm implements SchedulingAlgorithm {
 
-    private static final int DEFAULT_NUMBER_OF_PROCESSORS = 1;  //default number of processors to begin with
-
     private final Graph graph; // Graph to process
-    private List<ListTask> tasksInTopology; // Need to be implemented from graph data
+    private final List<ListTask> tasksInTopology; // Need to be implemented from graph data
     private final ListProcessor[] processors;
-    private ListCommunicationCost[][] communicationCosts; // Needs to be retrieved from graph
+    private final ListCommunicationCost[][] communicationCosts; // Needs to be retrieved from graph
     private final Map<Node, Integer> nodeToIDMap;
 
     /**
@@ -56,13 +54,6 @@ public class ListSchedulingAlgorithm implements SchedulingAlgorithm {
         this.communicationCosts = new ListCommunicationCost[read.getNodeCount()][];
 
         graphToTaskAndCC();
-    }
-
-    /**
-     * Overloaded constructor that passes in a default value for number of processors.
-     */
-    public ListSchedulingAlgorithm(Graph read) {
-        this(read, DEFAULT_NUMBER_OF_PROCESSORS);
     }
 
     /**
