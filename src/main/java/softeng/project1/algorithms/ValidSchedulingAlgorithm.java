@@ -3,6 +3,7 @@ package softeng.project1.algorithms;
 import org.graphstream.graph.Graph;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ValidSchedulingAlgorithm implements SchedulingAlgorithm {
@@ -63,6 +64,7 @@ public class ValidSchedulingAlgorithm implements SchedulingAlgorithm {
             }
         }
         processors.get(minId).addTaskAtLocation(task, earliestScheduleTime);
+        task.notifyChildren(minID, earliestScheduleTime, this.communicationCosts[task.getTaskID()]);
     }
 
     public void schedule() {
@@ -82,7 +84,6 @@ public class ValidSchedulingAlgorithm implements SchedulingAlgorithm {
         }
 
         protected void addTaskAtLocation(Task task, int insertPoint) {
-            task.assignStart(insertPoint); // Do this here?
             tasks.add(task);
             this.ongoingTime = insertPoint + task.getWeight();
         }
@@ -100,24 +101,30 @@ public class ValidSchedulingAlgorithm implements SchedulingAlgorithm {
         }
     }
     private class Task {
-        private int[] processorPrerequisites;
-        private int weight;
-        private int start;
-        private String name;
 
-        protected Task(String name, int weight) {
+        private final int taskID;
+        private final int weight;
+
+        private int[] processorPrerequisites;
+        private int start;
+
+        protected Task(int taskID, int weight) {
             this.weight = weight;
-            this.name = name;
+            this.taskID = taskID;
         }
 
-        protected Task(String name, int weight, int start) {
+        protected Task(int taskID, int weight, int start) {
             this.weight = weight;
-            this.name = name;
+            this.taskID = taskID;
             this.start = start;
         }
 
         protected void assignStart (int start) {
             this.start = start;
+        }
+
+        public int getTaskID() {
+            return this.taskID;
         }
 
         public int getWeight() {
@@ -126,6 +133,20 @@ public class ValidSchedulingAlgorithm implements SchedulingAlgorithm {
 
         protected int getStart() {
             return this.start;
+        }
+
+        protected void notifyChildren(int processorID, int insertPoint, CommunicationCost[] children) {
+
+            int[] fulfilledPrerequisite = new int[this.processorPrerequisites.length];
+            int taskEndPoint = insertPoint + this.weight;
+
+            for (CommunicationCost communicationCost: children) {
+
+                Arrays.fill(fulfilledPrerequisite, taskEndPoint + communicationCost.getCost());
+                fulfilledPrerequisite[processorID] = taskEndPoint;
+
+                communicationCost.getChildTask().notifyPrerequisiteFulfilled(fulfilledPrerequisite);
+            }
         }
 
         public void notifyPrerequisiteFulfilled(int[] fulfilledPrerequisite) {
@@ -145,21 +166,21 @@ public class ValidSchedulingAlgorithm implements SchedulingAlgorithm {
     }
 
     private class CommunicationCost {
-        private Task taskFrom;
-        private Task taskTo;
-        private int weight;
-        protected CommunicationCost(Task taskFrom, Task taskTo, int weight) {
+        private final Task taskFrom;
+        private final Task taskTo;
+        private final int cost;
+        protected CommunicationCost(Task taskFrom, Task taskTo, int cost) {
             this.taskFrom = taskFrom;
             this.taskTo = taskTo;
-            this.weight = weight;
+            this.cost = cost;
         }
 
-        protected int tellCommunicationCost(Task taskFrom, Task taskTo) {
-            if ((this.taskFrom == taskFrom) && (this.taskTo == taskTo)) {
-                return this.weight;
-            } else {
-                return -1;
-            }
+        public int getCost() {
+            return this.cost;
+        }
+
+        public Task getChildTask() {
+            return this.taskTo;
         }
     }
 
