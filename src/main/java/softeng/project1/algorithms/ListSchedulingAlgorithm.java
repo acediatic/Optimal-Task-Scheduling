@@ -1,8 +1,11 @@
 package softeng.project1.algorithms;
 
+import com.sun.org.apache.xerces.internal.impl.xs.opti.DefaultNode;
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
+import org.graphstream.graph.implementations.DefaultGraph;
+import org.graphstream.graph.implementations.Graphs;
 import softeng.project1.graph.processors.processor.ListProcessor;
 import softeng.project1.graph.tasks.edges.ListCommunicationCost;
 import softeng.project1.graph.tasks.ListTask;
@@ -73,8 +76,27 @@ public class ListSchedulingAlgorithm implements SchedulingAlgorithm {
         }
     }
 
-    public void scheduleToGraph() {
+    public Graph scheduleToGraph(List<int[]> schedule) {
+        for(int[] task: schedule){
+            int taskID = task[0];
+            int processor = task[1];
+            int startTime = task[2];
 
+            Node currentNode = findNode(taskID);
+            currentNode.setAttribute("Start", startTime);
+            currentNode.setAttribute("Processor", processor);
+        }
+
+        return this.graph;
+    }
+
+    private Node findNode(int i){
+        for(Node n: idMappings.keySet()){
+            if(idMappings.get(n) == i){
+                return n;
+            }
+        }
+        return null;
     }
 
     private int getCostForProcessor(ListTask task, ListProcessor processor) {
