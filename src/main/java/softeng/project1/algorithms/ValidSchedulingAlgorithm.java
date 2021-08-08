@@ -13,7 +13,7 @@ public class ValidSchedulingAlgorithm implements SchedulingAlgorithm {
     private final int numberOfProcessors;
     private final List<Task> tasksInTopology; // Need to be implemented from graph data
     private final List<ValidProcessor> processors;
-    private final List<CommunicationCost> communicationCosts;
+    private final CommunicationCost[][] communicationCosts; // Needs to be retrieved from graph
 
 
 //    private List<Processors> processors = new ArrayList<Processors>();
@@ -25,9 +25,9 @@ public class ValidSchedulingAlgorithm implements SchedulingAlgorithm {
     public ValidSchedulingAlgorithm(Graph read, int numberOfProcessors) {
         this.graph = read;
         this.numberOfProcessors = numberOfProcessors;
-        this.tasksInTopology = null // TODO... get from graph
+        this.tasksInTopology = null; // TODO... get from graph
         this.processors = new ArrayList<>(numberOfProcessors);
-        this.communicationCosts = new ArrayList<>();
+        this.communicationCosts = null; // TODO... get from graph
 
         for (int i = 0; i<this.numberOfProcessors; i++) {
             processors.add(new ValidProcessor(i));
@@ -43,33 +43,26 @@ public class ValidSchedulingAlgorithm implements SchedulingAlgorithm {
     }
 
     private int getCostForProcessor(Task task, ValidProcessor processor) {
-        int cost = 0;
-        int checkCost;
-        List<Task> prereqs = task.getPrerequisites();
-        for (Task prereq: prereqs) {
-            for (CommunicationCost communicationCost: communicationCosts) {
-                checkCost = communicationCost.tellCommunicationCost(prereq, task);
-                if (checkCost != -1) {
-                    if (!processor.checkTaskIn(prereq)) {
-                        cost = cost + checkCost;
-                    }
-                }
-            }
-        }
-        return cost;
+        return Math.max(
+                task.getPrerequisite(processor.getId()),
+                processor.getOngoingTime()
+        );
     }
 
     private void compareAndAdd (Task task) {
         int minId = 0;
-        int lowestTime = processors.get(minId).getOngoingTime();
+        int earliestScheduleTime = Integer.MAX_VALUE;
+        int earliestProcessorScheduleTime;
+
+        // Greedily calculating the processor with the earliest possible schedule time
         for (ValidProcessor processor: processors) {
-            int time = processor.getOngoingTime() + getCostForProcessor(task, processor);
-            if (time < lowestTime) {
-                lowestTime = time;
+            earliestProcessorScheduleTime = getCostForProcessor(task, processor);
+            if (earliestProcessorScheduleTime < earliestScheduleTime) {
+                earliestScheduleTime = earliestProcessorScheduleTime;
                 minId = processor.getId();
             }
         }
-        processors.get(minId).addTask(task);
+        processors.get(minId).addTaskAtLocation(task, earliestScheduleTime);
     }
 
     public void schedule() {
@@ -80,25 +73,26 @@ public class ValidSchedulingAlgorithm implements SchedulingAlgorithm {
 
     private class ValidProcessor {
         private final int id;
-        private final List<Task> tasks = new ArrayList<Task>();
-        private int ongoingTime = 0;
+        private final List<Task> tasks;
+        private int ongoingTime;
 
         protected ValidProcessor(int id) {
             this.id = id;
+            this.tasks = new ArrayList<>();
         }
 
-        protected void addTask(Task task) {
-            task.assignStart(ongoingTime);
+        protected void addTaskAtLocation(Task task, int insertPoint) {
+            task.assignStart(insertPoint); // Do this here?
             tasks.add(task);
-            this.ongoingTime += task.getWeight();
-        }
-
-        protected int getOngoingTime() {
-            return this.ongoingTime;
+            this.ongoingTime = insertPoint + task.getWeight();
         }
 
         protected int getId() {
             return this.id;
+        }
+
+        protected int getOngoingTime() {
+            return this.ongoingTime;
         }
 
         protected boolean checkTaskIn(Task task) {
@@ -106,7 +100,7 @@ public class ValidSchedulingAlgorithm implements SchedulingAlgorithm {
         }
     }
     private class Task {
-        private List<Task> prerequisites;
+        private int[] processorPrerequisites;
         private int weight;
         private int start;
         private String name;
@@ -134,8 +128,19 @@ public class ValidSchedulingAlgorithm implements SchedulingAlgorithm {
             return this.start;
         }
 
-        protected List<Task> getPrerequisites() {
-            return this.prerequisites;
+        public void notifyPrerequisiteFulfilled(int[] fulfilledPrerequisite) {
+            for (int i = 0; i < this.processorPrerequisites.length; i++) {
+                this.processorPrerequisites[i] = Math.max(this.processorPrerequisites[i], fulfilledPrerequisite[i]);
+            }
+
+        }
+
+        protected int getPrerequisite(int processorID) {
+            return this.processorPrerequisites[processorID];
+        }
+
+        protected int[] getPrerequisites() {
+            return this.processorPrerequisites;
         }
     }
 
