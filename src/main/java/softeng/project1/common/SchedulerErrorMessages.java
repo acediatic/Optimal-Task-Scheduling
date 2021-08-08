@@ -6,7 +6,8 @@ public enum SchedulerErrorMessages {
     CLITooManyArgs("Error: Too many arguments provided, please only provide the file path for the input graph and an integer > 0 that represents the number of available processors"),
     CLINotEnoughProcessors("Error: Number of processors must be greater than 0"),
     CLICannotFindInputFile("Error: Unable to find file"),
-    CLIInvalidProcessorNum("Error: Unable to parse number of processors as an integer");
+    CLIInvalidProcessorNum("Error: Unable to parse inputted number of processors as an integer"),
+    CLIFailedOptionParsing("Error: Failed to successfully parse optional arguments, please ensure you're following correct command line formatting");
 
 
     private final String message;

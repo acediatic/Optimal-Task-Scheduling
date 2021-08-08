@@ -39,8 +39,7 @@ public class CommandLineProcessor {
         try {
             cmd = parser.parse(getCLOptions(), args);
         } catch (ParseException e) {
-            System.err.println("Error parsing command line arguments.");
-            System.err.println("Please ensure correct command line formatting");
+            System.err.println(SchedulerErrorMessages.CLIFailedOptionParsing);
             System.exit(1);
         }
 
@@ -67,7 +66,7 @@ public class CommandLineProcessor {
             } catch (NumberFormatException e) {
                 System.err.println("Error parsing optional value number of cores");
                 System.err.println("Please ensure correct command line formatting");
-                System.exit(1);
+                System.exit(3);
             }
         } else {
             numThreads = 1;
@@ -104,7 +103,7 @@ public class CommandLineProcessor {
 
         } catch (InvalidPathException ex) {
             System.err.println("Output file name is invalid");
-            System.exit(1);
+            System.exit(4);
         }
     }
 
@@ -116,7 +115,7 @@ public class CommandLineProcessor {
             String rawGraphLine = fr.readLine();
             graphName = rawGraphLine.substring(rawGraphLine.indexOf('"')+1, rawGraphLine.lastIndexOf('"'));
 
-        } catch (IOException e) {
+        } catch (IOException e) { // TODO... print error message
             e.printStackTrace();
         }
     }
@@ -131,12 +130,12 @@ public class CommandLineProcessor {
             numProcessors = Integer.parseInt(args[1]);
             if (numProcessors <= 0) {
                 System.err.println(SchedulerErrorMessages.CLINotEnoughProcessors);
-                System.exit(3);
+                System.exit(5);
             }
         } catch (NumberFormatException e) {
             System.err.println(SchedulerErrorMessages.CLIInvalidProcessorNum.getMessageWithArg(args[1]));
             // exit with error.
-            System.exit(3);
+            System.exit(5);
         }
     }
 
@@ -151,7 +150,7 @@ public class CommandLineProcessor {
         File inputFile = new File(inputFileName);
         if (!inputFile.exists()) {
             System.err.println(SchedulerErrorMessages.CLICannotFindInputFile.getMessageWithArg(inputFileName));
-            System.exit(1);
+            System.exit(6);
         }
         return inputFileName;
     }
