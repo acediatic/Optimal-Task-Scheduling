@@ -50,6 +50,17 @@ public class ListSchedulingAlgorithm implements SchedulingAlgorithm {
         }
     }
 
+    @Override
+    public List<int[]> generateSchedule() {
+        List<int[]> returnList = new ArrayList<>();
+
+        for (ListTask task: tasksInTopology) {
+            compareAndAdd(task);
+            returnList.add(task.getAsIntArray());
+        }
+        return returnList;
+    }
+
     // TODO... get these from Henry
     public void graphToTaskAndCC() {
 
@@ -57,13 +68,6 @@ public class ListSchedulingAlgorithm implements SchedulingAlgorithm {
 
     public void scheduleToGraph() {
 
-    }
-
-    private int getCostForProcessor(ListTask task, ListProcessor processor) {
-        return Math.max(
-                task.getPrerequisite(processor.getProcessorID()),
-                processor.getOngoingTime()
-        );
     }
 
     private void compareAndAdd (ListTask task) {
@@ -83,14 +87,10 @@ public class ListSchedulingAlgorithm implements SchedulingAlgorithm {
         task.notifyChildren(minID, earliestScheduleTime, this.communicationCosts[task.getTaskID()]);
     }
 
-    @Override
-    public List<int[]> generateSchedule() {
-        List<int[]> returnList = new ArrayList<>();
-
-        for (ListTask task: tasksInTopology) {
-            compareAndAdd(task);
-            returnList.add(task.getAsIntArray());
-        }
-      return returnList;
+    private int getCostForProcessor(ListTask task, ListProcessor processor) {
+        return Math.max(
+                task.getPrerequisite(processor.getProcessorID()),
+                processor.getOngoingTime()
+        );
     }
 }
