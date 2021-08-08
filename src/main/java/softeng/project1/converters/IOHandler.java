@@ -38,7 +38,7 @@ public class IOHandler {
     public static void writeFile(Graph graph, String graphName, String outputFileName) {
         try {
             // tempOutput contains the graph output before renaming.
-            String tempOutputName = "tempOutput.dot";
+            String tempOutputName = outputFileName.substring(0, outputFileName.length()-4) + "tempOutput.dot";
 
             // writes the graph to the temp file.
             FileSinkDOT fileSink = new FileSinkDOT(true);
