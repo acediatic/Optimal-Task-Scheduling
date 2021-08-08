@@ -11,9 +11,8 @@ public class ValidSchedulingAlgorithm implements SchedulingAlgorithm {
     private static final int DEFAULT_NUMBER_OF_PROCESSORS = 1;  //default number of processors to begin with
 
     private final Graph graph; // Graph to process
-    private final int numberOfProcessors;
     private final List<Task> tasksInTopology; // Need to be implemented from graph data
-    private final List<ValidProcessor> processors;
+    private final ValidProcessor[] processors;
     private final CommunicationCost[][] communicationCosts; // Needs to be retrieved from graph
 
 
@@ -25,16 +24,16 @@ public class ValidSchedulingAlgorithm implements SchedulingAlgorithm {
 
     public ValidSchedulingAlgorithm(Graph read, int numberOfProcessors) {
         this.graph = read;
-        this.numberOfProcessors = numberOfProcessors;
         this.tasksInTopology = null; // TODO... get from graph
-        this.processors = new ArrayList<>(numberOfProcessors);
+        this.processors = new ValidProcessor[numberOfProcessors];
         this.communicationCosts = null; // TODO... get from graph
 
-        for (int i = 0; i<this.numberOfProcessors; i++) {
-            processors.add(new ValidProcessor(i));
+        for (int i = 0; i<numberOfProcessors; i++) {
+            processors[i] = (new ValidProcessor(i));
         }
     }
 
+    // TODO... get these from Henry
     public void graphToTaskAndCC() {
 
     }
@@ -45,7 +44,7 @@ public class ValidSchedulingAlgorithm implements SchedulingAlgorithm {
 
     private int getCostForProcessor(Task task, ValidProcessor processor) {
         return Math.max(
-                task.getPrerequisite(processor.getID()),
+                task.getPrerequisite(processor.getProcessorID()),
                 processor.getOngoingTime()
         );
     }
@@ -60,26 +59,27 @@ public class ValidSchedulingAlgorithm implements SchedulingAlgorithm {
             earliestProcessorScheduleTime = getCostForProcessor(task, processor);
             if (earliestProcessorScheduleTime < earliestScheduleTime) {
                 earliestScheduleTime = earliestProcessorScheduleTime;
-                minID = processor.getID();
+                minID = processor.getProcessorID();
             }
         }
-        processors.get(minID).addTaskAtLocation(task, earliestScheduleTime);
+        processors[minID].addTaskAtLocation(task, earliestScheduleTime);
         task.notifyChildren(minID, earliestScheduleTime, this.communicationCosts[task.getTaskID()]);
     }
 
-    public void schedule() {
+    public ValidProcessor[] generateSchedule() {
         for (Task task: tasksInTopology) {
             compareAndAdd(task);
         }
+        return this.processors;
     }
 
     private class ValidProcessor {
-        private final int id;
+        private final int processorID;
         private final List<Task> tasks;
         private int ongoingTime;
 
-        protected ValidProcessor(int id) {
-            this.id = id;
+        protected ValidProcessor(int processorID) {
+            this.processorID = processorID;
             this.tasks = new ArrayList<>();
         }
 
@@ -88,8 +88,8 @@ public class ValidSchedulingAlgorithm implements SchedulingAlgorithm {
             this.ongoingTime = insertPoint + task.getWeight();
         }
 
-        protected int getID() {
-            return this.id;
+        protected int getProcessorID() {
+            return this.processorID;
         }
 
         protected int getOngoingTime() {
