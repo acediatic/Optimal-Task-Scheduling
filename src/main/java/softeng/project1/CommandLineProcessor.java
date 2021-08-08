@@ -134,7 +134,7 @@ public class CommandLineProcessor {
                 System.exit(3);
             }
         } catch (NumberFormatException e) {
-            System.err.println("Invalid number of processors supplied");
+            System.err.println(SchedulerErrorMessages.CLIInvalidProcessorNum.getMessageWithArg(args[1]));
             // exit with error.
             System.exit(3);
         }
@@ -150,7 +150,7 @@ public class CommandLineProcessor {
         // check file can be found
         File inputFile = new File(inputFileName);
         if (!inputFile.exists()) {
-            System.err.println("Error: cannot find input file");
+            System.err.println(SchedulerErrorMessages.CLICannotFindInputFile.getMessageWithArg(inputFileName));
             System.exit(1);
         }
         return inputFileName;
