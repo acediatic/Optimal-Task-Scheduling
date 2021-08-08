@@ -5,32 +5,16 @@ import org.apache.commons.cli.*;
 import java.io.File;
 
 public class CommandLineProcessor {
+    private String[] args;
     private CommandLine cmd;
     private int numProcessors;
     private int numThreads;
-    private final String inputFileName;
-    private final String outputFileName;
-    private final boolean isVisual;
+    private String inputFileName;
+    private String outputFileName;
+    private boolean isVisual;
 
     public CommandLineProcessor(String[] args) {
-        // file name is first positional argument
-        inputFileName = args[0];
-
-        // check file can be found
-        File inputFile = new File(inputFileName);
-        if (!inputFile.exists()) {
-            System.err.println("Error: cannot find input file");
-            System.exit(1);
-        }
-
-        // number of processors is second positional argument
-        try {
-            numProcessors = Integer.parseInt(args[1]);
-        } catch (NumberFormatException e) {
-            System.err.println("Invalid number of processors supplied");
-            // exit with error.
-            System.exit(1);
-        }
+        this.args = args;
 
         // attempt to parse arguments
         CommandLineParser parser = new DefaultParser();
@@ -42,14 +26,21 @@ public class CommandLineProcessor {
             System.exit(1);
         }
 
-        // Determine output filename
-        String defaultOutputName = inputFileName.substring(0, inputFileName.length() - 4) + "-output" + inputFileName.substring(inputFileName.length() - 4);
-        outputFileName = cmd.getOptionValue('o', defaultOutputName);
+        initInputFilename();
 
-        // Determine visual mode
-        isVisual = cmd.hasOption('v');
+        initNumProcessors();
 
-        // Determine number of threads to use (default is 1).
+        initOutputFilename();
+
+        initIsVisual();
+
+        initNumThreads();
+    }
+
+    /**
+     * Determines the number of threads to be used [default 1].
+     */
+    private void initNumThreads() {
         if (cmd.hasOption('p')) {
             try {
                 numThreads = Integer.parseInt(cmd.getOptionValue('p'));
@@ -61,6 +52,52 @@ public class CommandLineProcessor {
         } else {
             numThreads = 1;
         }
+    }
+
+    /**
+     * Determines whether visual mode is to be used.
+     */
+    private void initIsVisual() {
+        isVisual = cmd.hasOption('v');
+    }
+
+    /**
+     * Determines output filename. Default is [<inputname>-output.dot]
+     */
+    private void initOutputFilename() {
+        // Determine o
+        String defaultOutputName = inputFileName.substring(0, inputFileName.length() - 4) + "-output" + inputFileName.substring(inputFileName.length() - 4);
+        outputFileName = cmd.getOptionValue('o', defaultOutputName);
+    }
+
+    /**
+     * Determines number of processors available for tasks to be scheduled on.
+     */
+    private void initNumProcessors() {
+        try {
+            // number of processors is second positional argument
+            numProcessors = Integer.parseInt(args[1]);
+        } catch (NumberFormatException e) {
+            System.err.println("Invalid number of processors supplied");
+            // exit with error.
+            System.exit(1);
+        }
+    }
+
+    /**
+     * Determines the input file name, and checks the file exists.
+     */
+    private String initInputFilename() {
+        // file name is first positional argument
+        inputFileName = args[0];
+
+        // check file can be found
+        File inputFile = new File(inputFileName);
+        if (!inputFile.exists()) {
+            System.err.println("Error: cannot find input file");
+            System.exit(1);
+        }
+        return inputFileName;
     }
 
 
