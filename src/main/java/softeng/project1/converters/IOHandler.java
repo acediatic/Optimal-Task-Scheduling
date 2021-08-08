@@ -1,21 +1,18 @@
 package softeng.project1.converters;
 
-import org.graphstream.graph.*;
-import org.graphstream.graph.implementations.*;
-
-import java.io.File;
-import java.io.IOException;
-
-import org.graphstream.stream.file.FileSourceDOT;
+import org.graphstream.graph.Graph;
+import org.graphstream.graph.implementations.DefaultGraph;
 import org.graphstream.stream.file.FileSinkDOT;
+import org.graphstream.stream.file.FileSourceDOT;
 
+import java.io.*;
 
 
 public class IOHandler {
     /**
      * Reads in DOT file from specified path and stores as Graph Object
      */
-    public static Graph readFile(String inputFilePath){
+    public static Graph readFile(String inputFilePath) {
         Graph graph = new DefaultGraph("graph");
 
         FileSourceDOT fileSource = new FileSourceDOT();
@@ -24,7 +21,7 @@ public class IOHandler {
         //Reads DOT file into graph object
         try {
             fileSource.readAll(inputFilePath);
-        } catch( IOException e) {
+        } catch (IOException e) {
             System.out.println(e.getMessage());
         } finally {
             fileSource.removeSink(graph);
@@ -35,18 +32,44 @@ public class IOHandler {
 
     /**
      * Writes graphObject out as DOT File
+     * TODO optimise this!
      */
 
-    public static void writeFile(Graph graph, String outputFileName){
-        FileSinkDOT fileSink = new FileSinkDOT(true);
-
+    public static void writeFile(Graph graph, String graphName, String outputFileName) {
         try {
-            fileSink.writeAll(graph, outputFileName);
+            // tempOutput contains the graph output before renaming.
+            String tempOutputName = "tempOutput.dot";
+
+            // writes the graph to the temp file.
+            FileSinkDOT fileSink = new FileSinkDOT(true);
+            fileSink.writeAll(graph, tempOutputName);
+
+            // setup new file with correct name, and reader on temp file with graph info.
+            File oldOutput = new File(tempOutputName);
+            File newOutput = new File(outputFileName);
+            BufferedReader reader = new BufferedReader(new FileReader(oldOutput));
+            BufferedWriter output = new BufferedWriter(new FileWriter(newOutput));
+
+            // burn first line, to replace.
+            reader.readLine();
+
+            // Add new first line
+            output.write("digraph " + graphName + " {");
+
+            // replace rest of file
+            String line;
+            while ((line = reader.readLine()) != null) {
+                output.append(line);
+            }
+            output.close();
+            reader.close();
+
+            // delete original (temp) file
+            oldOutput.delete();
+
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println("Error: unable to write output file");
+            System.exit(1);
         }
     }
-
-
-
 }

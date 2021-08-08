@@ -18,12 +18,13 @@ public final class App {
     public static void main(String[] args) {
         CommandLineProcessor clp = new CommandLineProcessor(args);
 
-        String runInformation = "***** Outsourced to Pakistan - Scheduling Algorithm*****\n" +
+        String runInformation = "***** Outsourced to Pakistan - Scheduling Algorithm *****\n" +
                 String.format("- Creating schedule for input graph from file: %s\n", clp.getInputFileName()) +
                 String.format("- Number of Processors Available for Tasks: %o\n", clp.getNumProcessors()) +
                 String.format("- Storing output in file: %s\n\n", clp.getOutputFileName()) +
                 String.format("-- Cores used in determining schedule: %o\n", clp.getNumThreads()) +
-                "-- visualisation " + (clp.isVisual() ? "on" : "off");
+                "-- visualisation " + (clp.isVisual() ? "on" : "off") +
+                "\n";
 
         System.out.println(runInformation);
 
@@ -33,7 +34,8 @@ public final class App {
 
         List<int[]> schedule = listScheduler.generateSchedule();
 
-        IOHandler.writeFile(listScheduler.scheduleToGraph(schedule), clp.getOutputFileName());
+        IOHandler.writeFile(listScheduler.scheduleToGraph(schedule), clp.getInputFileName(), clp.getOutputFileName());
 
+        System.out.println("Successfully created " + clp.getOutputFileName() + '\n');
     }
 }
