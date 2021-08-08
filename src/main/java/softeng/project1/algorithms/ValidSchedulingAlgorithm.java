@@ -45,13 +45,13 @@ public class ValidSchedulingAlgorithm implements SchedulingAlgorithm {
 
     private int getCostForProcessor(Task task, ValidProcessor processor) {
         return Math.max(
-                task.getPrerequisite(processor.getId()),
+                task.getPrerequisite(processor.getID()),
                 processor.getOngoingTime()
         );
     }
 
     private void compareAndAdd (Task task) {
-        int minId = 0;
+        int minID = 0;
         int earliestScheduleTime = Integer.MAX_VALUE;
         int earliestProcessorScheduleTime;
 
@@ -60,10 +60,10 @@ public class ValidSchedulingAlgorithm implements SchedulingAlgorithm {
             earliestProcessorScheduleTime = getCostForProcessor(task, processor);
             if (earliestProcessorScheduleTime < earliestScheduleTime) {
                 earliestScheduleTime = earliestProcessorScheduleTime;
-                minId = processor.getId();
+                minID = processor.getID();
             }
         }
-        processors.get(minId).addTaskAtLocation(task, earliestScheduleTime);
+        processors.get(minID).addTaskAtLocation(task, earliestScheduleTime);
         task.notifyChildren(minID, earliestScheduleTime, this.communicationCosts[task.getTaskID()]);
     }
 
@@ -88,7 +88,7 @@ public class ValidSchedulingAlgorithm implements SchedulingAlgorithm {
             this.ongoingTime = insertPoint + task.getWeight();
         }
 
-        protected int getId() {
+        protected int getID() {
             return this.id;
         }
 
