@@ -3,6 +3,8 @@ package softeng.project1;
 import org.apache.commons.cli.*;
 
 import java.io.File;
+import java.nio.file.InvalidPathException;
+import java.nio.file.Paths;
 
 public class CommandLineProcessor {
     private final String[] args;
@@ -73,6 +75,14 @@ public class CommandLineProcessor {
         } else {
             // use default.
             outputFileName = inputFileName.substring(0, inputFileName.length() - 4) + "-output" + inputFileName.substring(inputFileName.length() - 4);
+        }
+
+        try {
+            Paths.get(outputFileName);
+
+        } catch (InvalidPathException ex) {
+            System.err.println("Output file name is invalid");
+            System.exit(1);
         }
     }
 
