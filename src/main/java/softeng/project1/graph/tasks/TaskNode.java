@@ -72,12 +72,23 @@ public interface TaskNode {
     int getTaskCost();
 
     /**
-     * TODO...
+     * @return : All outgoing child links/edges/prerequisite that stem from the TaskNode. For speed reasons these are
+     *           stored as arrays with the following format:
+     *           childLinks[0] => The task ID of the child task
+     *           childLinks[1] => The cost/time required for communicating/transferring the required data from this task
+     *                            to a DIFFERENT processor than the one this task was scheduled on.
      */
     int[][] getChildLinks();
 
+    /**
+     * @return : // TODO... Remember what bottom level is
+     */
     int getBottomLevel();
 
+    /**
+     * @return : The largest/longest communication cost out of all the child links that stem from the task. If the task
+     *           has no child links this method returns 0.
+     */
     int getMaxCommunicationCost();
 
 }
