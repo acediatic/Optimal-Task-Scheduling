@@ -15,13 +15,12 @@ public final class App {
     public static void main(String[] args) {
         CommandLineProcessor clp = new CommandLineProcessor(args);
 
-        String runInformation = "Outsourced to Pakistan - Scheduling Algorithm\n" +
-                String.format("Creating schedule for input graph from file: %s\n", clp.getInputFileName()) +
-                String.format("Number of Processors Available for Tasks: %o", clp.getNumProcessors()) +
-                String.format("Storing output in file: %s\n\n", clp.getOutputFileName()) +
-                "Using: \n" +
-                String.format("Cores used in determining schedule: %o", clp.getNumThreads()) +
-                "visualisation " + (clp.isVisual() ? "on" : "off");
+        String runInformation = "***** Outsourced to Pakistan - Scheduling Algorithm*****\n" +
+                String.format("- Creating schedule for input graph from file: %s\n", clp.getInputFileName()) +
+                String.format("- Number of Processors Available for Tasks: %o\n", clp.getNumProcessors()) +
+                String.format("- Storing output in file: %s\n\n", clp.getOutputFileName()) +
+                String.format("-- Cores used in determining schedule: %o\n", clp.getNumThreads()) +
+                "-- visualisation " + (clp.isVisual() ? "on" : "off");
 
         System.out.println(runInformation);
 
