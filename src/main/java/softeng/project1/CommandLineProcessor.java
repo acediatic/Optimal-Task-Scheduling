@@ -1,6 +1,7 @@
 package softeng.project1;
 
 import org.apache.commons.cli.*;
+import softeng.project1.common.SchedulerErrorMessages;
 
 import java.io.*;
 import java.nio.file.InvalidPathException;
@@ -21,15 +22,16 @@ public class CommandLineProcessor {
 
         switch (args.length) {
             case 0:
-                throw new IOException();
+                System.err.println(SchedulerErrorMessages.CLINoArgs);
                 System.exit(2);
             case 1:
-                throw new IOException();
-                System.exit(2)
+                System.err.println(SchedulerErrorMessages.CLINoProcessorArg);
+                System.exit(2);
             case 2:
                 break; // Do nothing, correct number of arguments passed
             default:
-                throw new IOException();
+                System.err.println(SchedulerErrorMessages.CLITooManyArgs);
+                System.exit(2);
         }
 
         // attempt to parse arguments
@@ -127,10 +129,14 @@ public class CommandLineProcessor {
         try {
             // number of processors is second positional argument
             numProcessors = Integer.parseInt(args[1]);
+            if (numProcessors <= 0) {
+                System.err.println(SchedulerErrorMessages.CLINotEnoughProcessors);
+                System.exit(3);
+            }
         } catch (NumberFormatException e) {
             System.err.println("Invalid number of processors supplied");
             // exit with error.
-            System.exit(1);
+            System.exit(3);
         }
     }
 
