@@ -103,7 +103,7 @@ public class ListSchedulingAlgorithm implements SchedulingAlgorithm {
 
                 ListTask currentTask = tasksInTopology.get(nodeToIDMap.get(n));
 
-                Node child = n.getEdge(i).getNode1();
+                Node child = n.getLeavingEdge(i).getNode1();
                 ListTask childTask = tasksInTopology.get(nodeToIDMap.get(child));
 
                 int communicationCost = (int) Double.parseDouble(n.getEdge(i).getAttribute("Weight").toString());
