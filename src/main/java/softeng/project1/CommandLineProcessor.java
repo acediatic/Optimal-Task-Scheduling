@@ -20,7 +20,16 @@ public class CommandLineProcessor {
     public CommandLineProcessor(String[] args) {
         this.args = args;
 
-        switch (args.length) {
+        // attempt to parse arguments
+        CommandLineParser parser = new DefaultParser();
+        try {
+            cmd = parser.parse(getCLOptions(), args);
+        } catch (ParseException e) {
+            System.err.println(SchedulerErrorMessages.CLIFailedOptionParsing);
+            System.exit(1);
+        }
+
+        switch (cmd.getArgList().size()) {
             case 0:
                 System.err.println(SchedulerErrorMessages.CLINoArgs);
                 System.exit(2);
@@ -32,15 +41,6 @@ public class CommandLineProcessor {
             default:
                 System.err.println(SchedulerErrorMessages.CLITooManyArgs);
                 System.exit(2);
-        }
-
-        // attempt to parse arguments
-        CommandLineParser parser = new DefaultParser();
-        try {
-            cmd = parser.parse(getCLOptions(), args);
-        } catch (ParseException e) {
-            System.err.println(SchedulerErrorMessages.CLIFailedOptionParsing);
-            System.exit(1);
         }
 
         initInputFilename();
