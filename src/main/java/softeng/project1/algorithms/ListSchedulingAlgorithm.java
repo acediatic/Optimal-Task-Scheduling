@@ -76,9 +76,10 @@ public class ListSchedulingAlgorithm implements SchedulingAlgorithm {
         return returnList;
     }
 
-
-
-    // TODO... get these from Henry
+    /**
+     * Converts a graph object from graphstream into the relevant data structures
+     * i.e. ListTask and ListCommunicationCost
+     */
     private void graphToTaskAndCC() {
         //Sorts nodes into a topological ordering
         TopologicalSortDFS sorter = new TopologicalSortDFS();
@@ -112,6 +113,11 @@ public class ListSchedulingAlgorithm implements SchedulingAlgorithm {
         }
     }
 
+    /**
+     * Converts a schedule into a graph object
+     * @param schedule List of integer arrays where each entry in list is a task with integer array of properties
+     * @return Graph object with updated attributes for nodes
+     */
     public Graph scheduleToGraph(List<int[]> schedule) {
         for(int[] task: schedule){
             int taskID = task[0];
