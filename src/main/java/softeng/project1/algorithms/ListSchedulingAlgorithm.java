@@ -40,7 +40,10 @@ public class ListSchedulingAlgorithm implements SchedulingAlgorithm {
     private final Map<Node, Integer> nodeToIDMap;
 
     /**
-     * TODO...
+     * Constructor for ListSchedulingAlgorithm, uses a graph to initialise data
+     * and the number of processors it can schedule the graph tasks on.
+     * @param read
+     * @param numberOfProcessors
      */
     public ListSchedulingAlgorithm(Graph read, int numberOfProcessors) {
         this.graph = read;

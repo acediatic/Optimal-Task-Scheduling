@@ -3,7 +3,8 @@ package softeng.project1.graph.tasks.edges;
 import softeng.project1.graph.tasks.ListTask;
 
 /**
- * TODO...
+ * ListCommunicationCost is an object keeping track of costs switching from one task to another
+ * across a processor.
  */
 public class ListCommunicationCost {
 

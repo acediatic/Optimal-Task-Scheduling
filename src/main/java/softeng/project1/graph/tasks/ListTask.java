@@ -5,7 +5,8 @@ import softeng.project1.graph.tasks.edges.ListCommunicationCost;
 import java.util.Arrays;
 
 /**
- * TODO...
+ * ListTask are the Tasks for the schedule, it is specifically for the
+ * ListSchedulingAlgorithm and keeps track of the Task weight and prerequisites.
  */
 public class ListTask {
 

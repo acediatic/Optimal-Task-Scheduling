@@ -7,7 +7,8 @@ import java.util.List;
 
 
 /**
- * TODO...
+ * ListProcessor is a Processor object specifically for the ListScheduling Algorithm.
+ * It keeps track of the tasks occuring in it for the schedule, and its ongoing time.
  */
 public class ListProcessor {
 
