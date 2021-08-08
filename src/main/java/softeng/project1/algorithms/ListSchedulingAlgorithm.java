@@ -33,12 +33,10 @@ import java.util.Map;
  */
 public class ListSchedulingAlgorithm implements SchedulingAlgorithm {
 
-    private static final int DEFAULT_NUMBER_OF_PROCESSORS = 1;  //default number of processors to begin with
-
     private final Graph graph; // Graph to process
-    private List<ListTask> tasksInTopology; // Need to be implemented from graph data
+    private final List<ListTask> tasksInTopology; // Need to be implemented from graph data
     private final ListProcessor[] processors;
-    private ListCommunicationCost[][] communicationCosts; // Needs to be retrieved from graph
+    private final ListCommunicationCost[][] communicationCosts; // Needs to be retrieved from graph
     private final Map<Node, Integer> nodeToIDMap;
 
     /**
@@ -56,13 +54,6 @@ public class ListSchedulingAlgorithm implements SchedulingAlgorithm {
         this.communicationCosts = new ListCommunicationCost[read.getNodeCount()][];
 
         graphToTaskAndCC();
-    }
-
-    /**
-     * Overloaded constructor that passes in a default value for number of processors.
-     */
-    public ListSchedulingAlgorithm(Graph read) {
-        this(read, DEFAULT_NUMBER_OF_PROCESSORS);
     }
 
     /**
@@ -85,9 +76,10 @@ public class ListSchedulingAlgorithm implements SchedulingAlgorithm {
         return returnList;
     }
 
-
-
-    // TODO... get these from Henry
+    /**
+     * Converts a graph object from graphstream into the relevant data structures
+     * i.e. ListTask and ListCommunicationCost
+     */
     private void graphToTaskAndCC() {
         //Sorts nodes into a topological ordering
         TopologicalSortDFS sorter = new TopologicalSortDFS();
@@ -121,10 +113,15 @@ public class ListSchedulingAlgorithm implements SchedulingAlgorithm {
         }
     }
 
+    /**
+     * Converts a schedule into a graph object
+     * @param schedule List of integer arrays where each entry in list is a task with integer array of properties
+     * @return Graph object with updated attributes for nodes
+     */
     public Graph scheduleToGraph(List<int[]> schedule) {
         for(int[] task: schedule){
             int taskID = task[0];
-            int processor = task[1];
+            int processor = task[1] + 1;
             int startTime = task[2];
 
             Node currentNode = findNode(taskID);
