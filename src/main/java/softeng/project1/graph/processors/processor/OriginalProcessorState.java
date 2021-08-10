@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.HashMap;
 
 /**
- * Barebones implementation of the Processor interface to represent each Processor
+ * Bare-bones implementation of the Processor interface to represent each Processor
  * before any tasks have been assigned to them.
  * Returns hard coded values for space data.
  * Most importantly, OriginalProcessorState offers a kickoff point for the creation
@@ -24,8 +24,6 @@ public class OriginalProcessorState implements Processor {
         (byte) -1 // ID of next task
     };
 
-    private static final Map<Integer, OriginalProcessorState> ORIGINAL_PROCESSORS = new HashMap<>();
-
     // Immutable Processor ID. ID's should be unique within the 
     // OriginalProcessorState set.
     private final int processorID;
@@ -35,55 +33,10 @@ public class OriginalProcessorState implements Processor {
      * This is the only public Processor constructor, all other Processor
      * implementations must be generated through the use of the 
      * copyAndInsert() method.
-     * Original Processor States only require an ID to create but only one
-     * should be generated for each unique ID. 
-     * The constructor will throw an exception if it finds that it's a duplicate.
-     * @param processorID
+     * @param processorID : ID of the processor this object represents the original state of.
      */
     public OriginalProcessorState(int processorID) {
-        // Ensuring that we're not generating unnecessary original states
-        if (ORIGINAL_PROCESSORS.get(processorID) != null) {
-            throw new RuntimeException(
-                "Trying to create a Original Processor that's already been generated?\n" +
-                "Processor ID: " + processorID
-            );
-        } else {
-            this.processorID = processorID;
-            ORIGINAL_PROCESSORS.put(processorID, this); // Does this fail because 'this' is null?
-        }
-    }
-    /**
-     * Returns the ID of the processor that this object represents the initial state of.
-     * ID is NOT unique among Processor objects but IS unique among OriginalProcessorState
-     * objects.
-     */
-    @Override
-    public int getID() {
-        return this.processorID;
-    }
-
-    /**
-     * Fast implementation of the method from Processor.
-     * The number of spaces in the original states is static, so no logic is needed.
-     */
-    @Override
-    public int getNumSpaces() {
-        return ORIGINAL_NUM_SPACES; // Always one space which represents the empty space at the end of the processor
-    }
-
-    @Override
-    public int getLastInsertLocation() {
-        return -1; // TODO... Should this throw an error?
-    }
-
-    @Override
-    public int getLength() {
-        return 0; // Always 0 for original
-    }
-
-    @Override
-    public int getChangeInIdleTime() {
-        return 0; // TODO... Should this throw an error?
+        this.processorID = processorID;
     }
 
     /**
@@ -137,8 +90,57 @@ public class OriginalProcessorState implements Processor {
      */
     @Override
     public byte[] asByteArray(int index, byte[] arrayToFill) {
+        // Doesn't expose array as data is copied
         System.arraycopy(ORIGINAL_BYTE_DATA, 0, arrayToFill, index, ORIGINAL_BYTE_DATA.length);
         return arrayToFill;
+    }
+
+    // --------- Getter Methods ---------
+
+    /**
+     * ID is NOT unique among Processor objects but IS unique among OriginalProcessorState
+     * objects.
+     * @return : Returns the ID of the processor that this object represents the initial state of.
+     */
+    @Override
+    public int getID() {
+        return this.processorID;
+    }
+
+    /**
+     * Fast implementation of the method from Processor.
+     * The number of spaces in the original states is static, so no logic is needed.
+     * @return : The number of spaces between tasks currently in the processor plus one on the end
+     */
+    @Override
+    public int getNumSpaces() {
+        return ORIGINAL_NUM_SPACES; // Always one space which represents the empty space at the end of the processor
+    }
+
+    /**
+     * Always returns -1 as no tasks have been inserted in the original state.
+     * @return : The location of the start of the latest task to be scheduled in the processor.
+     */
+    @Override
+    public int getLastInsertLocation() {
+        return -1; // TODO... Should this throw an error?
+    }
+
+    /**
+     * @return : The location in the processor's schedule when all tasks have been fully completed.
+     */
+    @Override
+    public int getLength() {
+        return 0; // Always 0 for original
+    }
+
+    /**
+     * Always returns -1 as no tasks have been inserted in the original state.
+     * @return : The location where the final scheduled task finishes.
+     */
+    @Override
+    public int getChangeInIdleTime() {
+        return -1; // TODO... Should this throw an error?
     }
 
 

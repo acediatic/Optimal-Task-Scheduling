@@ -38,38 +38,6 @@ import softeng.project1.graph.tasks.TaskNode;
 public interface Processor {
 
     /**
-     * @return : The ID of the processor that this object represents a state of.
-     */
-    int getID();
-
-
-    /**
-     * The number of spaces between tasks in the current set of tasks queued 
-     * on the processor. Spaces can be 0 length, and one space always exists 
-     * at the end of the queue/schedule. Thus the number of tasks will always
-     * be one less than the number of spaces.
-     * 
-     * @return : Number or spaces between scheduled tasks. Minimum of 1 and 
-     *           maximum of n + 1 where n is the total number of tasks.
-     */
-    int getNumSpaces();
-
-    /**
-     * @return : The start location of the last task to be inserted. If no tasks have been inserted return -1.
-     */
-    int getLastInsertLocation();
-
-    /**
-     * @return : The location where the final scheduled task finishes.
-     */
-    int getLength();
-
-    /**
-     * @return : The increase/decrease in idle time that occurred after the insertion of the last inserted task.
-     */
-    int getChangeInIdleTime();
-
-    /**
      * Generates a Processor object representing the state of the specific 
      * processor (represented by the called Processor) after a new Task 
      * has been greedily scheduled into the earliest possible space.
@@ -107,4 +75,38 @@ public interface Processor {
      * @return : The given array after it has had the Processor's data added to it.
      */
     byte[] asByteArray(int index, byte[] arrayToFill);
+
+    // --------- Getter Methods ---------
+
+    /**
+     * @return : The ID of the processor that this object represents a state of.
+     */
+    int getID();
+
+
+    /**
+     * The number of spaces between tasks in the current set of tasks queued
+     * on the processor. Spaces can be 0 length, and one space always exists
+     * at the end of the queue/schedule. Thus the number of tasks will always
+     * be one less than the number of spaces.
+     *
+     * @return : Number or spaces between scheduled tasks. Minimum of 1 and
+     *           maximum of n + 1 where n is the total number of tasks.
+     */
+    int getNumSpaces();
+
+    /**
+     * @return : The start location of the last task to be inserted. If no tasks have been inserted return -1.
+     */
+    int getLastInsertLocation();
+
+    /**
+     * @return : The location where the final scheduled task finishes.
+     */
+    int getLength();
+
+    /**
+     * @return : The increase/decrease in idle time that occurred after the insertion of the last inserted task.
+     */
+    int getChangeInIdleTime();
 }
