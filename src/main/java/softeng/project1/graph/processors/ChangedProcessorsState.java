@@ -22,7 +22,7 @@ public class ChangedProcessorsState extends ProcessorsState {
     }
 
     @Override
-    public long murmurHash() {
+    public long hashCode() {
         
         int numBytesNeeded = 0;
 

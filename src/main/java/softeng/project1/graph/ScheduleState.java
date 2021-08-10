@@ -30,7 +30,7 @@ public abstract class ScheduleState implements Schedule {
 
     @Override
     public long getHashKey() {
-        return this.processors.murmurHash();
+        return this.processors.hashCode();
     }
 
     @Override

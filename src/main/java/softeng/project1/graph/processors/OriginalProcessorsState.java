@@ -21,9 +21,8 @@ public class OriginalProcessorsState extends ProcessorsState {
         return originalProcessors;
     }
 
-
     @Override
-    public long murmurHash() {
+    public int hashCode() {
 
         // We know that every Processor in originalProcessors is actually an OriginalProcessor,
         // so only 3 bytes needed each
@@ -33,14 +32,15 @@ public class OriginalProcessorsState extends ProcessorsState {
             // assuming that i passes its value not its reference
             this.processors[i].asByteArray(i*3, byteArrayForHash);
         }
-        // https://github.com/sangupta/murmur 
-        return Murmur3.hash_x86_32(byteArrayForHash, byteArrayForHash.length, 0); 
+        // https://github.com/sangupta/murmur
+        // TODO... Find better method than casting to int
+        return (int) Murmur3.hash_x86_32(byteArrayForHash, byteArrayForHash.length, 0);
     }
 
     @Override
-    public boolean deepEquals(Processors otherProcessors) {
+    public boolean equals(Object otherObject) {
         // OriginalProcessorsState is a singleton class and thus only equal to itself
-        return this == otherProcessors;
+        return this == otherObject;
     }
 
 
