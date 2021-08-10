@@ -49,33 +49,6 @@ public abstract class ScheduleState implements Schedule {
     }
 
     /**
-     * @return : The longest critical path extending from any scheduled path.
-     */
-    @Override
-    public int getMaxBottomLevel() {
-        return this.maxBottomLevel;
-    }
-
-    /**
-     * @return : The earliest moment that all data sent by currently scheduled tasks is first available on all stored
-     * processors.
-     */
-    @Override
-    public int getMaxDataReadyTime() {
-        return this.maxDataReadyTime;
-    }
-
-    /**
-     * @return : The sum total amount of time on each processor spent idling before all tasks (on all processors) are
-     * completed.
-     */
-    @Override
-    public int getIdleTime() {
-        return this.processors.getIdleTime();
-    }
-
-
-    /**
      * Generates a set of new fringe Schedules by greedily scheduling each free task onto every processor.
      * The number of created schedules is bounded by O(nm) where n is the number of tasks and m is the number of
      * processors.
@@ -176,6 +149,60 @@ public abstract class ScheduleState implements Schedule {
         arrayToFill[processorID] = taskEndPoint;
     }
 
+    // ----------- Getter Methods ------------
+
+    /**
+     * @return : The longest critical path extending from any scheduled path.
+     */
+    @Override
+    public int getMaxBottomLevel() {
+        return this.maxBottomLevel;
+    }
+
+    /**
+     * @return : The earliest moment that all data sent by currently scheduled tasks is first available on all stored
+     * processors.
+     */
+    @Override
+    public int getMaxDataReadyTime() {
+        return this.maxDataReadyTime;
+    }
+
+    /**
+     * @return : The sum total amount of time on each processor spent idling before all tasks (on all processors) are
+     * completed.
+     */
+    @Override
+    public int getIdleTime() {
+        return this.processors.getIdleTime();
+    }
+
+    // ------------ Helper Methods ----------
+
+    /**
+     * Abstract helper method.
+     * @return : The Original Schedule State that stores the static data not stored in the general Schedule States.
+     */
+    protected abstract OriginalScheduleState getOriginalSchedule();
+
+    /**
+     * Abstract helper method for generating ScheduleStateChange objects.
+     *
+     * @param freeTask : The task being inserted into the new schedule that the schedule state change represents.
+     * @param processorID : The ID of the processor that the task was inserted into.
+     * @param insertLocation : The start location of the scheduled task.
+     * @return : A new ScheduleStateChange object describing the change in state that occurs from inserting a specified
+     *           task into a specified processor at a specified location.
+     */
+    protected abstract ScheduleStateChange generateStateChange(TaskNode freeTask, int processorID, int insertLocation);
+
+    /**
+     * Abstract helper method.
+     * @param taskID : The ID of the task to return.
+     * @return : TaskNode object that represents the current state of the Task with the given ID.
+     */
+    protected abstract TaskNode getTaskNode(int taskID);
+
     /**
      * Generic Object.toString() override.
      * @return : String representation of the ScheduleState for use in debugging.
@@ -202,28 +229,5 @@ public abstract class ScheduleState implements Schedule {
         stringBuilder.append("-----------------------------\n");
         return stringBuilder.toString();
     }
-
-    /**
-     * Abstract helper method.
-     * @return : The Original Schedule State that stores the static data not stored in the general Schedule States.
-     */
-    protected abstract OriginalScheduleState getOriginalSchedule();
-
-    /**
-     * Abstract helper method for generating ScheduleStateChange objects.
-     *
-     * @param freeTask : The task being inserted into the new schedule that the schedule state change represents.
-     * @param processorID : The ID of the processor that the task was inserted into.
-     * @param insertLocation : The start location of the scheduled task.
-     * @return : A new ScheduleStateChange object describing the change in state that occurs from inserting a specified
-     *           task into a specified processor at a specified location.
-     */
-    protected abstract ScheduleStateChange generateStateChange(TaskNode freeTask, int processorID, int insertLocation);
-
-    /**
-     * Abstract helper method.
-     * @param taskID : The ID of the task to return.
-     * @return : TaskNode object that represents the current state of the Task with the given ID.
-     */
-    protected abstract TaskNode getTaskNode(int taskID);
 }
+
