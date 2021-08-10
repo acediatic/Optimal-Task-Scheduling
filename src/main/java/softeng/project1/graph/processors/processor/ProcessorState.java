@@ -23,11 +23,11 @@ import static softeng.project1.graph.processors.processor.ProcessorHelper.fillPr
 public class ProcessorState implements Processor {
 
     // Immutable fields describing the state of the specific processor
-    private final int processorID;
-    private final int[][] processorSpaces;
-    private final int lastInsertLocation;
-    private int currentInsert;
-    private int changeInIdleTime;
+    private final int processorID; // ID of the processor this object represents a state of
+    private final int[][] processorSpaces; // Array of spaces between tasks currently scheduled on this processor
+    private final int lastInsertLocation; // Start location of the task that was last inserted
+    private int currentInsert; // TODO... find some way not to store this
+    private int changeInIdleTime; // The increase/decrease in idle time due to the insertion of last inserted task
 
     /**
      * Protected constructor for the generation of new ProcessorState objects.
@@ -47,48 +47,10 @@ public class ProcessorState implements Processor {
     }
 
     /**
-     * Returns the ID of the processor that this object represents a state of.
-     * @return : Processor ID.
-     */
-    @Override
-    public int getID() {
-        return this.processorID;
-    }
-
-    /**
-     * The number of spaces between tasks in the current set of tasks queued 
-     * on the processor. Spaces can be 0 length, and one space always exists 
-     * at the end of the queue/schedule. Thus the number of tasks will always
-     * be one less than the number of spaces.
-     * 
-     * @return : Number or spaces between scheduled tasks. Minimum of 1 and 
-     *           maximum of n + 1 where n is the total number of tasks.
-     */
-    @Override
-    public int getNumSpaces() {
-        return processorSpaces.length;
-    }
-
-    @Override
-    public int getLastInsertLocation() {
-        return this.lastInsertLocation;
-    }
-
-    @Override
-    public int getLength() {
-        return processorSpaces[processorSpaces.length - 1][0]; // Start of zero length final space
-    }
-
-    @Override
-    public int getChangeInIdleTime() {
-        return this.changeInIdleTime;
-    }
-
-    /**
-     * Generates a Processor object representing the state of the specific 
-     * processor (represented by the called Processor) after a new Task 
+     * Generates a Processor object representing the state of the specific
+     * processor (represented by the called Processor) after a new Task
      * has been greedily scheduled into the earliest possible space.
-     * 
+     *
      * @param newTaskNode : A free task to insert into the processor schedule.
      * @return : A new Processor object representing the processor after the
      *           insert.
@@ -103,10 +65,10 @@ public class ProcessorState implements Processor {
         return new ProcessorState(
                 this.processorID,
                 copyAndInsertSpace(
-                    newProcessorSpaces,
-                    newTaskNode.getTaskID(),
-                    newTaskNode.getTaskCost(),
-                    newTaskNode.getProcessorPrerequisite(this.processorID)
+                        newProcessorSpaces,
+                        newTaskNode.getTaskID(),
+                        newTaskNode.getTaskCost(),
+                        newTaskNode.getProcessorPrerequisite(this.processorID)
                 ),
                 this.currentInsert
         );
@@ -115,19 +77,19 @@ public class ProcessorState implements Processor {
 
     /**
      * Helper method for implementing the logic behind the interface method copyAndInsert().
-     * 
-     * Iterates through the current array of spaces until either a space is found that fits the 
+     *
+     * Iterates through the current array of spaces until either a space is found that fits the
      * given task or the array ends.
      * Uses System.arraycopy() to quickly copy data across from the current space array to the new one.
      *
      * This method is technically O(n) due to the list iteration.
-     * 
+     *
      * @param newProcessorSpaces : A correctly sized array that the copied/inserted spaces will be added to.
      * @param taskID : The ID of the task that we're recording the addition into the processor of.
      * @param taskLength : The length/cost of said task
      * @param prerequisite : The earliest position within this specific processor where all data needed by
      *                       the task is available.
-     * @return : A filled two dimensional array recording the location of every task allocated to the 
+     * @return : A filled two dimensional array recording the location of every task allocated to the
      *           processor at this specific state. Data is stored as spaces which are described in the class doc.
      */
     private int[][] copyAndInsertSpace(int[][] newProcessorSpaces, int taskID, int taskLength, int prerequisite) {
@@ -163,36 +125,36 @@ public class ProcessorState implements Processor {
                 // Can insert task directly into start of space
                 this.currentInsert = this.processorSpaces[i][0];
                 this.changeInIdleTime = -taskLength;
-                
+
                 // We've found the insert position so copy the first half of array across
                 System.arraycopy(this.processorSpaces, 0, newProcessorSpaces, 0, i-1);
-                
+
                 // prereq was passed so new 0 length space starts at beginning of now-filled old space
                 fillProcessorSpace(newProcessorSpaces, i,
-                    this.processorSpaces[i][0], // start
-                    0,                          // length
-                    taskID                      // next task ID
+                        this.processorSpaces[i][0], // start
+                        0,                          // length
+                        taskID                      // next task ID
                 );
 
                 // adding new space after inserted task
                 fillProcessorSpace(newProcessorSpaces, i+1,
-                    this.processorSpaces[i][0] + taskLength,    // start
-                    diffNodeTaskLength,                         // length 
-                    this.processorSpaces[i][2]                  // next task ID
+                        this.processorSpaces[i][0] + taskLength,    // start
+                        diffNodeTaskLength,                         // length
+                        this.processorSpaces[i][2]                  // next task ID
                 );
 
                 // copying rest of array
                 i++;
                 System.arraycopy(
-                    this.processorSpaces,           // source
-                    i,                              // source start
-                    newProcessorSpaces,             // destination
-                    i+1,                            // destination start - one after source because of added spot in middle
-                    this.processorSpaces.length - i // length of copied section
+                        this.processorSpaces,           // source
+                        i,                              // source start
+                        newProcessorSpaces,             // destination
+                        i+1,                            // destination start - one after source because of added spot in middle
+                        this.processorSpaces.length - i // length of copied section
                 );;
                 return newProcessorSpaces;
 
-                // is the node long enough to compensate for the prerequisite position being after the space start? 
+                // is the node long enough to compensate for the prerequisite position being after the space start?
             } else if (diffDiffNTPS >= 0) {
 
                 // We can insert task directly at prerequisite location as the space is big enough
@@ -201,31 +163,31 @@ public class ProcessorState implements Processor {
 
                 // We've found the insert position so copy the first half of array across
                 System.arraycopy(this.processorSpaces, 0, newProcessorSpaces, 0, i-1);
-                
+
                 // task fits even though prereq is after space start so we add new space before inserted task
                 fillProcessorSpace(newProcessorSpaces, i,
-                    this.processorSpaces[i][0], // start
-                    diffPrereqStartPosition,    // length
-                    taskID                      // next task ID
+                        this.processorSpaces[i][0], // start
+                        diffPrereqStartPosition,    // length
+                        taskID                      // next task ID
                 );
 
                 // adding new space after inserted task
                 fillProcessorSpace(newProcessorSpaces, i,
-                    this.processorSpaces[i][0] + diffPrereqStartPosition + taskLength,  // start
-                    diffDiffNTPS,                                                       // length
-                    this.processorSpaces[i][2]                                          // next task ID
-                ); 
+                        this.processorSpaces[i][0] + diffPrereqStartPosition + taskLength,  // start
+                        diffDiffNTPS,                                                       // length
+                        this.processorSpaces[i][2]                                          // next task ID
+                );
                 // copying rest of array
                 i++;
                 System.arraycopy(
-                    this.processorSpaces,           // source
-                    i,                              // source start
-                    newProcessorSpaces,             // destination
-                    i+1,                            // destination start - one after source because of added spot in middle
-                    this.processorSpaces.length - i // length of copied section
+                        this.processorSpaces,           // source
+                        i,                              // source start
+                        newProcessorSpaces,             // destination
+                        i+1,                            // destination start - one after source because of added spot in middle
+                        this.processorSpaces.length - i // length of copied section
                 );
                 return newProcessorSpaces;
-            } 
+            }
         }
 
         // We've reached the end of the array without returning, so we're just going bang the space right on the end.
@@ -237,45 +199,45 @@ public class ProcessorState implements Processor {
 
         // updating old final space to now stretch to insertPoint
         fillProcessorSpace(newProcessorSpaces, lastSpaceIndex,
-            processorSpaces[lastSpaceIndex][0],                         // start
-            changeInIdleTime,                                           // length
-            taskID                                                      // nextTaskID
+                processorSpaces[lastSpaceIndex][0],                         // start
+                changeInIdleTime,                                           // length
+                taskID                                                      // nextTaskID
         );
-        
+
         // adding new final space
         lastSpaceIndex++;
         fillProcessorSpace(newProcessorSpaces, lastSpaceIndex,
-            currentInsert + taskLength,   // start
-            0,                          // length 0 as at end of processor schedule
-            -1                          // -1 task ID ensures that hash conflicts don't occur when 
-                                        // starts of other processors mimic end of this processor
+                currentInsert + taskLength,   // start
+                0,                          // length 0 as at end of processor schedule
+                -1                          // -1 task ID ensures that hash conflicts don't occur when
+                // starts of other processors mimic end of this processor
         );
 
         // returning completed array
         return newProcessorSpaces;
-        
+
     }
 
 
     /**
-    * Implementation of deepEquals from Processor, using Arrays.deepEquals.
-    * Note that:
-    * - deepEquals returns FALSE if it is given a Processor implementation that isn't ProcessorState, regardless of stored data.
-    * - deepEquals returns FALSE if it is given a Processor with a different ID to itself, regardless of stored data.
-    *
-    * @param otherProcessor : The other processor being equated to this one.
-    * @return : Whether or not the data stored in the given processor is the same as is stored in this one, with the caveats mentioned above.
-    */
+     * Implementation of deepEquals from Processor, using Arrays.deepEquals.
+     * Note that:
+     * - deepEquals returns FALSE if it is given a Processor implementation that isn't ProcessorState, regardless of stored data.
+     * - deepEquals returns FALSE if it is given a Processor with a different ID to itself, regardless of stored data.
+     *
+     * @param otherProcessor : The other processor being equated to this one.
+     * @return : Whether or not the data stored in the given processor is the same as is stored in this one, with the caveats mentioned above.
+     */
     @Override
     public boolean deepEquals(Processor otherProcessor) {
         // Not currently handling null values for speed reasons
         try {
             // DeepEquals should handle the fact that we're comparing two dimensional arrays
             ProcessorState otherProcessorState = (ProcessorState) otherProcessor;
-            return 
-                Arrays.deepEquals(otherProcessorState.processorSpaces,this.processorSpaces) 
-                && 
-                this.processorID == otherProcessorState.processorID;
+            return
+                    Arrays.deepEquals(otherProcessorState.processorSpaces,this.processorSpaces)
+                            &&
+                            this.processorID == otherProcessorState.processorID;
         } catch (ClassCastException e) {
             return false; // This is allowed because ProcessorStates will never directly equal OriginalProcessors
         }
@@ -285,15 +247,15 @@ public class ProcessorState implements Processor {
      * Implementation of asByteArray from Processor.
      * Iterates over every stored integer in the 2D array and inserts them into the byte array.
      * Hashing collisions may occur if the start locations of some spaces grow larger then 255.
-     * 
+     *
      * @param index : The location in the array where the values should be inserted.
      * @param arrayToFill : The array to store the values in.
      * @return : The given array with all data from the ProcessorState added.
      */
     @Override
     public byte[] asByteArray(int index, byte[] arrayToFill) {
-        
-        // Not currently checking if will fit 
+
+        // Not currently checking if will fit
         for (int[] spaceValue: this.processorSpaces) {
             for (int value: spaceValue) {
                 // casting to byte will have unintended consequences if value > 255, should be fine...
@@ -302,6 +264,52 @@ public class ProcessorState implements Processor {
             }
         }
         return arrayToFill;
+    }
+
+    /**
+     * @return : The ID of the processor that this object represents a state of.
+     */
+    @Override
+    public int getID() {
+        return this.processorID;
+    }
+
+    /**
+     * The number of spaces between tasks in the current set of tasks queued 
+     * on the processor. Spaces can be 0 length, and one space always exists 
+     * at the end of the queue/schedule. Thus the number of tasks will always
+     * be one less than the number of spaces.
+     * 
+     * @return : Number or spaces between scheduled tasks. Minimum of 1 and 
+     *           maximum of n + 1 where n is the total number of tasks.
+     */
+    @Override
+    public int getNumSpaces() {
+        return processorSpaces.length;
+    }
+
+    /**
+     * @return : Start location of the task that was last inserted.
+     */
+    @Override
+    public int getLastInsertLocation() {
+        return this.lastInsertLocation;
+    }
+
+    /**
+     * @return : Earliest moment that all scheduled tasks have been completed.
+     */
+    @Override
+    public int getLength() {
+        return processorSpaces[processorSpaces.length - 1][0]; // Start of zero length final space
+    }
+
+    /**
+     * @return : Increase/decrease in idle time due to the insertion of last inserted task
+     */
+    @Override
+    public int getChangeInIdleTime() {
+        return this.changeInIdleTime;
     }
 
 }
