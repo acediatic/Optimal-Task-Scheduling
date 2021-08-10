@@ -22,7 +22,7 @@ public class ChangedProcessorsState extends ProcessorsState {
     }
 
     @Override
-    public long hashCode() {
+    public int hashCode() {
         
         int numBytesNeeded = 0;
 
@@ -38,12 +38,19 @@ public class ChangedProcessorsState extends ProcessorsState {
             index = index + processor.getNumSpaces()*3;
         }
         // https://github.com/sangupta/murmur
-        return Murmur3.hash_x86_32(byteArrayForHash, byteArrayForHash.length, 0);
+        // TODO... find nicer way to do this than int casting
+        return (int) Murmur3.hash_x86_32(byteArrayForHash, byteArrayForHash.length, 0);
 
     }
 
     @Override
-    public boolean deepEquals(Processors otherProcessors) {
+    public boolean equals(Object otherObject) {
+        Processors otherProcessors;
+        try {
+            otherProcessors = (Processors) otherObject;
+        } catch (ClassCastException e) {
+            return false;
+        }
         for (int i = 0; i < processors.length; i++) {
             if (!otherProcessors.getProcessor(i).deepEquals(processors[i])) {
                 return false;
@@ -60,6 +67,7 @@ public class ChangedProcessorsState extends ProcessorsState {
     @Override
     protected int calculateIdleTime(Processor newProcessor) {
         int lengthDiff = this.maxProcessorLength - newProcessor.getLength();
+        // All processors idle time has to extend by any increase in max processor length.
         if (lengthDiff > 0) {
             return this.idleTime +
                     newProcessor.getChangeInIdleTime() +
