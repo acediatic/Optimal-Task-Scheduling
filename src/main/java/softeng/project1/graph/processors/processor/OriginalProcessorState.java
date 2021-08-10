@@ -73,7 +73,7 @@ public class OriginalProcessorState implements Processor {
 
     @Override
     public int getLastInsertLocation() {
-        return 0; // TODO... Should this throw an error?
+        return -1; // TODO... Should this throw an error?
     }
 
     @Override

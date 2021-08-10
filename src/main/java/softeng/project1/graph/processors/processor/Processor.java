@@ -38,8 +38,7 @@ import softeng.project1.graph.tasks.TaskNode;
 public interface Processor {
 
     /**
-     * Returns the ID of the processor that this object represents a state of.
-     * @return : Processor ID.
+     * @return : The ID of the processor that this object represents a state of.
      */
     int getID();
 
@@ -56,13 +55,17 @@ public interface Processor {
     int getNumSpaces();
 
     /**
-     * // TODO...
+     * @return : The start location of the last task to be inserted. If no tasks have been inserted return -1.
      */
     int getLastInsertLocation();
 
-    int getLength();
     /**
-     * TODO...
+     * @return : The location where the final scheduled task finishes.
+     */
+    int getLength();
+
+    /**
+     * @return : The increase/decrease in idle time that occurred after the insertion of the last inserted task.
      */
     int getChangeInIdleTime();
 
