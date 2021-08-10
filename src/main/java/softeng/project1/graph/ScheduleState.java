@@ -3,11 +3,20 @@ package softeng.project1.graph;
 import softeng.project1.graph.processors.Processors;
 import softeng.project1.graph.tasks.TaskNode;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+/**
+ * @author Remus Courtenay
+ * @version 1.0
+ * @since 1.8
+ *
+ * Abstract implementation of Schedule that represents all possible states of partial schedules.
+ * Implements methods common to all ScheduleStates such as getter methods for final fields and the majority of the
+ * expand method.
+ *
+ * ScheduleState represents a partial schedule and as such should be considered immutable.
+ * Care should be taken to never directly expose the stored Maps.
+ */
 public abstract class ScheduleState implements Schedule {
 
     protected final Map<Integer, TaskNode> taskNodes;
@@ -28,26 +37,57 @@ public abstract class ScheduleState implements Schedule {
         this.maxDataReadyTime = maxDataReadyTime;
     }
 
+    /**
+     * It's a pain that this directly exposes Processors. Using a HashTable over a HashMap would be preferable so this
+     * wasn't required.
+     * @return : The Processors object storing data about the current state of the processors for use as a key in the
+     *           hashmap required by A*.
+     */
     @Override
     public Processors getHashKey() {
         return this.processors;
     }
 
+    /**
+     * @return : The longest critical path extending from any scheduled path.
+     */
     @Override
     public int getMaxBottomLevel() {
         return this.maxBottomLevel;
     }
 
+    /**
+     * @return : The earliest moment that all data sent by currently scheduled tasks is first available on all stored
+     * processors.
+     */
     @Override
     public int getMaxDataReadyTime() {
         return this.maxDataReadyTime;
     }
 
+    /**
+     * @return : The sum total amount of time on each processor spent idling before all tasks (on all processors) are
+     * completed.
+     */
     @Override
     public int getIdleTime() {
         return this.processors.getIdleTime();
     }
 
+
+    /**
+     * Generates a set of new fringe Schedules by greedily scheduling each free task onto every processor.
+     * The number of created schedules is bounded by O(nm) where n is the number of tasks and m is the number of
+     * processors.
+     * Pruning techniques are utilised to reduce this number by attempting to only generating unique schedules.
+     *
+     * Once expand has been called on a Schedule it should no longer be considered as a fringe schedule and thus be
+     * removed from the Priority Queue. All generated schedules are by definition fringe and, unless they have already
+     * been created elsewhere, should be inserted into the Priority Queue.
+     *
+     * @return : A list of new fringe schedules for insertion into the Priority Queue, assuming they don't already
+     * exist.
+     */
     @Override
     public List<Schedule> expand() {
 
@@ -113,21 +153,33 @@ public abstract class ScheduleState implements Schedule {
         return expandedSchedules;
     }
 
-    private static void fillProcessorPrerequisites(int insertPoint, int processorID, int taskLength, int communicationCost, int[] arrayToFill) {
+    /**
+     * Private helper method for generating processor prerequisite arrays.
+     *
+     * @param insertPoint : The location in the processor that the parent task was inserted.
+     * @param processorID : The ID of the processor that the parent task was inserted into.
+     * @param taskLength : The length/cost of the parent task.
+     * @param communicationCost : The cost of communicating the data from the parent to a specific child on a SEPERATE
+     *                            processor.
+     * @param arrayToFill : The array of processors prerequisite locations, dictated by the communication from one parent
+     *                      to a specific child, that this method is filling.
+     */
+    private static void fillProcessorPrerequisites(int insertPoint,
+                                                   int processorID,
+                                                   int taskLength,
+                                                   int communicationCost,
+                                                   int[] arrayToFill) {
 
         int taskEndPoint = insertPoint + taskLength;
-        int communicatedPrerequisite = taskEndPoint + communicationCost;
-
-        // TODO... Find faster way of doing this
-        for (int i = -1; i < arrayToFill.length; i++) {
-            if (i == processorID) {
-                arrayToFill[i] = taskEndPoint;
-            } else {
-                arrayToFill[i] = communicatedPrerequisite;
-            }
-        }
+        // Theoretically could be sped up by not double writing the value at index processorID.
+        Arrays.fill(arrayToFill, taskEndPoint + communicationCost);
+        arrayToFill[processorID] = taskEndPoint;
     }
 
+    /**
+     * Generic Object.toString() override.
+     * @return : String representation of the ScheduleState for use in debugging.
+     */
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
@@ -151,14 +203,27 @@ public abstract class ScheduleState implements Schedule {
         return stringBuilder.toString();
     }
 
+    /**
+     * Abstract helper method.
+     * @return : The Original Schedule State that stores the static data not stored in the general Schedule States.
+     */
     protected abstract OriginalScheduleState getOriginalSchedule();
 
+    /**
+     * Abstract helper method for generating ScheduleStateChange objects.
+     *
+     * @param freeTask : The task being inserted into the new schedule that the schedule state change represents.
+     * @param processorID : The ID of the processor that the task was inserted into.
+     * @param insertLocation : The start location of the scheduled task.
+     * @return : A new ScheduleStateChange object describing the change in state that occurs from inserting a specified
+     *           task into a specified processor at a specified location.
+     */
     protected abstract ScheduleStateChange generateStateChange(TaskNode freeTask, int processorID, int insertLocation);
 
+    /**
+     * Abstract helper method.
+     * @param taskID : The ID of the task to return.
+     * @return : TaskNode object that represents the current state of the Task with the given ID.
+     */
     protected abstract TaskNode getTaskNode(int taskID);
-
-
-
-
-
 }
