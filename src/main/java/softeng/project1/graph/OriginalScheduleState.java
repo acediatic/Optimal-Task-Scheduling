@@ -74,16 +74,17 @@ public class OriginalScheduleState extends ScheduleState {
      * Implementation of the helper method from ScheduleState.
      * Previous change is set to null as no change exists before the Original state.
      *
-     * @param freeTask : The task being inserted into the new schedule that the schedule state change represents.
+     * @param freeTaskID : The ID of the task being inserted into the new schedule that the schedule state change
+     *                     represents.
      * @param processorID : The ID of the processor that the task was inserted into.
      * @param insertLocation : The start location of the scheduled task.
      * @return : The top level StateChange object created from the generation of a state from the original state.
      */
     @Override
-    protected ScheduleStateChange generateStateChange(TaskNode freeTask, int processorID, int insertLocation) {
+    protected ScheduleStateChange generateStateChange(int freeTaskID, int processorID, int insertLocation) {
         return new ScheduleStateChange(
                 null, // No previous change
-                freeTask,
+                freeTaskID,
                 processorID,
                 insertLocation
         );

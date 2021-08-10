@@ -7,7 +7,7 @@ import java.util.*;
 
 /**
  * @author Remus Courtenay
- * @version 1.0
+ * @version 1.0.1
  * @since 1.8
  *
  * Abstract implementation of Schedule that represents all possible states of partial schedules.
@@ -114,7 +114,7 @@ public abstract class ScheduleState implements Schedule {
                 // Make new Schedule object to hold changed data
                 expandedSchedules.add(new ChangedScheduleState(
                         getOriginalSchedule(),
-                        generateStateChange(freeTask, processorID, insertLocation),
+                        generateStateChange(freeTask.getTaskID(), processorID, insertLocation),
                         newTaskNodes,
                         newFreeNodes,
                         newProcessors,
@@ -188,13 +188,14 @@ public abstract class ScheduleState implements Schedule {
     /**
      * Abstract helper method for generating ScheduleStateChange objects.
      *
-     * @param freeTask : The task being inserted into the new schedule that the schedule state change represents.
+     * @param freeTaskID : The ID of the task being inserted into the new schedule that the schedule state change
+     *                     represents.
      * @param processorID : The ID of the processor that the task was inserted into.
      * @param insertLocation : The start location of the scheduled task.
      * @return : A new ScheduleStateChange object describing the change in state that occurs from inserting a specified
      *           task into a specified processor at a specified location.
      */
-    protected abstract ScheduleStateChange generateStateChange(TaskNode freeTask, int processorID, int insertLocation);
+    protected abstract ScheduleStateChange generateStateChange(int freeTaskID, int processorID, int insertLocation);
 
     /**
      * Abstract helper method.

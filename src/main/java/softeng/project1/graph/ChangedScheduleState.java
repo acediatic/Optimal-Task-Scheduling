@@ -79,16 +79,17 @@ public class ChangedScheduleState extends ScheduleState{
 
     /**
      * Implementation of helper method from ScheduleState.
-     * @param freeTask : The task being inserted into the new schedule that the schedule state change represents.
+     * @param freeTaskID : The ID of the task being inserted into the new schedule that the schedule state change
+     *                     represents.
      * @param processorID : The ID of the processor that the task was inserted into.
      * @param insertLocation : The start location of the scheduled task.
      * @return : The state change that occurs when a specific task is inserted into the current state of the Processors
      */
     @Override
-    protected ScheduleStateChange generateStateChange(TaskNode freeTask, int processorID, int insertLocation) {
+    protected ScheduleStateChange generateStateChange(int freeTaskID, int processorID, int insertLocation) {
         return new ScheduleStateChange(
                 this.change,
-                freeTask,
+                freeTaskID,
                 processorID,
                 insertLocation
         );
