@@ -29,8 +29,8 @@ public abstract class ScheduleState implements Schedule {
     }
 
     @Override
-    public long getHashKey() {
-        return this.processors.hashCode();
+    public Processors getHashKey() {
+        return this.processors;
     }
 
     @Override

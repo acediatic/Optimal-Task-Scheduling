@@ -32,7 +32,7 @@ public class ChangedScheduleState extends ScheduleState{
     @Override
     public boolean deepEquals(Schedule otherSchedule) {
         try {
-            return ((ChangedScheduleState) otherSchedule).processors.deepEquals(this.processors);
+            return ((ChangedScheduleState) otherSchedule).processors.equals(this.processors);
         } catch (ClassCastException e) {
             return false;
         }
