@@ -27,7 +27,6 @@ public class ChangedScheduleState extends ScheduleState{
 
     // Immutable state fields
     private final OriginalScheduleState originalScheduleState; // The original schedule state that stores all data
-    private final ScheduleStateChange change; // The state change that occurred in the creation of this object
 
     /**
      * Protected constructor for use in the expand method only.
@@ -49,9 +48,8 @@ public class ChangedScheduleState extends ScheduleState{
             Processors processors,
             int maxBottomLevel,
             int maxDataReadyTime) {
-        super(taskNodes, freeNodes, processors, maxBottomLevel, maxDataReadyTime);
+        super(taskNodes, freeNodes, processors, change, maxBottomLevel, maxDataReadyTime);
         this.originalScheduleState = originalScheduleState;
-        this.change = change;
     }
 
     /**

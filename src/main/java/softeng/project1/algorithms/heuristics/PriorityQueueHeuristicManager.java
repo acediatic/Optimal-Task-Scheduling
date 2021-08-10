@@ -3,6 +3,7 @@ package softeng.project1.algorithms.heuristics;
 import softeng.project1.algorithms.AlgorithmStep;
 import softeng.project1.graph.Schedule;
 
+import java.util.List;
 import java.util.PriorityQueue;
 
 public class PriorityQueueHeuristicManager implements HeuristicManager {
@@ -16,6 +17,11 @@ public class PriorityQueueHeuristicManager implements HeuristicManager {
     @Override
     public AlgorithmStep get() {
         return null;
+    }
+
+    @Override
+    public void addAll(List<Schedule> newFringeSchedules) {
+
     }
 
     @Override

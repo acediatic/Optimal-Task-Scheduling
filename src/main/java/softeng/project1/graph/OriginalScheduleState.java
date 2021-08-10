@@ -29,6 +29,7 @@ import java.util.Map;
  */
 public class OriginalScheduleState extends ScheduleState {
 
+    private static final ScheduleStateChange ORIGINAL_STATE_CHANGE = null;
     private static final int ORIGINAL_MAX_BOTTOM_LEVEL = 0;
     private static final int ORIGINAL_MAX_DATA_READY_TIME = 0;
 
@@ -53,6 +54,7 @@ public class OriginalScheduleState extends ScheduleState {
                 Collections.unmodifiableMap(taskNodes),
                 Collections.unmodifiableMap(freeTaskNodes),
                 new OriginalProcessorsState(numProcessors),
+                ORIGINAL_STATE_CHANGE,
                 ORIGINAL_MAX_BOTTOM_LEVEL,
                 ORIGINAL_MAX_DATA_READY_TIME
         );
@@ -83,7 +85,7 @@ public class OriginalScheduleState extends ScheduleState {
     @Override
     protected ScheduleStateChange generateStateChange(int freeTaskID, int processorID, int insertLocation) {
         return new ScheduleStateChange(
-                null, // No previous change
+                ORIGINAL_STATE_CHANGE, // No previous change
                 freeTaskID,
                 processorID,
                 insertLocation
