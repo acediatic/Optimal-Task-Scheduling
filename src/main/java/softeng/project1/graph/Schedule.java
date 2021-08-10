@@ -1,6 +1,6 @@
 package softeng.project1.graph;
 
-import softeng.project1.algorithms.heuristics.HeuristicManager;
+import softeng.project1.algorithms.astar.heuristics.HeuristicManager;
 import softeng.project1.graph.processors.Processors;
 
 import java.util.List;

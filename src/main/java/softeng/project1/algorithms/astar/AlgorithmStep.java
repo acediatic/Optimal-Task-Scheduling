@@ -1,4 +1,4 @@
-package softeng.project1.algorithms;
+package softeng.project1.algorithms.astar;
 
 import softeng.project1.graph.Schedule;
 

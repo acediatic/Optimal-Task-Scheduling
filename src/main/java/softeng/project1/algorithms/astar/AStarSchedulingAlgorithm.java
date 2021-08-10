@@ -1,17 +1,15 @@
-package softeng.project1.algorithms;
+package softeng.project1.algorithms.astar;
 
-import softeng.project1.algorithms.heuristics.HeuristicManager;
-import softeng.project1.algorithms.heuristics.PriorityQueueHeuristicManager;
+import softeng.project1.algorithms.SchedulingAlgorithm;
+import softeng.project1.algorithms.astar.heuristics.HeuristicManager;
 import softeng.project1.graph.Schedule;
-import softeng.project1.graph.ChangedScheduleState;
 import softeng.project1.graph.processors.Processors;
-import softeng.project1.graph.processors.processor.Processor;
 
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class AStarSchedulingAlgorithm implements SchedulingAlgorithm {
+public abstract class AStarSchedulingAlgorithm implements SchedulingAlgorithm {
 
     private final HeuristicManager heuristicManager;
     private final Map<Processors, Schedule> closedSchedules;

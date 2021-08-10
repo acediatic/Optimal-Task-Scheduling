@@ -1,9 +1,10 @@
-package softeng.project1.algorithms;
+package softeng.project1.algorithms.valid;
 
 import org.graphstream.algorithm.TopologicalSortDFS;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 import org.jetbrains.annotations.NotNull;
+import softeng.project1.algorithms.SchedulingAlgorithm;
 import softeng.project1.graph.processors.processor.ListProcessor;
 import softeng.project1.graph.tasks.edges.ListCommunicationCost;
 import softeng.project1.graph.tasks.ListTask;

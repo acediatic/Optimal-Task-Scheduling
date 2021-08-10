@@ -1,6 +1,6 @@
 package softeng.project1;
 
-import softeng.project1.algorithms.ListSchedulingAlgorithm;
+import softeng.project1.algorithms.valid.ListSchedulingAlgorithm;
 import softeng.project1.converters.IOHandler;
 
 import java.util.List;
