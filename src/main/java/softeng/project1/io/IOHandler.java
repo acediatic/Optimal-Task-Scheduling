@@ -1,4 +1,4 @@
-package softeng.project1.converters;
+package softeng.project1.io;
 
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.implementations.DefaultGraph;

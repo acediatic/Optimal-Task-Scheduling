@@ -1,4 +1,4 @@
-package softeng.project1;
+package softeng.project1.io;
 
 import org.apache.commons.cli.*;
 import softeng.project1.common.SchedulerErrorMessages;
