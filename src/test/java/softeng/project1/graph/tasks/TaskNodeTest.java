@@ -1,8 +1,6 @@
-package softeng.project1.graph;
+package softeng.project1.graph.tasks;
 
 import org.junit.jupiter.api.Test;
-import softeng.project1.graph.tasks.ChangedTaskNodeState;
-import softeng.project1.graph.tasks.OriginalTaskNodeState;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
