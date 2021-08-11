@@ -24,21 +24,7 @@ public class AStarParallelThreadPoolExecutor extends ThreadPoolExecutor {
         this.optimalSolutions = new ArrayList<>();
     }
 
-    @Override
-    protected void afterExecute(Runnable runnable, Throwable throwable) {
 
-        List<Schedule> fringeSchedules;
-        AlgorithmStep algorithmStep = (AlgorithmStep) runnable;
-
-        if ((fringeSchedules = algorithmStep.getFringeSchedules()) == null) {
-            this.optimalSolutions.add(algorithmStep.rebuildPath());
-            shutdown();
-        } else {
-            // This is pretty cursed tbh
-            this.algorithm.putFringeSchedules(fringeSchedules);
-        }
-
-    }
 
     public List<int[]> getOptimalSolution() {
         // TODO... actually check which of these is the best

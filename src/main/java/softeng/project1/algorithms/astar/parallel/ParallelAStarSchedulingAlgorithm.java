@@ -1,27 +1,34 @@
 package softeng.project1.algorithms.astar.parallel;
 
 import softeng.project1.algorithms.astar.AStarSchedulingAlgorithm;
+import softeng.project1.algorithms.astar.AlgorithmStep;
+import softeng.project1.algorithms.astar.heuristics.BlockingQueueHeuristicManager;
 import softeng.project1.algorithms.astar.heuristics.HeuristicManager;
 import softeng.project1.graph.Schedule;
+import softeng.project1.graph.processors.Processors;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
+import java.util.Map;
+import java.util.concurrent.*;
 
-public class ParallelAStarSchedulingAlgorithm extends AStarSchedulingAlgorithm {
+public class ParallelAStarSchedulingAlgorithm extends ThreadPoolExecutor implements AStarSchedulingAlgorithm {
 
-    private final AStarParallelThreadPoolExecutor executorService;
+    private static final long KEEP_ALIVE_TIME_MILLISECONDS = 0;
+
+    private final HeuristicManager heuristicManager;
+    private final Map<Processors, Schedule> closedSchedules;
+    private final List<List<int[]>> optimalSchedules;
 
     public ParallelAStarSchedulingAlgorithm(Schedule originalSchedule,
-                                            HeuristicManager heuristicManager,
+                                            BlockingQueueHeuristicManager heuristicManager,
                                             int numThreads) {
-        // TODO... give map a useful original size
-        super(originalSchedule, heuristicManager, new ConcurrentHashMap<>());
-        // TODO... stop this from referencing itself.
-        this.executorService = new AStarParallelThreadPoolExecutor(numThreads, heuristicManager, this);
+        super(numThreads, numThreads, KEEP_ALIVE_TIME_MILLISECONDS, TimeUnit.MILLISECONDS, heuristicManager);
 
+        // TODO... give map a useful original size
+        this.heuristicManager = heuristicManager;
+        this.closedSchedules = new ConcurrentHashMap<>();
+        this.optimalSchedules = new ArrayList<>();
     }
 
     @Override
@@ -29,18 +36,40 @@ public class ParallelAStarSchedulingAlgorithm extends AStarSchedulingAlgorithm {
 
         Runnable algorithmStep;
 
-        while (!this.executorService.isShutdown()) {
+        while (!this.isShutdown()) {
             // Wait for shutdown
         }
-
-        return this.executorService.getOptimalSolution();
-
-
+        // TODO... do better than this.
+        return this.optimalSchedules.get(0);
     }
 
-    public void putFringeSchedules(List<Schedule> fringeSchedules) {
-        this.heuristicManager.addAll(pruneExpandedSchedulesAndAddToMap(fringeSchedules, this.closedSchedules));
+    @Override
+    protected void afterExecute(Runnable runnable, Throwable throwable) {
+
+        List<Schedule> fringeSchedules;
+        AlgorithmStep algorithmStep = (AlgorithmStep) runnable;
+
+        if ((fringeSchedules = algorithmStep.getFringeSchedules()) == null) {
+            this.optimalSchedules.add(algorithmStep.rebuildPath());
+            shutdown();
+        } else {
+            this.heuristicManager.addAll(pruneExpandedSchedulesAndAddToMap(fringeSchedules));
+        }
     }
 
 
+    @Override
+    public List<Schedule> pruneExpandedSchedulesAndAddToMap(List<Schedule> expandedSchedules) {
+        List<Schedule> unexploredSchedules = new ArrayList<>();
+        for (Schedule expandedSchedule: expandedSchedules) {
+            if (!this.closedSchedules.containsKey(expandedSchedule.getHashKey())) {
+                this.closedSchedules.put(expandedSchedule.getHashKey(), expandedSchedule);
+                unexploredSchedules.add(expandedSchedule);
+            } else {
+                // TODO... ensure that our heuristic is consistent so we don't have to do anything here
+            }
+        }
+
+        return unexploredSchedules;
+    }
 }
