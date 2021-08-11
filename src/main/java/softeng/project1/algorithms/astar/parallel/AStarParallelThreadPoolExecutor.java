@@ -1,6 +1,7 @@
 package softeng.project1.algorithms.astar.parallel;
 
 import softeng.project1.algorithms.astar.AlgorithmStep;
+import softeng.project1.algorithms.astar.heuristics.BlockingQueueHeuristicManager;
 import softeng.project1.algorithms.astar.heuristics.HeuristicManager;
 import softeng.project1.graph.Schedule;
 
@@ -16,9 +17,9 @@ public class AStarParallelThreadPoolExecutor extends ThreadPoolExecutor {
     private final List<List<int[]>> optimalSolutions;
 
     public AStarParallelThreadPoolExecutor(int corePoolSize,
-                                           HeuristicManager heuristicManager,
+                                           BlockingQueueHeuristicManager heuristicManager,
                                            ParallelAStarSchedulingAlgorithm algorithm) {
-        super(corePoolSize, corePoolSize, keepAliveTime, unit, heuristicManager);
+        super(corePoolSize, corePoolSize, 0, TimeUnit.MILLISECONDS, heuristicManager);
         this.algorithm = algorithm;
         this.optimalSolutions = new ArrayList<>();
     }
