@@ -58,7 +58,7 @@ public class OriginalTaskNodeStateTest {
         assertNotEquals(0, tNode.getTaskCost());
         assertEquals(10, tNode.getTaskCost());
     }
-    
+
     @Test
     void testGetChildLinks() {
         int[][] childLinks = new int[2][2];
@@ -71,5 +71,12 @@ public class OriginalTaskNodeStateTest {
         assertTrue(childLinks.equals(gottenLinks));
     }
 
+    @Test
+    void testGetBottomLevel() {
+        int[][] childLinks = new int[0][0];
+        OriginalTaskNodeState tNode = new OriginalTaskNodeState(150,0, 0, childLinks, 500, 0);
+        assertNotEquals(300, tNode.getBottomLevel());
+        assertEquals(500, tNode.getBottomLevel());
+    }
 
 }
