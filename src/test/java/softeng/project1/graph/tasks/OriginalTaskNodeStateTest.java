@@ -87,4 +87,12 @@ public class OriginalTaskNodeStateTest {
         assertEquals(8, tNode.getMaxCommunicationCost());
     }
 
+    @Test
+    void testGetProcessorPrerequisite() {
+        int[][] childLinks = new int[0][0];
+        OriginalTaskNodeState tNode = new OriginalTaskNodeState(150,0, 0, childLinks, 0, 3);
+        assertNotEquals(1, tNode.getProcessorPrerequisite(2));
+        assertEquals(0, tNode.getProcessorPrerequisite(2));
+    }
+
 }
