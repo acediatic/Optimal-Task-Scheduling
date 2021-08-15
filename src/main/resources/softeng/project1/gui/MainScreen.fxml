@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="softeng.project1.gui.guiController">
+   <children>
+      <VBox id="InputContainer" layoutX="54.0" layoutY="110.0" prefHeight="353.0" prefWidth="505.0" style="-fx-border-color: black;" />
+      <Label id="InputLabel" layoutX="275.0" layoutY="95.0" text="Input Graph" />
+      <Label id="ScheduleLabel" layoutX="870.0" layoutY="95.0" text="Current Best Schedule" />
+      <HBox id="TimerContainer" layoutX="540.0" layoutY="29.0" prefHeight="59.0" prefWidth="200.0" style="-fx-border-color: black;">
+         <children>
+            <Label fx:id="TimerText" prefHeight="59.0" prefWidth="198.0" text="00:00" textAlignment="CENTER" />
+         </children></HBox>
+      <Label id="TimerLabel" layoutX="605.0" layoutY="14.0" text="Time Elapsed" />
+      <StackedBarChart id="Schedule" fx:id="schedule" horizontalGridLinesVisible="false" layoutX="753.0" layoutY="-27.0" legendSide="TOP" prefHeight="628.0" prefWidth="352.0" rotate="90.0" style="-fx-border-color: black;">
+        <xAxis>
+          <CategoryAxis fx:id="processors" label="Processor #" side="BOTTOM" />
+        </xAxis>
+        <yAxis>
+          <NumberAxis label="Start Time" side="LEFT" />
+        </yAxis>
+      </StackedBarChart>
+   </children>
+</AnchorPane>
