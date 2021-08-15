@@ -2,7 +2,10 @@ package softeng.project1.graph.tasks;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 /**
  * TODO...
@@ -28,24 +31,24 @@ public class OriginalTaskNodeStateTest {
     void testIsFreeTrue() {
         int[][] childLinks = new int[0][0];
         OriginalTaskNodeState tNode = new OriginalTaskNodeState(150,0, 0, childLinks, 0, 0);
-        assertEquals(true, tNode.isFree());
+        assertTrue(tNode.isFree());
     }
 
     @Test
     void testIsFreeFalse() {
         int[][] childLinks = new int[0][0];
         OriginalTaskNodeState tNode = new OriginalTaskNodeState(150,0, 3, childLinks, 0, 5);
-        assertEquals(false, tNode.isFree());
+        assertFalse(tNode.isFree());
     }
 
     @Test
     void testCopyAndSetPrerequisite() {
         int[][] childLinks = new int[0][0];
         OriginalTaskNodeState tNode = new OriginalTaskNodeState(150,0, 1, childLinks, 0, 1);
-        int[] prereq = new int[1];
-        assertEquals(false,tNode.isFree());
-        TaskNode returned = tNode.copyAndSetPrerequisite(prereq);
-        assertEquals(true, returned.isFree());
+        int[] prerequisite = new int[1];
+        assertFalse(tNode.isFree());
+        TaskNode returned = tNode.copyAndSetPrerequisite(prerequisite);
+        assertTrue(returned.isFree());
     }
 
 }
