@@ -79,4 +79,12 @@ public class OriginalTaskNodeStateTest {
         assertEquals(500, tNode.getBottomLevel());
     }
 
+    @Test
+    void testGetMaxCommunicationCost() {
+        int[][] childLinks = {{1,5}, {2,8}, {3,3}};
+        OriginalTaskNodeState tNode = new OriginalTaskNodeState(150,0, 0, childLinks, 0, 0);
+        assertNotEquals(5, tNode.getMaxCommunicationCost());
+        assertEquals(8, tNode.getMaxCommunicationCost());
+    }
+
 }
