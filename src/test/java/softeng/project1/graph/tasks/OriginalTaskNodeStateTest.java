@@ -95,4 +95,14 @@ public class OriginalTaskNodeStateTest {
         assertEquals(0, tNode.getProcessorPrerequisite(2));
     }
 
+    @Test
+    void testToString() {
+        int[][] childLinks = new int[2][2];
+        OriginalTaskNodeState tNode = new OriginalTaskNodeState(150,20, 2, childLinks, 10, 2);
+        assertEquals("TaskNodeState:\n" +
+                "numLinks: 2\n" +
+                "Processor Prerequisites:\n" +
+                "0 - 01 - 0",tNode.toString()); //Think this last format can be improved, unless if it is a requirement like this?.
+    }
+
 }
