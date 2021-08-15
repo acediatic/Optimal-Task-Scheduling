@@ -51,4 +51,12 @@ public class OriginalTaskNodeStateTest {
         assertTrue(returned.isFree());
     }
 
+    @Test
+    void testGetTaskCost() {
+        int[][] childLinks = new int[0][0];
+        OriginalTaskNodeState tNode = new OriginalTaskNodeState(150,10, 0, childLinks, 0, 0);
+        assertNotEquals(0, tNode.getTaskCost());
+        assertEquals(10, tNode.getTaskCost());
+    }
+    
 }
