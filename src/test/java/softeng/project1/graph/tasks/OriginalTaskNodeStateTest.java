@@ -39,4 +39,13 @@ public class OriginalTaskNodeStateTest {
         assertEquals(false, tNode.isFree());
     }
 
+    @Test
+    void testCopyAndSetPrerequisite() {
+        int[][] childLinks = new int[0][0];
+        OriginalTaskNodeState tNode = new OriginalTaskNodeState(150,0, 1, childLinks, 0, 1);
+        int[] prereq = new int[1];
+        TaskNode returned = tNode.copyAndSetPrerequisite(prereq);
+        assertEquals(true, returned.isFree());
+    }
+
 }
