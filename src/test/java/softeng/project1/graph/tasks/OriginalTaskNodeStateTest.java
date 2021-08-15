@@ -4,10 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * TODO...
@@ -64,11 +61,11 @@ public class OriginalTaskNodeStateTest {
     @Test
     void testGetChildLinks() {
         int[][] childLinks = new int[2][2];
-        int[][] falseLinks = new int[1][1];
+        int[][] falseLinks = {{1}};
         OriginalTaskNodeState tNode = new OriginalTaskNodeState(150,0, 0, childLinks, 0, 0);
         int[][] gottenLinks = tNode.getChildLinks();
-        assertFalse(Arrays.equals(falseLinks, gottenLinks));
-        assertTrue(Arrays.equals(childLinks, gottenLinks));
+        assertFalse(Arrays.deepEquals(falseLinks, gottenLinks));
+        assertArrayEquals(childLinks, gottenLinks);
     }
 
     @Test
