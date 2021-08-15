@@ -126,7 +126,7 @@ class TaskNodeTest {
         assertEquals("TaskNodeState:\n" +
                 "numLinks: 0\n" +
                 "Processor Prerequisites:\n" +
-                "0 - 01 - 02 - 03 - 04 - 0",tNode.toString()); //Think this last format can be improved, unless if it is a requirement like this?.
+                "0 - 01 - 02 - 03 - 04 - 0",tNode.toString());
     }
 
 }
