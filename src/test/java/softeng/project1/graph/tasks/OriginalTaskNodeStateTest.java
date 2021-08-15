@@ -7,7 +7,9 @@ import java.util.Arrays;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * TODO...
+ * This is the OriginalTaskNodeStateTest class for testing the OriginalTaskNodeState class.
+ * It uses JUnit Testing and thoroughly tests the different methods used in OriginalTaskNodeState.
+ * This includes inherited methods as well.
  * @author Osama Kashif
  */
 public class OriginalTaskNodeStateTest {
