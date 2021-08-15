@@ -2,6 +2,8 @@ package softeng.project1.graph.tasks;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
+
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -65,10 +67,8 @@ public class OriginalTaskNodeStateTest {
         int[][] falseLinks = new int[1][1];
         OriginalTaskNodeState tNode = new OriginalTaskNodeState(150,0, 0, childLinks, 0, 0);
         int[][] gottenLinks = tNode.getChildLinks();
-        assertFalse(falseLinks.equals(gottenLinks));
-        assertNotEquals(falseLinks, gottenLinks);
-        assertEquals(childLinks, gottenLinks);
-        assertTrue(childLinks.equals(gottenLinks));
+        assertFalse(Arrays.equals(falseLinks, gottenLinks));
+        assertTrue(Arrays.equals(childLinks, gottenLinks));
     }
 
     @Test
