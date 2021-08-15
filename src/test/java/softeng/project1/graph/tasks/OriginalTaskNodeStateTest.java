@@ -2,8 +2,7 @@ package softeng.project1.graph.tasks;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * TODO...
@@ -44,6 +43,7 @@ public class OriginalTaskNodeStateTest {
         int[][] childLinks = new int[0][0];
         OriginalTaskNodeState tNode = new OriginalTaskNodeState(150,0, 1, childLinks, 0, 1);
         int[] prereq = new int[1];
+        assertEquals(false,tNode.isFree());
         TaskNode returned = tNode.copyAndSetPrerequisite(prereq);
         assertEquals(true, returned.isFree());
     }
