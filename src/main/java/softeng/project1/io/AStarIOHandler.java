@@ -13,6 +13,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class AStarIOHandler implements IOHandler {
 
@@ -45,25 +46,29 @@ public class AStarIOHandler implements IOHandler {
         List<TaskNode> freeTaskList = new ArrayList<>();
 
         Graph graphStreamInput = IOHelper.readFileAsGraphStream(this.inputFileStream);
+        this.taskNames = IOHelper.mapTaskNamesToIDs(graphStreamInput);
         int numTasks = graphStreamInput.getNodeCount();
 
-        this.taskNames = IOHelper.mapTaskNamesToIDs(graphStreamInput);
-
         Node task;
-        Edge childLink;
-
+        TaskNode originalTaskNode;
         for (int i = 0; i < numTasks; i++) {
 
             task = graphStreamInput.getNode(i);
 
-            returnList.add(new OriginalTaskNodeState(
+            originalTaskNode = new OriginalTaskNodeState(
                     i,
                     IOHelper.getProcessingCost(task),
                     IOHelper.getNumParents(task),
                     buildChildLinkArrays(task),
                     IOHelper.calculateBottomLevel(task),
                     this.numProcessors
-            ));
+            );
+
+            taskList.add(originalTaskNode);
+            if (originalTaskNode.isFree()) {
+                freeTaskList.add(originalTaskNode);
+            }
+
         }
     }
 
@@ -73,7 +78,32 @@ public class AStarIOHandler implements IOHandler {
     }
 
     private int[][] buildChildLinkArrays(Node task) {
-        return null; // TODO...
+
+        Edge[] childLinks = IOHelper.getChildLinks(task);
+        int[][] childLinkArrays = new int[childLinks.length][NUM_CHILD_LINK_DATA_FIELDS];
+
+        Edge childLink;
+        for (int i = 0; i < childLinks.length; i++) {
+            childLink = childLinks[i];
+
+            childLinkArrays[i] = new int[]{
+                    getKeyFromTaskName(childLink.getId()),
+                    IOHelper.getProcessingCost(childLink)
+            };
+        }
+        return childLinkArrays;
+    }
+
+    private int getKeyFromTaskName(String taskName) {
+
+        // Lazy O(n) search for backwards value -> key mapping. Importing a bi-map would make this better
+        for (Map.Entry<Integer, String> taskNameIDMapping: this.taskNames.entrySet()) {
+            if (taskNameIDMapping.getValue().equals(taskName)) {
+                return taskNameIDMapping.getKey();
+            }
+        }
+
+        throw new RuntimeException(); // TODO... add better error handling
     }
 
 
