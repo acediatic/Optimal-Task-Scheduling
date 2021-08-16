@@ -3,6 +3,7 @@ package softeng.project1.io;
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
+import softeng.project1.graph.OriginalScheduleState;
 import softeng.project1.graph.Schedule;
 import softeng.project1.graph.tasks.OriginalTaskNodeState;
 import softeng.project1.graph.tasks.TaskNode;
@@ -11,6 +12,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -42,8 +44,8 @@ public class AStarIOHandler implements IOHandler {
 
     @Override
     public Schedule readFile() {
-        List<TaskNode> taskList = new ArrayList<>();
-        List<TaskNode> freeTaskList = new ArrayList<>();
+        Map<Integer, TaskNode> taskNodeMap = new HashMap<>();
+        Map<Integer, TaskNode> freeTaskNodeMap = new HashMap<>();
 
         Graph graphStreamInput = IOHelper.readFileAsGraphStream(this.inputFileStream);
         this.taskNames = IOHelper.mapTaskNamesToIDs(graphStreamInput);
@@ -51,12 +53,15 @@ public class AStarIOHandler implements IOHandler {
 
         Node task;
         TaskNode originalTaskNode;
+        int newTaskID;
         for (int i = 0; i < numTasks; i++) {
 
             task = graphStreamInput.getNode(i);
+            // Can this be avoided by assuming that the retrieval order is the same?
+            newTaskID = getKeyFromTaskName(task.getId());
 
             originalTaskNode = new OriginalTaskNodeState(
-                    i,
+                    newTaskID,
                     IOHelper.getProcessingCost(task),
                     IOHelper.getNumParents(task),
                     buildChildLinkArrays(task),
@@ -64,12 +69,14 @@ public class AStarIOHandler implements IOHandler {
                     this.numProcessors
             );
 
-            taskList.add(originalTaskNode);
+            taskNodeMap.put(newTaskID, originalTaskNode);
             if (originalTaskNode.isFree()) {
-                freeTaskList.add(originalTaskNode);
+                freeTaskNodeMap.put(newTaskID, originalTaskNode);
             }
-
         }
+
+        return new OriginalScheduleState(taskNodeMap, freeTaskNodeMap, this.numProcessors);
+
     }
 
     @Override

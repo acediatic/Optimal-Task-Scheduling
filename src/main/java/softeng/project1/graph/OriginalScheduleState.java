@@ -3,6 +3,7 @@ package softeng.project1.graph;
 import softeng.project1.graph.processors.OriginalProcessorsState;
 import softeng.project1.graph.tasks.OriginalTaskNodeState;
 import softeng.project1.graph.tasks.TaskNode;
+import softeng.project1.graph.tasks.TaskNodeState;
 
 import java.util.Collections;
 import java.util.Map;
@@ -45,8 +46,8 @@ public class OriginalScheduleState extends ScheduleState {
      * @param freeTaskNodes : A map of TaskID to Original Task states including ONLY tasks that have no parents.
      * @param numProcessors : The number of processors that the tasks can be scheduled upon.
      */
-    public OriginalScheduleState(Map<Integer, OriginalTaskNodeState> taskNodes,
-                                 Map<Integer, OriginalTaskNodeState> freeTaskNodes,
+    public OriginalScheduleState(Map<Integer, TaskNode> taskNodes,
+                                 Map<Integer, TaskNode> freeTaskNodes,
                                  int numProcessors) {
         // Making these immutable, note that the underlying map can still be changed.
         super(

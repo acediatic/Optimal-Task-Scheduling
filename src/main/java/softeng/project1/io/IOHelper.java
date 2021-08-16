@@ -63,7 +63,7 @@ public class IOHelper {
     }
 
     static int calculateBottomLevel(Node task) {
-        return 0 // TODO... Hopefully Adam can do this..
+        return 0; // TODO... Hopefully Adam can sort this out
     }
 
 }
