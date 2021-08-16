@@ -1,4 +1,4 @@
-package softeng.project1.algorithms.astar;
+package softeng.project1.algorithms.astar.heuristics;
 
 import softeng.project1.graph.Schedule;
 

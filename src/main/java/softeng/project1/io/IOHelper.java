@@ -10,9 +10,7 @@ import org.graphstream.stream.file.FileSourceDOT;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class IOHelper {
 
@@ -28,7 +26,7 @@ public class IOHelper {
         try {
             dotFile.readAll(fileStream);
         } catch (IOException e) {
-            e.printStackTrace(); // Input should be sanitised outside of this helper method
+            e.printStackTrace(); // Input should be sanitised outside this helper method
         } finally {
             dotFile.removeSink(returnGraph);
         }
@@ -60,6 +58,27 @@ public class IOHelper {
 
     static Edge[] getChildLinks (Node task) {
         return task.leavingEdges().toArray(Edge[]::new);
+    }
+
+    /*
+     * A recursive, dynamic solution to calculating the bottom levels of each of the nodes.
+     */
+    static int dynamicBottomLevelCalculation(Node taskNode) {
+        int numChildren = taskNode.getOutDegree();
+        int bottomLevel = getProcessingCost(taskNode);
+
+            // If the node has children, it is not the base case, so recursively determine bottom level for children.
+            if (numChildren > 0) {
+                int currentMax = 0;
+                for (int i = 0; i < numChildren; i++) {
+                    Node childTaskNode = taskNode.getLeavingEdge(i).getTargetNode();
+                    currentMax = Math.max(currentMax, dynamicBottomLevelCalculation(childTaskNode));
+                }
+                bottomLevel += currentMax;
+            }
+
+            // either way, this task's cost forms part of its bottom level.
+            return bottomLevel;
     }
 
 }

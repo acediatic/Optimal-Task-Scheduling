@@ -1,7 +1,7 @@
 package softeng.project1.algorithms.astar.parallel;
 
 import softeng.project1.algorithms.astar.AStarSchedulingAlgorithm;
-import softeng.project1.algorithms.astar.AlgorithmStep;
+import softeng.project1.algorithms.astar.heuristics.AlgorithmStep;
 import softeng.project1.algorithms.astar.heuristics.BlockingQueueHeuristicManager;
 import softeng.project1.algorithms.astar.heuristics.HeuristicManager;
 import softeng.project1.graph.Schedule;

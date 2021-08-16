@@ -1,13 +1,9 @@
 package softeng.project1.algorithms.astar.parallel;
 
-import softeng.project1.algorithms.astar.AlgorithmStep;
 import softeng.project1.algorithms.astar.heuristics.BlockingQueueHeuristicManager;
-import softeng.project1.algorithms.astar.heuristics.HeuristicManager;
-import softeng.project1.graph.Schedule;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 

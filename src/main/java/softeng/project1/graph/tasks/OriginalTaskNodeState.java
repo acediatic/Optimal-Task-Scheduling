@@ -32,7 +32,7 @@ public class OriginalTaskNodeState extends TaskNodeState {
     private final int[][] childLinks; // Array of arrays representing outgoing edges, don't expose this directly
     private final int maxCommunicationCost; // Most expensive communication cost in the childLinks set
     // If there are no child links then this = 0
-    private int bottomLevel; // TODO... remember what bottom level is
+    private final int bottomLevel; // TODO... remember what bottom level is
 
     /**
      * Standard constructor for OriginalTaskNodeState objects.
@@ -56,11 +56,12 @@ public class OriginalTaskNodeState extends TaskNodeState {
      *                      different processor and then preparing it for use by the child task.
      * @param numProcessors : The number of processors available for the task to possibly be scheduled on.
      */
-    public OriginalTaskNodeState(int taskID, int taskCost, int numLinks, int[][] childLinks, int numProcessors) {
+    public OriginalTaskNodeState(int taskID, int taskCost, int numLinks, int[][] childLinks, int numProcessors, int bottomLevel) {
         super(numLinks, new int[numProcessors]);
         this.taskID = taskID;
         this.taskCost = taskCost;
         this.childLinks = childLinks;
+        this.bottomLevel = bottomLevel;
 
         // Calculating max cost, could possibly be moved out of constructor but not really a big deal
         // For speed reasons we store this value rather than calculate it every time it's needed
@@ -71,13 +72,6 @@ public class OriginalTaskNodeState extends TaskNodeState {
             }
         }
         this.maxCommunicationCost = tempCommunicationCost;
-    }
-
-    public void setBottomLevel(int bottomLevel) {
-        // Makes bottom level essentially final, but can be called after constructor.
-        if (bottomLevel == 0) {
-            this.bottomLevel = bottomLevel;
-        }
     }
 
     /**

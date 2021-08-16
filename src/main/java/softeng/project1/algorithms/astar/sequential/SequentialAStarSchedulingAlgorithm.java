@@ -1,13 +1,12 @@
 package softeng.project1.algorithms.astar.sequential;
 
 import softeng.project1.algorithms.astar.AStarSchedulingAlgorithm;
-import softeng.project1.algorithms.astar.AlgorithmStep;
+import softeng.project1.algorithms.astar.heuristics.AlgorithmStep;
 import softeng.project1.algorithms.astar.heuristics.HeuristicManager;
 import softeng.project1.graph.Schedule;
 import softeng.project1.graph.processors.Processors;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 

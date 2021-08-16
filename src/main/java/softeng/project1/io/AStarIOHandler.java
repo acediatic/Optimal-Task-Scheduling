@@ -66,6 +66,7 @@ public class AStarIOHandler implements IOHandler {
                     IOHelper.getProcessingCost(task),
                     IOHelper.getNumParents(task),
                     buildChildLinkArrays(task),
+                    IOHelper.dynamicBottomLevelCalculation(task),
                     this.numProcessors
             );
 
@@ -75,61 +76,9 @@ public class AStarIOHandler implements IOHandler {
             }
         }
 
-        // Calculate Bottom Levels
-        setBottomLevels(taskNodeMap);
-
         return new OriginalScheduleState(taskNodeMap, freeTaskNodeMap, this.numProcessors);
 
     }
-
-    /*
-     * Calculates and sets the bottom level of each of the original task nodes.
-     */
-    public void setBottomLevels(Map<Integer, TaskNode> taskNodeMap) {
-        int numNodes = taskNodeMap.size();
-        int[] bottomLevels = new int[numNodes];
-
-        // dynamically calculate all the bottom levels
-        for (int i = 0; i < numNodes; i++) {
-            dynamicBottomLevelCalculation(taskNodeMap, bottomLevels, i);
-        }
-
-        // Set the bottom level for each of the original task nodes.
-        for (int i = 0; i < numNodes; i++) {
-            OriginalTaskNodeState ogNode = (OriginalTaskNodeState) taskNodeMap.get(i);
-            ogNode.setBottomLevel(bottomLevels[i]);
-        }
-    }
-
-    /*
-     * A recursive, dynamic solution to calculating the bottom levels of each of the nodes.
-     */
-    private int dynamicBottomLevelCalculation(Map<Integer, TaskNode> taskNodeMap, int[] bottomLevels, int nodeID) {
-        // 0 indicates result has not yet been calculated
-        if (bottomLevels[nodeID] == 0) {
-            // get corresponding node
-            TaskNode node = taskNodeMap.get(nodeID);
-            int numChildren = node.getChildLinks().length;
-
-            // If the node has children, it is not the base case, so recursively determine bottom level for children.
-            if (numChildren > 0) {
-                int currentMax = 0;
-                for (int i = 0; i < numChildren; i++) {
-                    int childTaskId = node.getChildLinks()[i][0];
-                    currentMax = Math.max(currentMax, dynamicBottomLevelCalculation(taskNodeMap, bottomLevels, childTaskId));
-                }
-            } else {
-                // base-case: node doesn't have children
-                ; // do nothing.
-            }
-
-            // either way, this task's cost forms part of its bottom level.
-            bottomLevels[nodeID] += node.getTaskCost();
-        }
-        // return this node's bottom level
-        return bottomLevels[nodeID];
-    }
-
 
     @Override
     public void writeFile(List<int[]> scheduledTaskData) {
