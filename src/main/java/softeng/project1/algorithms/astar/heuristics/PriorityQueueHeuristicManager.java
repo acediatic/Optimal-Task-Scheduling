@@ -4,6 +4,7 @@ import softeng.project1.graph.Schedule;
 
 import java.util.List;
 import java.util.PriorityQueue;
+import java.util.stream.Collectors;
 
 public class PriorityQueueHeuristicManager implements HeuristicManager {
     private PriorityQueue<AlgorithmStep> priorityQueue = new PriorityQueue<>();
@@ -16,15 +17,16 @@ public class PriorityQueueHeuristicManager implements HeuristicManager {
     }
 
     @Override
+    // TODO null check?
     public AlgorithmStep get() {
-        return null;
+        return priorityQueue.poll();
     }
 
     @Override
     public void addAll(List<Schedule> newFringeSchedules) {
-        for (Schedule schedule : newFringeSchedules) {
-            add(schedule);
-        }
+        priorityQueue.addAll(newFringeSchedules.stream()
+                .map(fringeSchedule -> new AlgorithmStep(calculateHeuristicValue(fringeSchedule),fringeSchedule))
+                .collect(Collectors.toList()));
     }
 
     @Override
