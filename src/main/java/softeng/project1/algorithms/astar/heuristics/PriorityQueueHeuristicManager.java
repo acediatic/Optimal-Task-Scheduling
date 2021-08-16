@@ -1,5 +1,6 @@
 package softeng.project1.algorithms.astar.heuristics;
 
+import softeng.project1.algorithms.astar.AlgorithmStep;
 import softeng.project1.graph.Schedule;
 
 import java.util.List;
@@ -13,6 +14,7 @@ public class PriorityQueueHeuristicManager implements HeuristicManager {
     public PriorityQueueHeuristicManager(short taskLengthsSum, short numberOfProcesses) {
         this.taskLengthsSum = taskLengthsSum;
         this.numberOfProcesses = numberOfProcesses;
+
     }
 
     @Override
@@ -22,30 +24,26 @@ public class PriorityQueueHeuristicManager implements HeuristicManager {
 
     @Override
     public void addAll(List<Schedule> newFringeSchedules) {
-        for (Schedule schedule : newFringeSchedules) {
-            add(schedule);
-        }
+
     }
 
     @Override
     public void add(Schedule fringeSchedule) {
-        // TODO pruning, check if should be added
+        // check if should be added
+
 
         // should be added, so calculate heuristic, wrap in algorithm step and add.
-        AlgorithmStep algoStep = new AlgorithmStep(calculateHeuristicValue(fringeSchedule), fringeSchedule);
-        priorityQueue.add(algoStep);
     }
 
-    // TODO describe heuristic
+    // TODO
     /*
      * f(s) = max{f_idle-time(s), f_bl(s), f_DRT(s)}
      */
     private int calculateHeuristicValue(Schedule schedule) {
-        int f_idle_time = (taskLengthsSum + schedule.getIdleTime()) / numberOfProcesses;
-
-        int temp_max = Math.max(f_idle_time, schedule.getMaxBottomLevel());
-        temp_max = Math.max(temp_max, schedule.getMaxDataReadyTime());
-
-        return temp_max;
+        // Two Math.max calls because it only takes two inputs and we need three
+        return Math.max(Math.max(
+            (taskLengthsSum + schedule.getIdleTime())/numberOfProcesses,    // f_idle_time
+            schedule.getMaxBottomLevel),                                    // f_bl
+            schedule.getMaxDataReadyTime());                                // f_DRT
     }
 }
