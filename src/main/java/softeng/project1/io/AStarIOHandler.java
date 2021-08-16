@@ -25,9 +25,10 @@ public class AStarIOHandler implements IOHandler {
     private final InputStream inputFileStream;
     private final String outputFilePath;
     private final int numProcessors; // Kinda cursed that this has to be here tbh
+    private final String graphName;
     private Map<Integer, String> taskNames;
 
-    public AStarIOHandler(String inputFilePath, String outputFilePath, int numProcessors) {
+    public AStarIOHandler(String inputFilePath, String outputFilePath, String graphName, int numProcessors) {
 
         // TODO... sanitise inputs, check accessibility etc.
         try {
@@ -38,6 +39,7 @@ public class AStarIOHandler implements IOHandler {
         }
 
         this.outputFilePath = outputFilePath;
+        this.graphName = graphName;
         this.numProcessors = numProcessors;
 
     }

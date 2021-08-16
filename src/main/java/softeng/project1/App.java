@@ -1,9 +1,17 @@
 package softeng.project1;
 
+import softeng.project1.algorithms.SchedulingAlgorithm;
+import softeng.project1.algorithms.astar.heuristics.PriorityQueueHeuristicManager;
+import softeng.project1.algorithms.astar.sequential.SequentialAStarSchedulingAlgorithm;
 import softeng.project1.algorithms.valid.ListSchedulingAlgorithm;
+import softeng.project1.graph.Schedule;
+import softeng.project1.graph.processors.Processors;
+import softeng.project1.io.AStarIOHandler;
 import softeng.project1.io.CommandLineProcessor;
+import softeng.project1.io.IOHandler;
 import softeng.project1.io.ListIOHandler;
 
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -31,12 +39,27 @@ public final class App {
 
         // use clp here to make choices about what parts to execute.
 
-        ListSchedulingAlgorithm listScheduler = new ListSchedulingAlgorithm(ListIOHandler.readFile(clp.getInputFileName()), clp.getNumProcessors());
+        IOHandler ioHandler = new AStarIOHandler(
+                clp.getInputFileName(),
+                clp.getOutputFileName(),
+                clp.getGraphName(),
+                clp.getNumProcessors()
+        );
 
-        List<int[]> schedule = listScheduler.generateSchedule();
+        SchedulingAlgorithm schedulingAlgorithm = new SequentialAStarSchedulingAlgorithm(
+                ioHandler.readFile(),
+                new PriorityQueueHeuristicManager(), // TODO... find what this needs
+                new HashMap<>()
+        );
 
-        ListIOHandler.writeFile(listScheduler.scheduleToGraph(schedule), clp.getGraphName(), clp.getOutputFileName());
+        ioHandler.writeFile(schedulingAlgorithm.generateSchedule());
 
+//        ListSchedulingAlgorithm listScheduler = new ListSchedulingAlgorithm(ListIOHandler.readFile(clp.getInputFileName()), clp.getNumProcessors());
+//
+//        List<int[]> schedule = listScheduler.generateSchedule();
+//
+//        ListIOHandler.writeFile(listScheduler.scheduleToGraph(schedule), clp.getGraphName(), clp.getOutputFileName());
+//
         System.out.println("Successfully created " + clp.getOutputFileName() + '\n');
     }
 }
