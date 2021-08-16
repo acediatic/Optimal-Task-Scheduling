@@ -2,16 +2,17 @@ package softeng.project1.algorithms.astar.heuristics;
 
 import softeng.project1.graph.Schedule;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.PriorityQueue;
-import java.util.stream.Collectors;
 
 public class PriorityQueueHeuristicManager implements HeuristicManager {
-    private PriorityQueue<AlgorithmStep> priorityQueue = new PriorityQueue<>();
-    private short taskLengthsSum;
-    private short numberOfProcesses;
+    private final PriorityQueue<AlgorithmStep> priorityQueue;
+    private final int taskLengthsSum;
+    private final short numberOfProcesses;
 
-    public PriorityQueueHeuristicManager(short taskLengthsSum, short numberOfProcesses) {
+    public PriorityQueueHeuristicManager(int taskLengthsSum, short numberOfProcesses) {
+        this.priorityQueue = new PriorityQueue<>();
         this.taskLengthsSum = taskLengthsSum;
         this.numberOfProcesses = numberOfProcesses;
     }
@@ -24,9 +25,15 @@ public class PriorityQueueHeuristicManager implements HeuristicManager {
 
     @Override
     public void addAll(List<Schedule> newFringeSchedules) {
-        priorityQueue.addAll(newFringeSchedules.stream()
-                .map(fringeSchedule -> new AlgorithmStep(calculateHeuristicValue(fringeSchedule),fringeSchedule))
-                .collect(Collectors.toList()));
+        List<AlgorithmStep> algoSteps = new ArrayList<>(newFringeSchedules.size());
+
+        // Convert schedules to algorithm steps
+        for (Schedule schedule : newFringeSchedules) {
+            algoSteps.add(new AlgorithmStep(calculateHeuristicValue(schedule), schedule));
+        }
+
+        // add all to priority queue.
+        priorityQueue.addAll(algoSteps);
     }
 
     @Override
@@ -43,7 +50,7 @@ public class PriorityQueueHeuristicManager implements HeuristicManager {
      * f(s) = max{f_idle-time(s), f_bl(s), f_DRT(s)}
      */
     private int calculateHeuristicValue(Schedule schedule) {
-        // Two Math.max calls because it only takes two inputs and we need three
+        // Two Math.max calls because it only takes two inputs, and we need three
         return Math.max(Math.max(
                         (taskLengthsSum + schedule.getIdleTime()) / numberOfProcesses,      // f_idle_time
                         schedule.getMaxBottomLevel()),                                      // f_bl

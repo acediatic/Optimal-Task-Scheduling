@@ -12,4 +12,5 @@ public interface IOHandler {
 
     void writeFile(List<int[]> scheduledTaskData);
 
+    int getSumWeights();
 }

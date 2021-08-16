@@ -48,7 +48,7 @@ public final class App {
 
         SchedulingAlgorithm schedulingAlgorithm = new SequentialAStarSchedulingAlgorithm(
                 ioHandler.readFile(),
-                new PriorityQueueHeuristicManager(), // TODO... find what this needs
+                new PriorityQueueHeuristicManager(ioHandler.getSumWeights(), (short)clp.getNumProcessors()),
                 new HashMap<>()
         );
 

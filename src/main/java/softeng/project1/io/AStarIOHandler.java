@@ -26,6 +26,8 @@ public class AStarIOHandler implements IOHandler {
     private final String graphName;
     private Map<Integer, String> taskNames;
 
+    private int sumTaskWeights = 0;
+
     public AStarIOHandler(String inputFilePath, String outputFilePath, String graphName, int numProcessors) {
 
         // TODO... sanitise inputs, check accessibility etc.
@@ -54,6 +56,7 @@ public class AStarIOHandler implements IOHandler {
         Node task;
         OriginalTaskNodeState originalTaskNode;
         int newTaskID;
+        int taskWeight;
 
         for (int i = 0; i < numTasks; i++) {
 
@@ -61,9 +64,12 @@ public class AStarIOHandler implements IOHandler {
             // Can this be avoided by assuming that the retrieval order is the same?
             newTaskID = getKeyFromTaskName(task.getId());
 
+            taskWeight = IOHelper.getProcessingCost(task);
+            this.sumTaskWeights += taskWeight;
+
             originalTaskNode = new OriginalTaskNodeState(
                     newTaskID,
-                    IOHelper.getProcessingCost(task),
+                    taskWeight,
                     IOHelper.getNumParents(task),
                     buildChildLinkArrays(task),
                     IOHelper.dynamicBottomLevelCalculation(task),
@@ -83,6 +89,11 @@ public class AStarIOHandler implements IOHandler {
     @Override
     public void writeFile(List<int[]> scheduledTaskData) {
         // TODO...
+    }
+
+    @Override
+    public int getSumWeights() {
+        return this.sumTaskWeights;
     }
 
     private int[][] buildChildLinkArrays(Node task) {
@@ -113,6 +124,8 @@ public class AStarIOHandler implements IOHandler {
 
         throw new RuntimeException(); // TODO... add better error handling
     }
+
+
 
 
 }
