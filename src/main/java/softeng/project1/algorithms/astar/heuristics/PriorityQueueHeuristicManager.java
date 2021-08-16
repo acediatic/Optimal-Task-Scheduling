@@ -9,9 +9,12 @@ import java.util.PriorityQueue;
 public class PriorityQueueHeuristicManager implements HeuristicManager {
     private PriorityQueue<AlgorithmStep> priorityQueue = new PriorityQueue<>();
     private short taskLengthsSum;
+    private short numberOfProcesses;
 
-    public PriorityQueueHeuristicManager(short taskLengthsSum) {
+    public PriorityQueueHeuristicManager(short taskLengthsSum, short numberOfProcesses) {
         this.taskLengthsSum = taskLengthsSum;
+        this.numberOfProcesses = numberOfProcesses;
+
     }
 
     @Override
@@ -33,7 +36,15 @@ public class PriorityQueueHeuristicManager implements HeuristicManager {
     }
 
     // TODO
+    /*
+     * f(s) = max{f_idle-time(s), f_bl(s), f_DRT(s)}
+     */
     private int calculateHeuristicValue(Schedule schedule) {
-        return 0;
+        int f_idle_time = (taskLengthsSum + schedule.getIdleTime())/numberOfProcesses;
+
+        int temp_max = Math.max(f_idle_time, schedule.getMaxBottomLevel());
+        temp_max = Math.max(temp_max, schedule.getMaxDataReadyTime());
+
+        return temp_max;
     }
 }

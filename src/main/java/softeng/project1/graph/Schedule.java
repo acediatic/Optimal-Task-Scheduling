@@ -67,7 +67,7 @@ public interface Schedule {
     int getIdleTime();
 
     /**
-     * @return : The longest critical path extending from any scheduled path.
+     * @return : The longest critical path extending from any scheduled path, including the node's own computation time.
      */
     int getMaxBottomLevel();
 
