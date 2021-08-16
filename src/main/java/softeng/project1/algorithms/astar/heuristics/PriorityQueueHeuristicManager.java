@@ -41,11 +41,10 @@ public class PriorityQueueHeuristicManager implements HeuristicManager {
      * f(s) = max{f_idle-time(s), f_bl(s), f_DRT(s)}
      */
     private int calculateHeuristicValue(Schedule schedule) {
-        int f_idle_time = (taskLengthsSum + schedule.getIdleTime()) / numberOfProcesses;
-
-        int temp_max = Math.max(f_idle_time, schedule.getMaxBottomLevel());
-        temp_max = Math.max(temp_max, schedule.getMaxDataReadyTime());
-
-        return temp_max;
+        // Two Math.max calls because it only takes two inputs and we need three
+        return Math.max(Math.max(
+                        (taskLengthsSum + schedule.getIdleTime()) / numberOfProcesses,      // f_idle_time
+                        schedule.getMaxBottomLevel()),                                      // f_bl
+                schedule.getMaxDataReadyTime());                                            // f_DRT
     }
 }
