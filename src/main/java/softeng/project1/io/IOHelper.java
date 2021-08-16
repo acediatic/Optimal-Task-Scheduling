@@ -62,8 +62,4 @@ public class IOHelper {
         return task.leavingEdges().toArray(Edge[]::new);
     }
 
-    static int calculateBottomLevel(Node task) {
-        return 0; // TODO... Hopefully Adam can sort this out
-    }
-
 }
