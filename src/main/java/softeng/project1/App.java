@@ -2,7 +2,7 @@ package softeng.project1;
 
 import softeng.project1.algorithms.valid.ListSchedulingAlgorithm;
 import softeng.project1.io.CommandLineProcessor;
-import softeng.project1.io.IOHandler;
+import softeng.project1.io.ListIOHandler;
 
 import java.util.List;
 
@@ -31,11 +31,11 @@ public final class App {
 
         // use clp here to make choices about what parts to execute.
 
-        ListSchedulingAlgorithm listScheduler = new ListSchedulingAlgorithm(IOHandler.readFile(clp.getInputFileName()), clp.getNumProcessors());
+        ListSchedulingAlgorithm listScheduler = new ListSchedulingAlgorithm(ListIOHandler.readFile(clp.getInputFileName()), clp.getNumProcessors());
 
         List<int[]> schedule = listScheduler.generateSchedule();
 
-        IOHandler.writeFile(listScheduler.scheduleToGraph(schedule), clp.getGraphName(), clp.getOutputFileName());
+        ListIOHandler.writeFile(listScheduler.scheduleToGraph(schedule), clp.getGraphName(), clp.getOutputFileName());
 
         System.out.println("Successfully created " + clp.getOutputFileName() + '\n');
     }
