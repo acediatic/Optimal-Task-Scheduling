@@ -51,7 +51,7 @@ public class IOHelper {
     }
 
     static int getProcessingCost(Element graphElement) {
-        return (int) graphElement.getAttribute(PROCESSING_COST_ATTRIBUTE_KEY);
+        return (int)((double) graphElement.getAttribute(PROCESSING_COST_ATTRIBUTE_KEY));
     }
 
     static int getNumParents(Node task) {
@@ -84,8 +84,9 @@ public class IOHelper {
     }
 
     static void addSchedulingToTask(Node task, int[] schedulingData) {
-        task.setAttribute(SCHEDULE_START_LOCATION_KEY, schedulingData[1]);
-        task.setAttribute(SCHEDULE_PROCESSOR_KEY, schedulingData[2]);
+        task.setAttribute(SCHEDULE_PROCESSOR_KEY, schedulingData[1]);
+        task.setAttribute(SCHEDULE_START_LOCATION_KEY, schedulingData[2]);
+
     }
 
 }

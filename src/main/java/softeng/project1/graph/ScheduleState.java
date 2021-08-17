@@ -102,8 +102,8 @@ public abstract class ScheduleState implements Schedule {
                     // Generate array of prerequisite locations
                     fillProcessorPrerequisites(
                             insertLocation,
-                            changedChild.getTaskCost(),
                             processorID,
+                            changedChild.getTaskCost(),
                             childLink[1],
                             processorPrerequisites
                     );

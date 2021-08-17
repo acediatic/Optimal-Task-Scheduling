@@ -122,7 +122,7 @@ public class AStarIOHandler implements IOHandler {
             childLink = childLinks[i];
 
             childLinkArrays[i] = new int[]{
-                    getKeyFromTaskName(childLink.getId()),
+                    getKeyFromTaskName(childLink.getTargetNode().getId()),
                     IOHelper.getProcessingCost(childLink)
             };
         }
@@ -138,7 +138,7 @@ public class AStarIOHandler implements IOHandler {
             }
         }
 
-        throw new RuntimeException(); // TODO... add better error handling
+        throw new RuntimeException("Failed to find Task: " + taskName + " in task ID -> name map"); // TODO... add better error handling
     }
 
 
