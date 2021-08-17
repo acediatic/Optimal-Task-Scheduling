@@ -37,7 +37,6 @@ public class AStarIOHandler implements IOHandler {
         }
         this.graphName = graphName;
         this.numProcessors = numProcessors;
-
     }
 
     /**
@@ -69,10 +68,10 @@ public class AStarIOHandler implements IOHandler {
 
         // compare for equality in O(n) (rather than O(n^2))
         for (int i = 0; i < nodeEqArr.length - 1; i++) {
-            if (nodeEqArr[i] == nodeEqArr[i + 1]) {
+            if (nodeEqArr[i].compareTo(nodeEqArr[i + 1]) == 0) {
                 String edgeID = UUID.randomUUID().toString();
                 graphStreamInput.addEdge(edgeID, nodeEqArr[i].getTask(), nodeEqArr[i + 1].getTask(), true);
-                graphStreamInput.getEdge(edgeID).setAttribute(PROCESSING_COST_ATTRIBUTE_KEY, 0);
+                graphStreamInput.getEdge(edgeID).setAttribute(PROCESSING_COST_ATTRIBUTE_KEY, (double) 0);
             }
         }
 
@@ -86,6 +85,9 @@ public class AStarIOHandler implements IOHandler {
         this.graphStreamInput = IOHelper.readFileAsGraphStream(this.inputFileStream);
         this.taskNames = IOHelper.mapTaskNamesToIDs(this.graphStreamInput);
         int numTasks = this.graphStreamInput.getNodeCount();
+
+        // Check for and create edges between equivalent children
+        createEdgesBetweenEquivalentNodes();
 
         Node task;
         OriginalTaskNodeState originalTaskNode;
