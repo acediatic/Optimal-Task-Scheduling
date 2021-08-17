@@ -16,15 +16,13 @@ import java.util.*;
 public class AStarIOHandler implements IOHandler {
 
     private static final int NUM_CHILD_LINK_DATA_FIELDS = 2;
-
-
+    private static final String PROCESSING_COST_ATTRIBUTE_KEY = "Weight";
     private final InputStream inputFileStream;
     private final OutputStream outputStream;
     private final int numProcessors; // Kinda cursed that this has to be here tbh
     private final String graphName;
     private Map<Integer, String> taskNames;
     private int sumTaskWeights = 0;
-
     private Graph graphStreamInput;
 
     public AStarIOHandler(String inputFilePath, String outputFilePath, String graphName, int numProcessors) {
@@ -62,10 +60,7 @@ public class AStarIOHandler implements IOHandler {
         for (int i = 0; i < numTasks; i++) {
             Node task = this.graphStreamInput.getNode(i);
             int taskWeight = IOHelper.getProcessingCost(task);
-            Edge[] childLinks = IOHelper.getChildLinks(task);
-            Edge[] parentLinks = IOHelper.getParentLinks(task);
-
-            ComparableTask ct = new ComparableTask(task, taskWeight, childLinks, parentLinks);
+            ComparableTask ct = new ComparableTask(task, taskWeight);
             nodeEqArr[i] = ct;
         }
 
@@ -75,7 +70,9 @@ public class AStarIOHandler implements IOHandler {
         // compare for equality in O(n) (rather than O(n^2))
         for (int i = 0; i < nodeEqArr.length - 1; i++) {
             if (nodeEqArr[i] == nodeEqArr[i + 1]) {
-                graphStreamInput.addEdge(UUID.randomUUID().toString(), nodeEqArr[i].getTask(), nodeEqArr[i + 1].getTask(), true);
+                String edgeID = UUID.randomUUID().toString();
+                graphStreamInput.addEdge(edgeID, nodeEqArr[i].getTask(), nodeEqArr[i + 1].getTask(), true);
+                graphStreamInput.getEdge(edgeID).setAttribute(PROCESSING_COST_ATTRIBUTE_KEY, 0);
             }
         }
 

@@ -1,6 +1,5 @@
 package softeng.project1.graph.tasks;
 
-import org.graphstream.graph.Edge;
 import org.graphstream.graph.Node;
 import org.jetbrains.annotations.NotNull;
 
@@ -15,25 +14,27 @@ import java.util.stream.Collectors;
  * to determine equivalent nodes.
  */
 public class ComparableTask implements Comparable<ComparableTask> {
+    private static final String PROCESSING_COST_ATTRIBUTE_KEY = "Weight";
     private final Node task;
     private final int taskWeight;
     private final int parentSetHash;
     private final int childSetHash;
+    private final Collection<? extends Node> parents;
+    private final Collection<? extends Node> children;
 
     // TODO confirm the edge object is the same, and so can be used for equality comparison.
-    // And that it includes edge weights.
-    public ComparableTask(Node task, int taskWeight, Edge[] childLinks, Edge[] parentLinks) {
+    public ComparableTask(Node task, int taskWeight) {
         this.task = task;
         this.taskWeight = taskWeight;
 
-        Collection<? extends Node> parentEdges = (Collection<? extends Node>) task.enteringEdges().collect(Collectors.toCollection(ArrayList::new));
-        HashSet<Node> parentSet = new HashSet<>(parentEdges.size());
-        parentSet.addAll(parentEdges);
+        this.parents = (Collection<? extends Node>) task.enteringEdges().collect(Collectors.toCollection(ArrayList::new));
+        HashSet<Node> parentSet = new HashSet<>(parents.size());
+        parentSet.addAll(parents);
         this.parentSetHash = parentSet.hashCode();
 
-        Collection<? extends Node> childEdges = (Collection<? extends Node>) task.leavingEdges().collect(Collectors.toCollection(ArrayList::new));
-        HashSet<Node> childSet = new HashSet<>(childEdges.size());
-        childSet.addAll(childEdges);
+        this.children = (Collection<? extends Node>) task.leavingEdges().collect(Collectors.toCollection(ArrayList::new));
+        HashSet<Node> childSet = new HashSet<>(children.size());
+        childSet.addAll(children);
         this.childSetHash = childSet.hashCode();
     }
 
@@ -50,9 +51,23 @@ public class ComparableTask implements Comparable<ComparableTask> {
             return this.childSetHash - o.childSetHash;
         } else if (this.parentSetHash != o.parentSetHash) {
             return this.parentSetHash - o.parentSetHash;
-        } else if (false) { // TODO check for weights
-            return 0;
         } else {
+            // check communication weights
+            ArrayList<Collection<? extends Node>> parentsAndChildren = new ArrayList<>();
+            parentsAndChildren.add(this.children);
+            parentsAndChildren.add(this.parents);
+
+            for (Collection<? extends Node> edgeCollection : parentsAndChildren) {
+                for (Node edgeNode : edgeCollection) {
+                    double thisWeight = (double) this.task.getEdgeBetween(edgeNode).getAttribute(PROCESSING_COST_ATTRIBUTE_KEY);
+                    double oWeight = (double) o.task.getEdgeBetween(edgeNode).getAttribute(PROCESSING_COST_ATTRIBUTE_KEY);
+
+                    if (thisWeight - oWeight != 0) {
+                        return (int) (thisWeight - oWeight);
+                    }
+                }
+            }
+            // Equivalent children.
             return 0;
         }
     }
