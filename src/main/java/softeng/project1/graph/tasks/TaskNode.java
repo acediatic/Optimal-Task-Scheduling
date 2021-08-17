@@ -81,7 +81,7 @@ public interface TaskNode {
     int[][] getChildLinks();
 
     /**
-     * @return : // TODO... Remember what bottom level is
+     * @return :The critical path from a node to the finish, including the node's own computation time.
      */
     int getBottomLevel();
 

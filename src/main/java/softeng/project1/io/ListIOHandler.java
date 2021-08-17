@@ -1,4 +1,4 @@
-package softeng.project1.converters;
+package softeng.project1.io;
 
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.implementations.DefaultGraph;
@@ -8,11 +8,11 @@ import org.graphstream.stream.file.FileSourceDOT;
 import java.io.*;
 
 
-public class IOHandler {
+public class ListIOHandler {
     /**
      * Reads in DOT file from specified path and stores as Graph Object
      */
-    public static Graph readFile(String inputFilePath) {
+    public Graph readFile(String inputFilePath) {
         Graph graph = new DefaultGraph("graph");
 
         FileSourceDOT fileSource = new FileSourceDOT();
@@ -35,7 +35,7 @@ public class IOHandler {
      * TODO optimise this!
      */
 
-    public static void writeFile(Graph graph, String graphName, String outputFileName) {
+    public void writeFile(Graph graph, String graphName, String outputFileName) {
         try {
             // tempOutput contains the graph output before renaming.
             String tempOutputName = outputFileName.substring(0, outputFileName.length()-4) + "tempOutput.dot";

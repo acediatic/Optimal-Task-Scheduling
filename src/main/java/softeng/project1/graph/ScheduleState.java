@@ -22,17 +22,20 @@ public abstract class ScheduleState implements Schedule {
     protected final Map<Integer, TaskNode> taskNodes;
     protected final Map<Integer, TaskNode> freeNodes;
     protected final Processors processors;
-    private final int maxBottomLevel;
-    private final int maxDataReadyTime;
+    protected final ScheduleStateChange change;
+    protected final int maxBottomLevel;
+    protected final int maxDataReadyTime;
 
     protected ScheduleState(Map<Integer, TaskNode> taskNodes,
                             Map<Integer, TaskNode> freeNodes,
                             Processors processors,
+                            ScheduleStateChange change,
                             int maxBottomLevel,
                             int maxDataReadyTime) {
         this.taskNodes = taskNodes;
         this.freeNodes = freeNodes;
         this.processors = processors;
+        this.change = change;
         this.maxBottomLevel = maxBottomLevel;
         this.maxDataReadyTime = maxDataReadyTime;
     }
@@ -64,7 +67,10 @@ public abstract class ScheduleState implements Schedule {
     @Override
     public List<Schedule> expand() {
 
-        // TODO... Handle success state when no free nodes
+        // Check if we have found the optimal solution
+        if (this.freeNodes.size() == 0) {
+            return null; // TODO... Find a better way of indicating success than passing null
+        }
 
         // Initialising empty array here for speed reasons
         int[] processorPrerequisites = new int[processors.getNumProcessors()];
@@ -147,6 +153,11 @@ public abstract class ScheduleState implements Schedule {
         // Theoretically could be sped up by not double writing the value at index processorID.
         Arrays.fill(arrayToFill, taskEndPoint + communicationCost);
         arrayToFill[processorID] = taskEndPoint;
+    }
+
+    @Override
+    public List<int[]> rebuildPath() {
+        return this.change.rebuildSolutionPath();
     }
 
     // ----------- Getter Methods ------------

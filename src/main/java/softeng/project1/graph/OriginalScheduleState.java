@@ -3,6 +3,7 @@ package softeng.project1.graph;
 import softeng.project1.graph.processors.OriginalProcessorsState;
 import softeng.project1.graph.tasks.OriginalTaskNodeState;
 import softeng.project1.graph.tasks.TaskNode;
+import softeng.project1.graph.tasks.TaskNodeState;
 
 import java.util.Collections;
 import java.util.Map;
@@ -29,6 +30,7 @@ import java.util.Map;
  */
 public class OriginalScheduleState extends ScheduleState {
 
+    private static final ScheduleStateChange ORIGINAL_STATE_CHANGE = null;
     private static final int ORIGINAL_MAX_BOTTOM_LEVEL = 0;
     private static final int ORIGINAL_MAX_DATA_READY_TIME = 0;
 
@@ -44,8 +46,8 @@ public class OriginalScheduleState extends ScheduleState {
      * @param freeTaskNodes : A map of TaskID to Original Task states including ONLY tasks that have no parents.
      * @param numProcessors : The number of processors that the tasks can be scheduled upon.
      */
-    public OriginalScheduleState(Map<Integer, OriginalTaskNodeState> taskNodes,
-                                 Map<Integer, OriginalTaskNodeState> freeTaskNodes,
+    public OriginalScheduleState(Map<Integer, TaskNode> taskNodes,
+                                 Map<Integer, TaskNode> freeTaskNodes,
                                  int numProcessors) {
         // Making these immutable, note that the underlying map can still be changed.
         super(
@@ -53,6 +55,7 @@ public class OriginalScheduleState extends ScheduleState {
                 Collections.unmodifiableMap(taskNodes),
                 Collections.unmodifiableMap(freeTaskNodes),
                 new OriginalProcessorsState(numProcessors),
+                ORIGINAL_STATE_CHANGE,
                 ORIGINAL_MAX_BOTTOM_LEVEL,
                 ORIGINAL_MAX_DATA_READY_TIME
         );
@@ -83,7 +86,7 @@ public class OriginalScheduleState extends ScheduleState {
     @Override
     protected ScheduleStateChange generateStateChange(int freeTaskID, int processorID, int insertLocation) {
         return new ScheduleStateChange(
-                null, // No previous change
+                ORIGINAL_STATE_CHANGE, // No previous change
                 freeTaskID,
                 processorID,
                 insertLocation
