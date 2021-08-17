@@ -2,7 +2,6 @@ package softeng.project1.algorithms.astar.parallel;
 
 import softeng.project1.algorithms.astar.AStarSchedulingAlgorithm;
 import softeng.project1.algorithms.astar.heuristics.AlgorithmStep;
-import softeng.project1.algorithms.astar.heuristics.BlockingQueueHeuristicManager;
 import softeng.project1.algorithms.astar.heuristics.HeuristicManager;
 import softeng.project1.graph.Schedule;
 import softeng.project1.graph.processors.Processors;
@@ -10,7 +9,10 @@ import softeng.project1.graph.processors.Processors;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.*;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 public class ParallelAStarSchedulingAlgorithm extends ThreadPoolExecutor implements AStarSchedulingAlgorithm {
 
@@ -21,9 +23,9 @@ public class ParallelAStarSchedulingAlgorithm extends ThreadPoolExecutor impleme
     private final List<List<int[]>> optimalSchedules;
 
     public ParallelAStarSchedulingAlgorithm(Schedule originalSchedule,
-                                            BlockingQueueHeuristicManager heuristicManager,
+                                            HeuristicManager heuristicManager,
                                             int numThreads) {
-        super(numThreads, numThreads, KEEP_ALIVE_TIME_MILLISECONDS, TimeUnit.MILLISECONDS, heuristicManager);
+        super(numThreads, numThreads, KEEP_ALIVE_TIME_MILLISECONDS, TimeUnit.MILLISECONDS, (BlockingQueue<Runnable>) heuristicManager);
 
         // TODO... give map a useful original size
         this.heuristicManager = heuristicManager;
@@ -53,7 +55,7 @@ public class ParallelAStarSchedulingAlgorithm extends ThreadPoolExecutor impleme
             this.optimalSchedules.add(algorithmStep.rebuildPath());
             shutdown();
         } else {
-            this.heuristicManager.addAll(pruneExpandedSchedulesAndAddToMap(fringeSchedules));
+            this.heuristicManager.addAllSchedules(pruneExpandedSchedulesAndAddToMap(fringeSchedules));
         }
     }
 
@@ -61,7 +63,7 @@ public class ParallelAStarSchedulingAlgorithm extends ThreadPoolExecutor impleme
     @Override
     public List<Schedule> pruneExpandedSchedulesAndAddToMap(List<Schedule> expandedSchedules) {
         List<Schedule> unexploredSchedules = new ArrayList<>();
-        for (Schedule expandedSchedule: expandedSchedules) {
+        for (Schedule expandedSchedule : expandedSchedules) {
             if (!this.closedSchedules.containsKey(expandedSchedule.getHashKey())) {
                 this.closedSchedules.put(expandedSchedule.getHashKey(), expandedSchedule);
                 unexploredSchedules.add(expandedSchedule);

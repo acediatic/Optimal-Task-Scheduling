@@ -4,21 +4,19 @@ import softeng.project1.graph.Schedule;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.PriorityQueue;
+import java.util.concurrent.PriorityBlockingQueue;
 
-public class PriorityQueueHeuristicManager implements HeuristicManager {
-    private final PriorityQueue<AlgorithmStep> priorityQueue;
+public class AlgorithmPriorityBlockingQueue extends PriorityBlockingQueue<AlgorithmStep> implements HeuristicManager {
     private final HeuristicHelper heuristicHelper;
 
-    public PriorityQueueHeuristicManager(int taskLengthsSum, short numberOfProcesses) {
-        this.priorityQueue = new PriorityQueue<>();
+    public AlgorithmPriorityBlockingQueue(int taskLengthsSum, short numberOfProcesses) {
         this.heuristicHelper = new HeuristicHelper(taskLengthsSum, numberOfProcesses);
     }
 
     @Override
     // TODO null check?
     public AlgorithmStep getAlgorithmStepQueueHead() {
-        return priorityQueue.poll();
+        return this.poll();
     }
 
     @Override
@@ -31,14 +29,14 @@ public class PriorityQueueHeuristicManager implements HeuristicManager {
         }
 
         // add all to priority queue.
-        priorityQueue.addAll(algoSteps);
+        this.addAll(algoSteps);
     }
 
     @Override
     public void addSchedule(Schedule fringeSchedule) {
         // TODO pruning, check if should be added
         // should be added, so calculate heuristic, wrap in algorithm step and add.
-        priorityQueue.add(heuristicHelper.getAlgoStep(fringeSchedule));
+        this.add(heuristicHelper.getAlgoStep(fringeSchedule));
     }
 
 

@@ -54,9 +54,10 @@ public class OriginalTaskNodeState extends TaskNodeState {
      *                      childLink[0] -> child TaskNode's task ID.
      *                      childLink[1] -> communication cost of transferring data from this task once finished to a
      *                      different processor and then preparing it for use by the child task.
+     * @param bottomLevel   : TODO...
      * @param numProcessors : The number of processors available for the task to possibly be scheduled on.
      */
-    public OriginalTaskNodeState(int taskID, int taskCost, int numLinks, int[][] childLinks, int numProcessors, int bottomLevel) {
+    public OriginalTaskNodeState(int taskID, int taskCost, int numLinks, int[][] childLinks, int bottomLevel, int numProcessors) {
         super(numLinks, new int[numProcessors]);
         this.taskID = taskID;
         this.taskCost = taskCost;
@@ -96,7 +97,7 @@ public class OriginalTaskNodeState extends TaskNodeState {
         return new ChangedTaskNodeState(
                 this,
                 this.numUnscheduledLinks - 1,
-                parentPrerequisites // Don't need to calculate max because original prerequisites all 0
+                parentPrerequisites.clone() // Don't need to calculate max because original prerequisites all 0
         );
     }
 

@@ -120,80 +120,86 @@ public class ProcessorState implements Processor {
             diffDiffNTPS = diffNodeTaskLength - diffPrereqStartPosition;
 
             // has the prereq been passed, and does the task fit in the space?
-            if (diffPrereqStartPosition <= 0 && diffNodeTaskLength >= 0) {
+            if (diffNodeTaskLength >= 0) {
+                if (diffPrereqStartPosition <= 0) {
 
-                // Can insert task directly into start of space
-                this.currentInsert = this.processorSpaces[i][0];
-                this.changeInIdleTime = -taskLength;
+                    // Can insert task directly into start of space
+                    this.currentInsert = this.processorSpaces[i][0];
+                    this.changeInIdleTime = -taskLength;
 
-                // We've found the insert position so copy the first half of array across
-                System.arraycopy(this.processorSpaces, 0, newProcessorSpaces, 0, i-1);
+                    // We've found the insert position so copy the first half of array across
+                    if (i > 1) {
+                        System.arraycopy(this.processorSpaces, 0, newProcessorSpaces, 0, i - 1);
+                    }
+                    // prereq was passed so new 0 length space starts at beginning of now-filled old space
+                    fillProcessorSpace(newProcessorSpaces, i,
+                            this.processorSpaces[i][0],         // start
+                            0,                          // length
+                            taskID                              // next task ID
+                    );
 
-                // prereq was passed so new 0 length space starts at beginning of now-filled old space
-                fillProcessorSpace(newProcessorSpaces, i,
-                        this.processorSpaces[i][0], // start
-                        0,                          // length
-                        taskID                      // next task ID
-                );
+                    // adding new space after inserted task
+                    fillProcessorSpace(newProcessorSpaces, i + 1,
+                            this.processorSpaces[i][0] + taskLength,    // start
+                            diffNodeTaskLength,                         // length
+                            this.processorSpaces[i][2]                  // next task ID
+                    );
 
-                // adding new space after inserted task
-                fillProcessorSpace(newProcessorSpaces, i+1,
-                        this.processorSpaces[i][0] + taskLength,    // start
-                        diffNodeTaskLength,                         // length
-                        this.processorSpaces[i][2]                  // next task ID
-                );
+                    // copying rest of array
+                    i++;
+                    System.arraycopy(
+                            this.processorSpaces,           // source
+                            i,                              // source start
+                            newProcessorSpaces,             // destination
+                            i + 1,                            // destination start - one after source because of added spot in middle
+                            this.processorSpaces.length - i // length of copied section
+                    );
+                    ;
+                    return newProcessorSpaces;
 
-                // copying rest of array
-                i++;
-                System.arraycopy(
-                        this.processorSpaces,           // source
-                        i,                              // source start
-                        newProcessorSpaces,             // destination
-                        i+1,                            // destination start - one after source because of added spot in middle
-                        this.processorSpaces.length - i // length of copied section
-                );;
-                return newProcessorSpaces;
+                    // is the node long enough to compensate for the prerequisite position being after the space start?
+                } else if (diffDiffNTPS >= 0) {
 
-                // is the node long enough to compensate for the prerequisite position being after the space start?
-            } else if (diffDiffNTPS >= 0) {
+                    // We can insert task directly at prerequisite location as the space is big enough
+                    this.currentInsert = prerequisite;
+                    this.changeInIdleTime = -taskLength;
 
-                // We can insert task directly at prerequisite location as the space is big enough
-                this.currentInsert = prerequisite;
-                this.changeInIdleTime = -taskLength;
+                    // We've found the insert position so copy the first half of array across
+                    if (i > 1) {
+                        System.arraycopy(this.processorSpaces, 0, newProcessorSpaces, 0, i - 1);
+                    }
+                    // task fits even though prereq is after space start so we add new space before inserted task
+                    fillProcessorSpace(newProcessorSpaces, i,
+                            this.processorSpaces[i][0], // start
+                            diffPrereqStartPosition,    // length
+                            taskID                      // next task ID
+                    );
 
-                // We've found the insert position so copy the first half of array across
-                System.arraycopy(this.processorSpaces, 0, newProcessorSpaces, 0, i-1);
-
-                // task fits even though prereq is after space start so we add new space before inserted task
-                fillProcessorSpace(newProcessorSpaces, i,
-                        this.processorSpaces[i][0], // start
-                        diffPrereqStartPosition,    // length
-                        taskID                      // next task ID
-                );
-
-                // adding new space after inserted task
-                fillProcessorSpace(newProcessorSpaces, i,
-                        this.processorSpaces[i][0] + diffPrereqStartPosition + taskLength,  // start
-                        diffDiffNTPS,                                                       // length
-                        this.processorSpaces[i][2]                                          // next task ID
-                );
-                // copying rest of array
-                i++;
-                System.arraycopy(
-                        this.processorSpaces,           // source
-                        i,                              // source start
-                        newProcessorSpaces,             // destination
-                        i+1,                            // destination start - one after source because of added spot in middle
-                        this.processorSpaces.length - i // length of copied section
-                );
-                return newProcessorSpaces;
+                    // adding new space after inserted task
+                    fillProcessorSpace(newProcessorSpaces, i,
+                            this.processorSpaces[i][0] + diffPrereqStartPosition + taskLength,  // start
+                            diffDiffNTPS,                                                       // length
+                            this.processorSpaces[i][2]                                          // next task ID
+                    );
+                    // copying rest of array
+                    i++;
+                    System.arraycopy(
+                            this.processorSpaces,           // source
+                            i,                              // source start
+                            newProcessorSpaces,             // destination
+                            i + 1,                            // destination start - one after source because of added spot in middle
+                            this.processorSpaces.length - i // length of copied section
+                    );
+                    return newProcessorSpaces;
+                }
             }
         }
 
         // We've reached the end of the array without returning, so we're just going bang the space right on the end.
 
-        // Getting where to put it
         int lastSpaceIndex = this.processorSpaces.length - 1; // -1 for 0 indexed array
+        System.arraycopy(this.processorSpaces, 0, newProcessorSpaces, 0, lastSpaceIndex);
+        // Getting where to put it
         this.currentInsert = Math.max(prerequisite, this.processorSpaces[lastSpaceIndex][0]);
         this.changeInIdleTime = currentInsert - this.processorSpaces[lastSpaceIndex][0];
 

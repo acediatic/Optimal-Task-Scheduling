@@ -20,7 +20,7 @@ public class SequentialAStarSchedulingAlgorithm implements AStarSchedulingAlgori
                                     Map<Processors, Schedule> closedSchedules) {
 
         this.heuristicManager = heuristicManager;
-        heuristicManager.add(originalSchedule);
+        heuristicManager.addSchedule(originalSchedule);
 
         // TODO... Calculate a relevant initial size
         this.closedSchedules = closedSchedules;
@@ -33,8 +33,8 @@ public class SequentialAStarSchedulingAlgorithm implements AStarSchedulingAlgori
         AlgorithmStep step;
 
         // TODO... Find a better way to indicate finish than null
-        while ((fringeSchedules = (step = this.heuristicManager.get()).takeStep()) != null) {
-            this.heuristicManager.addAll(pruneExpandedSchedulesAndAddToMap(fringeSchedules));
+        while ((fringeSchedules = (step = this.heuristicManager.getAlgorithmStepQueueHead()).takeStep()) != null) {
+            this.heuristicManager.addAllSchedules(pruneExpandedSchedulesAndAddToMap(fringeSchedules));
         }
         // Just calling ScheduleStateChange.rebuildSolutionPath() but via a few parent objects.
         return step.rebuildPath();
