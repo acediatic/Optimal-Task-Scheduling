@@ -76,7 +76,7 @@ public abstract class TaskNodeState implements TaskNode {
                 .append("Processor Prerequisites:\n");
 
         for (int i = 0; i < processorPrerequisites.length; i++) {
-            builder.append(i).append(" - ").append(processorPrerequisites[i]);
+            builder.append(i).append(" - ").append(processorPrerequisites[i]).append("\n");
         }
         return builder.toString();
     }
