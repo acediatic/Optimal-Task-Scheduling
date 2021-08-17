@@ -4,6 +4,11 @@ import org.graphstream.graph.Edge;
 import org.graphstream.graph.Node;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.stream.Collectors;
+
 
 /**
  * A utility class to make it easier to compare GraphStream nodes,
@@ -12,44 +17,42 @@ import org.jetbrains.annotations.NotNull;
 public class ComparableTask implements Comparable<ComparableTask> {
     private final Node task;
     private final int taskWeight;
-    private final Edge[] childLinks;
-    private final Edge[] parentLinks;
+    private final int parentSetHash;
+    private final int childSetHash;
 
     // TODO confirm the edge object is the same, and so can be used for equality comparison.
     // And that it includes edge weights.
     public ComparableTask(Node task, int taskWeight, Edge[] childLinks, Edge[] parentLinks) {
         this.task = task;
         this.taskWeight = taskWeight;
-        this.childLinks = childLinks;
-        this.parentLinks = parentLinks;
+
+        Collection<? extends Node> parentEdges = (Collection<? extends Node>) task.enteringEdges().collect(Collectors.toCollection(ArrayList::new));
+        HashSet<Node> parentSet = new HashSet<>(parentEdges.size());
+        parentSet.addAll(parentEdges);
+        this.parentSetHash = parentSet.hashCode();
+
+        Collection<? extends Node> childEdges = (Collection<? extends Node>) task.leavingEdges().collect(Collectors.toCollection(ArrayList::new));
+        HashSet<Node> childSet = new HashSet<>(childEdges.size());
+        childSet.addAll(childEdges);
+        this.childSetHash = childSet.hashCode();
     }
 
     public Node getTask() {
         return task;
     }
 
-
     // TODO confirm this is all kosher.
     @Override
     public int compareTo(@NotNull ComparableTask o) {
         if (this.taskWeight != o.taskWeight) {
             return this.taskWeight - o.taskWeight;
-        } else if (this.childLinks.length != o.childLinks.length) {
-            return this.childLinks.length - o.childLinks.length;
-        } else if (this.parentLinks.length != o.parentLinks.length) {
-            return this.parentLinks.length - o.parentLinks.length;
+        } else if (this.childSetHash != o.childSetHash) {
+            return this.childSetHash - o.childSetHash;
+        } else if (this.parentSetHash != o.parentSetHash) {
+            return this.parentSetHash - o.parentSetHash;
+        } else if (false) { // TODO check for weights
+            return 0;
         } else {
-            for (int i = 0; i < this.childLinks.length; i++) {
-                if (this.childLinks[i] != o.childLinks[i]) {
-                    return -1;
-                }
-            }
-
-            for (int i = 0; i < this.parentLinks.length; i++) {
-                if (this.parentLinks[i] != o.parentLinks[i]) {
-                    return -1;
-                }
-            }
             return 0;
         }
     }
