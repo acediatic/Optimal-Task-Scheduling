@@ -16,6 +16,8 @@ public class IOHelper {
 
     private static final String DEFAULT_GRAPH_ID = "graph";
     private static final String PROCESSING_COST_ATTRIBUTE_KEY = "Weight";
+    private static final String SCHEDULE_START_LOCATION_KEY = "Start";
+    private static final String SCHEDULE_PROCESSOR_KEY = "Processor";
 
     static Graph readFileAsGraphStream(InputStream fileStream) {
         FileSourceDOT dotFile = new FileSourceDOT();
@@ -79,6 +81,11 @@ public class IOHelper {
 
             // either way, this task's cost forms part of its bottom level.
             return bottomLevel;
+    }
+
+    static void addSchedulingToTask(Node task, int[] schedulingData) {
+        task.setAttribute(SCHEDULE_START_LOCATION_KEY, schedulingData[1]);
+        task.setAttribute(SCHEDULE_PROCESSOR_KEY, schedulingData[2]);
     }
 
 }
