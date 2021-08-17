@@ -6,13 +6,12 @@ import org.graphstream.graph.Node;
 import org.graphstream.stream.file.FileSinkDOT;
 import softeng.project1.graph.OriginalScheduleState;
 import softeng.project1.graph.Schedule;
+import softeng.project1.graph.tasks.ComparableTask;
 import softeng.project1.graph.tasks.OriginalTaskNodeState;
 import softeng.project1.graph.tasks.TaskNode;
 
 import java.io.*;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class AStarIOHandler implements IOHandler {
 
@@ -40,6 +39,45 @@ public class AStarIOHandler implements IOHandler {
         }
         this.graphName = graphName;
         this.numProcessors = numProcessors;
+
+    }
+
+    /**
+     * Equivalent children are tasks that have the same:
+     * 1. Weight
+     * 2. Parents
+     * 3. Children
+     * 4. Parent Communication Weights
+     * 5. Child Communication Weights
+     *
+     * By forcing an ordering between them, we can cut down the search space
+     * As otherwise, there's a different schedule created for all the permutations
+     * of these equivalent tasks.
+     */
+    private void createEdgesBetweenEquivalentNodes() {
+        int numTasks = this.graphStreamInput.getNodeCount();
+
+        ComparableTask[] nodeEqArr = new ComparableTask[numTasks];
+
+        for (int i = 0; i < numTasks; i++) {
+            Node task = this.graphStreamInput.getNode(i);
+            int taskWeight = IOHelper.getProcessingCost(task);
+            Edge[] childLinks = IOHelper.getChildLinks(task);
+            Edge[] parentLinks = IOHelper.getParentLinks(task);
+
+            ComparableTask ct = new ComparableTask(task, taskWeight, childLinks, parentLinks);
+            nodeEqArr[i] = ct;
+        }
+
+        // Sorted (log(n)), means we only have to compare with our neighbour.
+        Arrays.sort(nodeEqArr);
+
+        // compare for equality in O(n) (rather than O(n^2))
+        for (int i = 0; i < nodeEqArr.length - 1; i++) {
+            if (nodeEqArr[i] == nodeEqArr[i + 1]) {
+                graphStreamInput.addEdge(UUID.randomUUID().toString(), nodeEqArr[i].getTask(), nodeEqArr[i + 1].getTask(), true);
+            }
+        }
 
     }
 
@@ -89,7 +127,7 @@ public class AStarIOHandler implements IOHandler {
     public void writeFile(List<int[]> scheduledTaskData) {
 
 
-        for (int[] scheduling: scheduledTaskData) {
+        for (int[] scheduling : scheduledTaskData) {
             IOHelper.addSchedulingToTask(
                     this.graphStreamInput.getNode(
                             this.taskNames.get(scheduling[0]) // Get name from task ID
@@ -140,8 +178,6 @@ public class AStarIOHandler implements IOHandler {
 
         throw new RuntimeException("Failed to find Task: " + taskName + " in task ID -> name map"); // TODO... add better error handling
     }
-
-
 
 
 }
