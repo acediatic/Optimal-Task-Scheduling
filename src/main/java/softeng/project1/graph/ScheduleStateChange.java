@@ -4,6 +4,7 @@ import softeng.project1.graph.tasks.TaskNode;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -62,7 +63,7 @@ public class ScheduleStateChange {
 
         // First step, occurs when creating step from original schedule state
         if (previousChange == null) {
-            return Arrays.asList(new int[][]{pathData});
+            return new LinkedList<>(Arrays.asList(new int[][]{pathData}));
         } else {
             // Recursively build from previous steps
             List<int[]> returnList = previousChange.rebuildSolutionPath();

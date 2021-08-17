@@ -127,13 +127,14 @@ public class ProcessorState implements Processor {
                 this.changeInIdleTime = -taskLength;
 
                 // We've found the insert position so copy the first half of array across
-                System.arraycopy(this.processorSpaces, 0, newProcessorSpaces, 0, i-1);
-
+                if (i > 1) {
+                    System.arraycopy(this.processorSpaces, 0, newProcessorSpaces, 0, i - 1);
+                }
                 // prereq was passed so new 0 length space starts at beginning of now-filled old space
                 fillProcessorSpace(newProcessorSpaces, i,
-                        this.processorSpaces[i][0], // start
+                        this.processorSpaces[i][0],         // start
                         0,                          // length
-                        taskID                      // next task ID
+                        taskID                              // next task ID
                 );
 
                 // adding new space after inserted task
@@ -162,8 +163,9 @@ public class ProcessorState implements Processor {
                 this.changeInIdleTime = -taskLength;
 
                 // We've found the insert position so copy the first half of array across
-                System.arraycopy(this.processorSpaces, 0, newProcessorSpaces, 0, i-1);
-
+                if (i > 1) {
+                    System.arraycopy(this.processorSpaces, 0, newProcessorSpaces, 0, i - 1);
+                }
                 // task fits even though prereq is after space start so we add new space before inserted task
                 fillProcessorSpace(newProcessorSpaces, i,
                         this.processorSpaces[i][0], // start
