@@ -97,7 +97,7 @@ public class OriginalTaskNodeState extends TaskNodeState {
         return new ChangedTaskNodeState(
                 this,
                 this.numUnscheduledLinks - 1,
-                parentPrerequisites // Don't need to calculate max because original prerequisites all 0
+                parentPrerequisites.clone() // Don't need to calculate max because original prerequisites all 0
         );
     }
 

@@ -103,7 +103,7 @@ public abstract class ScheduleState implements Schedule {
                     fillProcessorPrerequisites(
                             insertLocation,
                             processorID,
-                            changedChild.getTaskCost(),
+                            freeTask.getTaskCost(),
                             childLink[1],
                             processorPrerequisites
                     );
