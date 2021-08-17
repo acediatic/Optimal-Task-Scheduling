@@ -41,7 +41,7 @@ public class ListTask {
     }
 
     public int[] getAsIntArray() {
-        return new int[]{this.taskID, this.processor, this.start};
+        return new int[]{this.taskID, this.processor, this.start, this.weight};
     }
 
 
