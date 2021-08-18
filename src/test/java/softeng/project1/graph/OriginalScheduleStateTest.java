@@ -2,7 +2,6 @@ package softeng.project1.graph;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import softeng.project1.graph.tasks.ChangedTaskNodeState;
 import softeng.project1.graph.tasks.OriginalTaskNodeState;
 import softeng.project1.graph.tasks.TaskNode;
 
@@ -19,12 +18,12 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class OriginalScheduleStateTest {
 
-    private static int[][] childLinks = new int[2][2];
-    private static OriginalTaskNodeState original1 = new OriginalTaskNodeState(150,20, 3, childLinks, 0, 0);
-    private static OriginalTaskNodeState original2 = new OriginalTaskNodeState(150,20, 3, childLinks, 0, 0);
-    private static Map<Integer, TaskNode>  tNode = new HashMap<>();
-    private static Map<Integer, TaskNode>  fNode = new HashMap<>();
-    private static Map<Integer, TaskNode>  otherFNode = new HashMap<>();
+    private static final int[][] childLinks = new int[2][2];
+    private static final OriginalTaskNodeState original1 = new OriginalTaskNodeState(150,20, 3, childLinks, 0, 0);
+    private static final OriginalTaskNodeState original2 = new OriginalTaskNodeState(150,20, 3, childLinks, 0, 0);
+    private static final Map<Integer, TaskNode>  tNode = new HashMap<>();
+    private static final Map<Integer, TaskNode>  fNode = new HashMap<>();
+    private static final Map<Integer, TaskNode>  otherFNode = new HashMap<>();
     private static OriginalScheduleState o1;
     private static OriginalScheduleState o2;
     private static OriginalScheduleState o3;
@@ -51,14 +50,20 @@ public class OriginalScheduleStateTest {
         assertFalse(o1.deepEquals(o3));
         assertFalse(o1.deepEquals(o4));
         assertFalse(o1.deepEquals(o5));
-
     }
 
     @Test
-    public void testGenerateStateChange() {}
+    public void testGenerateStateChange() {
+        assertArrayEquals(new ScheduleStateChange(null,0,0,0).rebuildSolutionPath().toArray(), o1.generateStateChange(0,0,0).rebuildSolutionPath().toArray());
+        assertNotEquals(new ScheduleStateChange(null,0,0,0), o1.generateStateChange(1,0,0));
+        assertNotEquals(new ScheduleStateChange(null,1,0,0), o1.generateStateChange(0,0,0));
+    }
 
     @Test
-    public void testGetOriginalSchedule() {}
+    public void testGetOriginalSchedule() {
+        assertEquals(o1, o1.getOriginalSchedule());
+        assertNotEquals(o2, o1.getOriginalSchedule());
+    }
 
     @Test
     public void testGetTaskNode() {
