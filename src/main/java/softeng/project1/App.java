@@ -25,6 +25,11 @@ import java.util.List;
 public final class App extends Application {
 
     private GuiController guiController;
+    private static int numProcessors;
+    private static List<int[]> testSchedule;
+    private static Graph inputGraph;
+
+
     /**
      * Runs the scheduling program
      *
@@ -46,6 +51,8 @@ public final class App extends Application {
 
         // use clp here to make choices about what parts to execute.
 
+        inputGraph = IOHandler.readFile(clp.getInputFileName());
+
         ListSchedulingAlgorithm listScheduler = new ListSchedulingAlgorithm(IOHandler.readFile(clp.getInputFileName()), clp.getNumProcessors());
 
         List<int[]> schedule = listScheduler.generateSchedule();
@@ -59,8 +66,7 @@ public final class App extends Application {
         launch(args);
     }
 
-    private static int numProcessors;
-    private static List<int[]> testSchedule;
+
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -70,9 +76,8 @@ public final class App extends Application {
 
         guiController = loader.getController();
 
-        guiController.setup(numProcessors);
+        guiController.setup(numProcessors, inputGraph);
 
-        guiController.setup(numProcessors);
         guiController.updateScheduleView(testSchedule);
 
         primaryStage.setTitle("Task Scheduler");

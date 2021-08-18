@@ -12,8 +12,15 @@ import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.StackedBarChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Label;
+import javafx.scene.layout.VBox;
 import javafx.util.Duration;
+import org.graphstream.graph.Graph;
+import org.graphstream.ui.fx_viewer.FxViewPanel;
+import org.graphstream.ui.fx_viewer.FxViewer;
+import org.graphstream.ui.javafx.FxGraphRenderer;
+import org.graphstream.ui.view.Viewer;
 
+import javax.swing.text.View;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -33,6 +40,9 @@ public class GuiController {
 
     @FXML
     private Label TimerText;
+
+    @FXML
+    private VBox InputContainer;
 
     private LocalTime timer = LocalTime.parse("00:00");
     private Timeline timeline;
@@ -56,16 +66,24 @@ public class GuiController {
      * Setups required fields for controller
      * @param numProcessors number of processors to divide tasks on
      */
-    public void setup(int numProcessors){
+    public void setup(int numProcessors, Graph g){
+        //Setup fields
         this.numProcessors = numProcessors;
 
+        //Setup requirements for schedule display
         List<String> processorNums = new ArrayList<>();
         for (int i = 0; i < numProcessors; i++) {
             processorNums.add(Integer.toString(i + 1));
         }
-
         processors.setCategories(FXCollections.observableArrayList(processorNums));
         schedule.setAnimated(false);
+
+        //Setup input graph display
+        FxViewer viewer = new FxViewer(g, Viewer.ThreadingModel.GRAPH_IN_GUI_THREAD);
+        viewer.enableAutoLayout();
+        FxViewPanel viewPanel = (FxViewPanel)viewer.addDefaultView(false, new FxGraphRenderer());
+
+        InputContainer.getChildren().add(viewPanel);
     }
 
 
