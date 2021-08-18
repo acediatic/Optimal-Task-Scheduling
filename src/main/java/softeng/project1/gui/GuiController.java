@@ -1,6 +1,10 @@
 package softeng.project1.gui;
 
 import com.sun.org.apache.xml.internal.utils.ListingErrorHandler;
+import javafx.animation.AnimationTimer;
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.chart.CategoryAxis;
@@ -8,8 +12,12 @@ import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.StackedBarChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Label;
+import javafx.util.Duration;
 
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class GuiController {
@@ -26,16 +34,30 @@ public class GuiController {
     @FXML
     private Label TimerText;
 
+    private LocalTime timer = LocalTime.parse("00:00");
+    private Timeline timeline;
+    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("mm:ss");
+
     private int numProcessors;
-    private int numTasks;
+
+    /**
+     * Initializes the timer
+     */
+    public void initialize(){
+        TimerText.setText(timer.format(formatter));
+
+        timeline = new Timeline();
+        timeline.setCycleCount(Timeline.INDEFINITE);
+        timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(1), ae -> updateTimer()));
+        timeline.play();
+    }
 
     /**
      * Setups required fields for controller
      * @param numProcessors number of processors to divide tasks on
      */
-    public void setup(int numProcessors, int numTasks){
+    public void setup(int numProcessors){
         this.numProcessors = numProcessors;
-        this.numTasks = numTasks;
 
         List<String> processorNums = new ArrayList<>();
         for (int i = 0; i < numProcessors; i++) {
@@ -46,12 +68,14 @@ public class GuiController {
         schedule.setAnimated(false);
     }
 
+
+
     /**
      * Updates the schedule display given a schedule
      * @param newSchedule A schedule
      */
-    public void updateScheduleView(List<int[]> newSchedule){
 
+    public void updateScheduleView(List<int[]> newSchedule){
         XYChart.Series<String, Number> idleSeries = new XYChart.Series<>();
 
         //Separates tasks into lists of processors
@@ -97,7 +121,8 @@ public class GuiController {
                             idleSeries.getData().add(block);
                     }
 
-                } catch (ArrayIndexOutOfBoundsException e){ //If previous task doesn't exist then it is the first task on the processor
+                //If previous task doesn't exist then it is the first task on the processor
+                } catch (ArrayIndexOutOfBoundsException e){
                     XYChart.Data<String, Number> block = new XYChart.Data<>(Integer.toString(currentProcessor + 1), startTime);
                     block.nodeProperty().addListener((ov, oldNode, node) -> {
                         node.setStyle("-fx-bar-fill: transparent");
@@ -115,6 +140,14 @@ public class GuiController {
             schedule.getData().addAll(idleSeries);
 
         }
+    }
+
+    /**
+     * Increments the timer label each second incrementing by one second
+     */
+    public void updateTimer(){
+        timer = timer.plusSeconds(1);
+        TimerText.setText(timer.format(formatter));
     }
 
     /**

@@ -70,9 +70,9 @@ public final class App extends Application {
 
         guiController = loader.getController();
 
-        guiController.setup(numProcessors, 10);
+        guiController.setup(numProcessors);
 
-        guiController.setup(numProcessors, 1);
+        guiController.setup(numProcessors);
         guiController.updateScheduleView(testSchedule);
 
         primaryStage.setTitle("Task Scheduler");
