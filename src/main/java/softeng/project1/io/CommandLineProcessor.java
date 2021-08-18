@@ -3,7 +3,10 @@ package softeng.project1.io;
 import org.apache.commons.cli.*;
 import softeng.project1.common.SchedulerErrorMessages;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Paths;
 
@@ -26,20 +29,25 @@ public class CommandLineProcessor {
             cmd = parser.parse(getCLOptions(), args);
         } catch (ParseException e) {
             System.err.println(SchedulerErrorMessages.CLIFailedOptionParsing);
+            System.err.println(SchedulerErrorMessages.CLIProperFormat);
             System.exit(1);
         }
 
         switch (cmd.getArgList().size()) {
             case 0:
                 System.err.println(SchedulerErrorMessages.CLINoArgs);
+                System.err.println(SchedulerErrorMessages.CLIProperFormat);
                 System.exit(2);
             case 1:
                 System.err.println(SchedulerErrorMessages.CLINoProcessorArg);
+                System.err.println(SchedulerErrorMessages.CLIProperFormat);
                 System.exit(2);
             case 2:
+            case 3:
                 break; // Do nothing, correct number of arguments passed
             default:
                 System.err.println(SchedulerErrorMessages.CLITooManyArgs);
+                System.err.println(SchedulerErrorMessages.CLIProperFormat);
                 System.exit(2);
         }
 
@@ -113,7 +121,7 @@ public class CommandLineProcessor {
         try {
             BufferedReader fr = new BufferedReader(new FileReader(input));
             String rawGraphLine = fr.readLine();
-            graphName = rawGraphLine.substring(rawGraphLine.indexOf('"')+1, rawGraphLine.lastIndexOf('"'));
+            graphName = rawGraphLine.substring(rawGraphLine.indexOf('"') + 1, rawGraphLine.lastIndexOf('"'));
 
         } catch (IOException e) { // TODO... print error message
             e.printStackTrace();
@@ -127,7 +135,8 @@ public class CommandLineProcessor {
     private void initNumProcessors() {
         try {
             // number of processors is second positional argument
-            numProcessors = Integer.parseInt(args[1]);
+            numProcessors = Integer.parseInt(args[cmd.hasOption("Xmx4G") ? 2 : 1]);
+
             if (numProcessors <= 0) {
                 System.err.println(SchedulerErrorMessages.CLINotEnoughProcessors);
                 System.exit(5);
@@ -143,8 +152,8 @@ public class CommandLineProcessor {
      * Determines the input file name, and checks the file exists.
      */
     private String initInputFilename() {
-        // file name is first positional argument
-        inputFileName = args[0];
+        // file name is first positional argument, if there's no heap size specified.
+        inputFileName = args[cmd.hasOption("Xmx4G") ? 1 : 0];
 
         // check file can be found
         File inputFile = new File(inputFileName);
@@ -174,6 +183,10 @@ public class CommandLineProcessor {
         options.addOption(Option.builder("o")
                 .hasArg(true)
                 .desc("uses specified name as the name of the output file (default is <inputName>-output.dot)")
+                .build());
+        options.addOption(Option.builder("Xmx4G")
+                .hasArg(false)
+                .required(false)
                 .build());
 
         return options;

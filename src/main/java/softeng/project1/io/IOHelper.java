@@ -51,15 +51,19 @@ public class IOHelper {
     }
 
     static int getProcessingCost(Element graphElement) {
-        return (int)((double) graphElement.getAttribute(PROCESSING_COST_ATTRIBUTE_KEY));
+        return (int) ((double) graphElement.getAttribute(PROCESSING_COST_ATTRIBUTE_KEY));
     }
 
     static int getNumParents(Node task) {
         return task.getInDegree();
     }
 
-    static Edge[] getChildLinks (Node task) {
+    static Edge[] getChildLinks(Node task) {
         return task.leavingEdges().toArray(Edge[]::new);
+    }
+
+    static Edge[] getParentLinks(Node task) {
+        return task.enteringEdges().toArray(Edge[]::new);
     }
 
     /*
@@ -69,18 +73,18 @@ public class IOHelper {
         int numChildren = taskNode.getOutDegree();
         int bottomLevel = getProcessingCost(taskNode);
 
-            // If the node has children, it is not the base case, so recursively determine bottom level for children.
-            if (numChildren > 0) {
-                int currentMax = 0;
-                for (int i = 0; i < numChildren; i++) {
-                    Node childTaskNode = taskNode.getLeavingEdge(i).getTargetNode();
-                    currentMax = Math.max(currentMax, dynamicBottomLevelCalculation(childTaskNode));
-                }
-                bottomLevel += currentMax;
+        // If the node has children, it is not the base case, so recursively determine bottom level for children.
+        if (numChildren > 0) {
+            int currentMax = 0;
+            for (int i = 0; i < numChildren; i++) {
+                Node childTaskNode = taskNode.getLeavingEdge(i).getTargetNode();
+                currentMax = Math.max(currentMax, dynamicBottomLevelCalculation(childTaskNode));
             }
+            bottomLevel += currentMax;
+        }
 
-            // either way, this task's cost forms part of its bottom level.
-            return bottomLevel;
+        // either way, this task's cost forms part of its bottom level.
+        return bottomLevel;
     }
 
     static void addSchedulingToTask(Node task, int[] schedulingData) {

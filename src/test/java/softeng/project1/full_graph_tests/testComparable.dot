@@ -1,0 +1,11 @@
+digraph "TestComparable" {
+	0	 [Weight=5];
+	1	 [Weight=10];
+	2	 [Weight=10];
+	3	 [Weight=10];
+	4	 [Weight=10];
+	0 -> 1	 [Weight=15];
+	0 -> 2	 [Weight=15];
+	0 -> 3	 [Weight=15];
+	0 -> 4	 [Weight=15];
+}
