@@ -30,7 +30,7 @@ public class ComparableTask implements Comparable<ComparableTask> {
 
         for (Edge parentEdge : parents) {
             Node parentNode = parentEdge.getSourceNode();
-            int weight = 0;//(int) parentEdge.getAttribute(PROCESSING_COST_ATTRIBUTE_KEY);
+            int weight = ((Double) parentEdge.getAttribute(PROCESSING_COST_ATTRIBUTE_KEY)).intValue();
             parentEdgeHashMap.put(parentNode, weight);
         }
 
@@ -40,7 +40,7 @@ public class ComparableTask implements Comparable<ComparableTask> {
 
         for (Edge childEdge : children) {
             Node childNode = childEdge.getTargetNode();
-            int weight = 0;//(int) childEdge.getAttribute(PROCESSING_COST_ATTRIBUTE_KEY);
+            int weight = ((Double) childEdge.getAttribute(PROCESSING_COST_ATTRIBUTE_KEY)).intValue();
             childEdgeHashMap.put(childNode, weight);
         }
     }
@@ -56,8 +56,8 @@ public class ComparableTask implements Comparable<ComparableTask> {
             return this.taskWeight - o.taskWeight;
         } else if (!this.parentEdgeHashMap.equals(o.parentEdgeHashMap)) {
             return this.parentEdgeHashMap.hashCode() - o.parentEdgeHashMap.hashCode();
-        } else if (this.childEdgeHashMap.equals(o.parentEdgeHashMap)) {
-            return this.childEdgeHashMap.hashCode() - o.parentEdgeHashMap.hashCode();
+        } else if (!this.childEdgeHashMap.equals(o.childEdgeHashMap)) {
+            return this.childEdgeHashMap.hashCode() - o.childEdgeHashMap.hashCode();
         } else {
             // Equivalent children.
             return 0;

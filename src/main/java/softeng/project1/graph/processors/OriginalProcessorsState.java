@@ -40,7 +40,7 @@ public class OriginalProcessorsState extends ProcessorsState {
      */
     private static Processor[] generateOriginalProcessors(int numProcessors) {
         Processor[] originalProcessors = new Processor[numProcessors];
-        for (int i = 0; i<numProcessors; i++) {
+        for (short i = 0; i<numProcessors; i++) {
             // Using index as processor ID
             originalProcessors[i] = new OriginalProcessorState(i);
         }

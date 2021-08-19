@@ -1,18 +1,17 @@
 package softeng.project1;
 
 import softeng.project1.algorithms.SchedulingAlgorithm;
-import softeng.project1.algorithms.astar.heuristics.PriorityQueueHeuristicManager;
+import softeng.project1.algorithms.astar.heuristics.AStarHeuristicManager;
+import softeng.project1.algorithms.astar.heuristics.HeuristicManager;
+import softeng.project1.algorithms.astar.parallel.ParallelAStarSchedulingAlgorithm;
 import softeng.project1.algorithms.astar.sequential.SequentialAStarSchedulingAlgorithm;
-import softeng.project1.algorithms.valid.ListSchedulingAlgorithm;
 import softeng.project1.graph.Schedule;
-import softeng.project1.graph.processors.Processors;
 import softeng.project1.io.AStarIOHandler;
 import softeng.project1.io.CommandLineProcessor;
 import softeng.project1.io.IOHandler;
-import softeng.project1.io.ListIOHandler;
 
 import java.util.HashMap;
-import java.util.List;
+import java.util.PriorityQueue;
 
 
 public final class App {
@@ -46,13 +45,27 @@ public final class App {
                 clp.getNumProcessors()
         );
 
-        SchedulingAlgorithm schedulingAlgorithm = new SequentialAStarSchedulingAlgorithm(
-                ioHandler.readFile(),
-                new PriorityQueueHeuristicManager(ioHandler.getSumWeights(), (short)clp.getNumProcessors()),
-                new HashMap<>()
-        );
+        Schedule originalSchedule = ioHandler.readFile();
+        HeuristicManager heuristicManager = new AStarHeuristicManager(ioHandler.getSumWeights(), (short)clp.getNumProcessors());
+        SchedulingAlgorithm algorithm;
 
-        ioHandler.writeFile(schedulingAlgorithm.generateSchedule());
+        if (clp.getNumThreads() > 1) {
+            algorithm = new ParallelAStarSchedulingAlgorithm(
+                    originalSchedule,
+                    heuristicManager,
+                    clp.getNumThreads()
+            );
+        } else {
+            algorithm = new SequentialAStarSchedulingAlgorithm(
+                    originalSchedule,
+                    heuristicManager,
+                    new HashMap<>(),
+                    new PriorityQueue<>()
+            );
+        }
+
+        String result = ioHandler.writeFile(algorithm.generateSchedule());
+        System.out.println(result);
 
 //        ListSchedulingAlgorithm listScheduler = new ListSchedulingAlgorithm(ListIOHandler.readFile(clp.getInputFileName()), clp.getNumProcessors());
 //

@@ -27,7 +27,7 @@ package softeng.project1.graph.tasks;
 public class OriginalTaskNodeState extends TaskNodeState {
 
     // Task data fields, should all be immutable
-    private final int taskID; // ID of task
+    private final short taskID; // ID of task
     private final int taskCost; // Cost of Task
     private final int[][] childLinks; // Array of arrays representing outgoing edges, don't expose this directly
     private final int maxCommunicationCost; // Most expensive communication cost in the childLinks set
@@ -57,7 +57,7 @@ public class OriginalTaskNodeState extends TaskNodeState {
      * @param bottomLevel   : TODO...
      * @param numProcessors : The number of processors available for the task to possibly be scheduled on.
      */
-    public OriginalTaskNodeState(int taskID, int taskCost, int numLinks, int[][] childLinks, int bottomLevel, int numProcessors) {
+    public OriginalTaskNodeState(short taskID, int taskCost, int numLinks, int[][] childLinks, int bottomLevel, int numProcessors) {
         super(numLinks, new int[numProcessors]);
         this.taskID = taskID;
         this.taskCost = taskCost;
@@ -111,7 +111,7 @@ public class OriginalTaskNodeState extends TaskNodeState {
      * @return : ID of the Task whose state the Task Node represents.
      */
     @Override
-    public int getTaskID() {
+    public short getTaskID() {
         return this.taskID;
     }
 

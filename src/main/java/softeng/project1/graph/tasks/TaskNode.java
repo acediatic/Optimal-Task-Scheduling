@@ -61,7 +61,7 @@ public interface TaskNode {
      *
      * @return : ID of the Task whose state the Task Node represents.
      */
-    int getTaskID();
+    short getTaskID();
 
     /**
      * Returns the amount of time required for the task to complete when actively being run on a processor.
