@@ -75,16 +75,12 @@ public class OriginalScheduleStateTest {
 
     @Test
     public void testCopyFreeNodesHook() {
-        assertEquals(copyCheckMap,o1.copyFreeNodesHook());
-        assertEquals(copyCheckMap,o2.copyFreeNodesHook());
-//        assertNotEquals(copyCheckMap,o3.copyFreeNodesHook());
+        assertEquals(copyCheckMap,o1.copyFreeNodesHook()); // Possibly redundant test.
     }
 
     @Test
     public void testCopyTaskNodesHook() {
-        assertEquals(copyCheckMap,o1.copyTaskNodesHook());
-        assertEquals(copyCheckMap,o2.copyTaskNodesHook());
-//        assertNotEquals(copyCheckMap,o3.copyTaskNodesHook());
+        assertEquals(copyCheckMap,o1.copyTaskNodesHook()); // Possibly redundant test.
     }
 
     @Test
