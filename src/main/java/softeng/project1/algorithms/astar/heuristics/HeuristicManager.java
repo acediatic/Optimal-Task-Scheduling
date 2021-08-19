@@ -6,9 +6,8 @@ import java.util.List;
 
 public interface HeuristicManager {
 
-    void addAllSchedules(List<Schedule> newFringeSchedules);
+    List<AlgorithmStep> getAlgorithmStepsFromSchedules(List<Schedule> newFringeSchedules);
 
-    void addSchedule(Schedule newFringeSchedule);
+    AlgorithmStep getAlgorithmStepFromSchedule(Schedule newFringeSchedule);
 
-    AlgorithmStep getAlgorithmStepQueueHead();
 }
