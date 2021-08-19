@@ -22,7 +22,7 @@ public class ParallelAStarSchedulingAlgorithm extends ThreadPoolExecutor impleme
     private final Schedule originalSchedule;
 
     public ParallelAStarSchedulingAlgorithm(Schedule originalSchedule,
-                                            AlgorithmPriorityBlockingQueue<AlgorithmStep> heuristicManager,
+                                            AlgorithmPriorityBlockingQueue heuristicManager,
                                             int numThreads) {
         super(numThreads, numThreads, KEEP_ALIVE_TIME_MILLISECONDS, TimeUnit.MILLISECONDS, new PriorityBlockingQueue<>());
 
