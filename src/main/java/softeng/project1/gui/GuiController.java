@@ -1,8 +1,5 @@
 package softeng.project1.gui;
 
-import com.sun.org.apache.xml.internal.utils.ListingErrorHandler;
-import javafx.animation.AnimationTimer;
-import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.collections.FXCollections;
