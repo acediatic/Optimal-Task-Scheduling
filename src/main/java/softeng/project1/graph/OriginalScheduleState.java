@@ -6,6 +6,7 @@ import softeng.project1.graph.tasks.TaskNode;
 import softeng.project1.graph.tasks.TaskNodeState;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -30,9 +31,13 @@ import java.util.Map;
  */
 public class OriginalScheduleState extends ScheduleState {
 
+    private static final float LOAD_FACTOR = 100;
+
     private static final ScheduleStateChange ORIGINAL_STATE_CHANGE = null;
     private static final int ORIGINAL_MAX_BOTTOM_LEVEL = 0;
     private static final int ORIGINAL_MAX_DATA_READY_TIME = 0;
+
+    private final short branchingFactor;
 
     /**
      * Public constructor for starting the tree of partial schedules which all grow from this original state.
@@ -48,7 +53,8 @@ public class OriginalScheduleState extends ScheduleState {
      */
     public OriginalScheduleState(Map<Integer, TaskNode> taskNodes,
                                  Map<Integer, TaskNode> freeTaskNodes,
-                                 int numProcessors) {
+                                 int numProcessors,
+                                 short branchingFactor) {
         // Making these immutable, note that the underlying map can still be changed.
         super(
                 // We could replace these with arrays in the original state, need to be maps in non-original states
@@ -59,6 +65,7 @@ public class OriginalScheduleState extends ScheduleState {
                 ORIGINAL_MAX_BOTTOM_LEVEL,
                 ORIGINAL_MAX_DATA_READY_TIME
         );
+        this.branchingFactor = branchingFactor;
     }
 
     /**
@@ -112,4 +119,13 @@ public class OriginalScheduleState extends ScheduleState {
        return this.taskNodes.get(taskID);
     }
 
+    @Override
+    protected Map<Integer, TaskNode> copyFreeNodesHook() {
+        return new HashMap<>(this.branchingFactor, LOAD_FACTOR);
+    }
+
+    @Override
+    protected Map<Integer, TaskNode> copyTaskNodesHook() {
+        return new HashMap<>(this.branchingFactor, LOAD_FACTOR);
+    }
 }

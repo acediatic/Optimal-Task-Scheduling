@@ -3,6 +3,7 @@ package softeng.project1.graph;
 import softeng.project1.graph.processors.Processors;
 import softeng.project1.graph.tasks.TaskNode;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -109,5 +110,16 @@ public class ChangedScheduleState extends ScheduleState{
             return this.originalScheduleState.getTaskNode(taskID);
         }
     }
+
+    @Override
+    protected Map<Integer, TaskNode> copyFreeNodesHook() {
+        return new HashMap<>(this.freeNodes);
+    }
+
+    @Override
+    protected Map<Integer, TaskNode> copyTaskNodesHook() {
+        return new HashMap<>(this.taskNodes);
+    }
+
 
 }

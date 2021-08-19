@@ -87,8 +87,8 @@ public abstract class ScheduleState implements Schedule {
                 Processors newProcessors = this.processors.copyAndAddProcessor(freeTask, processorID);
                 int insertLocation = newProcessors.getProcessor(processorID).getLastInsertLocation();
 
-                Map<Integer, TaskNode> newFreeNodes = new HashMap<>(this.freeNodes); // Shallow copy
-                Map<Integer, TaskNode> newTaskNodes = new HashMap<>(this.taskNodes); // Shallow copy
+                Map<Integer, TaskNode> newFreeNodes = copyFreeNodesHook();
+                Map<Integer, TaskNode> newTaskNodes = copyTaskNodesHook();
                 // Inserted task no longer needs to be stored
                 newFreeNodes.remove(freeTask.getTaskID());
                 newTaskNodes.remove(freeTask.getTaskID());
@@ -215,6 +215,12 @@ public abstract class ScheduleState implements Schedule {
      */
     protected abstract TaskNode getTaskNode(int taskID);
 
+    /**
+     * TODO...
+     */
+    protected abstract Map<Integer, TaskNode> copyFreeNodesHook();
+
+    protected abstract Map<Integer, TaskNode> copyTaskNodesHook();
     /**
      * Generic Object.toString() override.
      * @return : String representation of the ScheduleState for use in debugging.
