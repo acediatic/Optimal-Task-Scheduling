@@ -196,8 +196,8 @@ public class ListSchedulingAlgorithm implements SchedulingAlgorithm {
 
         // See if we've just increased the latest end time, and update if so.
         // Used in A*.
-        if (earliestProcessorScheduleTime + task.getWeight() > endTime) {
-            endTime = earliestProcessorScheduleTime + task.getWeight();
+        if (earliestScheduleTime + task.getWeight() > endTime) {
+            endTime = earliestScheduleTime + task.getWeight();
         }
 
         // Updating stored Processor values

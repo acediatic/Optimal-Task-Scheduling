@@ -124,7 +124,7 @@ public abstract class ScheduleState implements Schedule {
                         newTaskNodes,
                         newFreeNodes,
                         newProcessors,
-                        Math.max(this.maxBottomLevel, freeTask.getBottomLevel()),
+                        Math.max(this.maxBottomLevel, freeTask.getBottomLevel() + insertLocation),
                         Math.max(this.maxDataReadyTime, insertLocation + freeTask.getTaskCost() + freeTask.getMaxCommunicationCost())
                 ));
             }
