@@ -1,18 +1,13 @@
 package softeng.project1;
 
 import softeng.project1.algorithms.SchedulingAlgorithm;
-import softeng.project1.algorithms.astar.heuristics.PriorityQueueHeuristicManager;
+import softeng.project1.algorithms.astar.heuristics.AStarHeuristicManager;
 import softeng.project1.algorithms.astar.sequential.SequentialAStarSchedulingAlgorithm;
-import softeng.project1.algorithms.valid.ListSchedulingAlgorithm;
-import softeng.project1.graph.Schedule;
-import softeng.project1.graph.processors.Processors;
 import softeng.project1.io.AStarIOHandler;
 import softeng.project1.io.CommandLineProcessor;
 import softeng.project1.io.IOHandler;
-import softeng.project1.io.ListIOHandler;
 
 import java.util.HashMap;
-import java.util.List;
 
 
 public final class App {
@@ -48,7 +43,7 @@ public final class App {
 
         SchedulingAlgorithm schedulingAlgorithm = new SequentialAStarSchedulingAlgorithm(
                 ioHandler.readFile(),
-                new PriorityQueueHeuristicManager(ioHandler.getSumWeights(), (short)clp.getNumProcessors()),
+                new AStarHeuristicManager(ioHandler.getSumWeights(), (short)clp.getNumProcessors()),
                 new HashMap<>()
         );
 

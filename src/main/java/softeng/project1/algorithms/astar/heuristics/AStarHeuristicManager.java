@@ -2,13 +2,34 @@ package softeng.project1.algorithms.astar.heuristics;
 
 import softeng.project1.graph.Schedule;
 
-public class HeuristicHelper {
+import java.util.ArrayList;
+import java.util.List;
+
+public class AStarHeuristicManager implements HeuristicManager {
     private final int taskLengthsSum;
     private final short numberOfProcesses;
 
-    public HeuristicHelper(int taskLengthsSum, short numberOfProcesses) {
+    public AStarHeuristicManager(int taskLengthsSum, short numberOfProcesses) {
         this.taskLengthsSum = taskLengthsSum;
         this.numberOfProcesses = numberOfProcesses;
+    }
+
+    @Override
+    public List<AlgorithmStep> getAlgorithmStepsFromSchedules(List<Schedule> newFringeSchedules) {
+        List<AlgorithmStep> algoSteps = new ArrayList<>(newFringeSchedules.size());
+
+        // Convert schedules to algorithm steps
+        for (Schedule schedule : newFringeSchedules) {
+            algoSteps.add(getAlgoStep(schedule));
+        }
+
+        // add all to priority queue.
+        return algoSteps;
+    }
+
+    @Override
+    public AlgorithmStep getAlgorithmStepFromSchedule(Schedule newFringeSchedule) {
+        return getAlgoStep(newFringeSchedule);
     }
 
     // TODO describe heuristic
