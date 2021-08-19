@@ -2,6 +2,9 @@ package softeng.project1.graph;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import softeng.project1.graph.processors.OriginalProcessorsState;
+import softeng.project1.graph.processors.Processors;
+import softeng.project1.graph.processors.processor.Processor;
 import softeng.project1.graph.tasks.OriginalTaskNodeState;
 import softeng.project1.graph.tasks.TaskNode;
 
@@ -84,7 +87,14 @@ public class OriginalScheduleStateTest {
     }
 
     @Test
-    public void testGetHashKey() {}
+    public void testGetHashKey() {
+        Processors p1 = new OriginalProcessorsState(5);
+        Processors p2 = new OriginalProcessorsState(0);
+        assertEquals(p1.toString(), o1.getHashKey().toString());
+        assertEquals(p2.toString(), o3.getHashKey().toString());
+        assertNotEquals(p2.toString(), o1.getHashKey().toString());
+        assertNotEquals(p1.toString(), o3.getHashKey().toString());
+    }
 
     @Test
     public void testExpand() {}
