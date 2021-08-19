@@ -37,7 +37,7 @@ public class ParallelAStarSchedulingAlgorithm extends ThreadPoolExecutor impleme
     public List<int[]> generateSchedule() {
 
         this.closedSchedules.put(originalSchedule.getHashKey(), originalSchedule);
-        this.heuristicManager.addSchedule(heuristicManager.addSchedule(originalSchedule));
+        execute(heuristicManager.addSchedule(originalSchedule));
 
         try {
             if (this.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS)) {
