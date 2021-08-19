@@ -103,6 +103,12 @@ public class OriginalScheduleStateTest {
     public void testFillProcessorPrerequisites() {}
 
     @Test
+    public void testRebuildPath() {
+//        ScheduleStateChange change = new ScheduleStateChange()
+//        assertEquals(change.rebuildSolutionPath(), o1.rebuildPath());
+    }
+
+    @Test
     public void testGetMaxBottomLevel() {
         assertEquals(0,o1.getMaxBottomLevel());
         assertNotEquals(5,o1.getMaxBottomLevel());
