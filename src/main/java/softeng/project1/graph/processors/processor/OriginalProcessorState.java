@@ -26,7 +26,7 @@ public class OriginalProcessorState implements Processor {
 
     // Immutable Processor ID. ID's should be unique within the 
     // OriginalProcessorState set.
-    private final int processorID;
+    private final short processorID;
 
     /**
      * Main constructor / entry point for the entire Processor set.
@@ -35,7 +35,7 @@ public class OriginalProcessorState implements Processor {
      * copyAndInsert() method.
      * @param processorID : ID of the processor this object represents the original state of.
      */
-    public OriginalProcessorState(int processorID) {
+    public OriginalProcessorState(short processorID) {
         this.processorID = processorID;
     }
 
@@ -46,13 +46,16 @@ public class OriginalProcessorState implements Processor {
      */
     @Override
     public Processor copyAndInsert(TaskNode taskNode) {
-        
         int[][] newSpaceArray = new int[2][3];
+
+        // Always insert as soon as data is available.
+        int insertLocation = taskNode.getProcessorPrerequisite(this.processorID);
+        
         // First space exists before the inserted task
         ProcessorHelper.fillProcessorSpace(newSpaceArray, 0,
             0,
-            taskNode.getProcessorPrerequisite(this.processorID),
-            taskNode.getTaskID()    
+                insertLocation,
+                taskNode.getTaskID()
         );
 
         // Putting empty space on end to signal processor completion
@@ -60,8 +63,7 @@ public class OriginalProcessorState implements Processor {
             taskNode.getProcessorPrerequisite(this.processorID) + taskNode.getTaskCost()
         );
 
-        // Insert location always 0
-        return new ProcessorState(this.processorID, newSpaceArray, 0);
+        return new ProcessorState(this.processorID, newSpaceArray, insertLocation);
     }
 
     /**

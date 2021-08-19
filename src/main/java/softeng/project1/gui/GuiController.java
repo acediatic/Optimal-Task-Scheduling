@@ -19,6 +19,8 @@ import org.graphstream.ui.fx_viewer.FxViewPanel;
 import org.graphstream.ui.fx_viewer.FxViewer;
 import org.graphstream.ui.javafx.FxGraphRenderer;
 import org.graphstream.ui.view.Viewer;
+import softeng.project1.io.AStarIOHandler;
+import softeng.project1.io.IOHelper;
 
 import javax.swing.text.View;
 import java.time.LocalTime;
@@ -103,6 +105,8 @@ public class GuiController {
         }
 
         for(int[] task : newSchedule){
+            System.out.println(task[1]);
+            System.out.println(processorTasks.get(task[1]));
             processorTasks.get(task[1]).add(task[0]);
         }
 
@@ -152,6 +156,7 @@ public class GuiController {
                 XYChart.Series<String, Number> newSeries = new XYChart.Series<>();
 //                newSeries.setName("Task " + taskID);
                 newSeries.getData().add(new XYChart.Data<>(Integer.toString(currentProcessor + 1), weight));
+                newSeries.setName(Integer.toString(i));
                 schedule.getData().addAll(newSeries);
 
             }
@@ -175,9 +180,9 @@ public class GuiController {
      * @return Returns the index of task with given taskID, returns -1 if doesn't exist
      */
     private int findTaskIndex(List<int[]> schedule, int taskID){
-        for(int[] task: schedule){
-            if(task[0] == taskID){
-                return task[0];
+        for(int i = 0; i < schedule.size(); i++){
+            if(schedule.get(i)[0] == taskID){
+                return i;
             }
         }
 

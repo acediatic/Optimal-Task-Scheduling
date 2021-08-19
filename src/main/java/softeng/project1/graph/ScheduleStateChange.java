@@ -4,6 +4,7 @@ import softeng.project1.graph.tasks.TaskNode;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -25,6 +26,7 @@ public class ScheduleStateChange {
     private final int insertedTaskNodeID; // The ID of the task whose insertion is represented by this state change.
     private final int processorID; // The ID of the processor the task was inserted into.
     private final int insertionTime; // The start location of the inserted task.
+    private final int taskNodeWeight;
 
     /**
      * Generic constructor which takes and stores inputted state change data.
@@ -35,11 +37,12 @@ public class ScheduleStateChange {
      * @param processorID : ID of the processor that the task was inserted into.
      * @param insertionTime : Start location of the inserted task.
      */
-    public ScheduleStateChange(ScheduleStateChange previousChange, int insertedTaskNodeID, int processorID, int insertionTime) {
+    public ScheduleStateChange(ScheduleStateChange previousChange, int insertedTaskNodeID, int processorID, int insertionTime, int taskNodeWeight) {
         this.previousChange = previousChange;
         this.insertedTaskNodeID = insertedTaskNodeID;
         this.processorID = processorID;
         this.insertionTime = insertionTime;
+        this.taskNodeWeight = taskNodeWeight;
     }
 
     /**
@@ -58,11 +61,11 @@ public class ScheduleStateChange {
      */
     public List<int[]> rebuildSolutionPath() {
         // Own data
-        int[] pathData = new int[]{insertedTaskNodeID, processorID, insertionTime};
+        int[] pathData = new int[]{insertedTaskNodeID, processorID, insertionTime, taskNodeWeight};
 
         // First step, occurs when creating step from original schedule state
         if (previousChange == null) {
-            return Arrays.asList(new int[][]{pathData});
+            return new LinkedList<>(Arrays.asList(new int[][]{pathData}));
         } else {
             // Recursively build from previous steps
             List<int[]> returnList = previousChange.rebuildSolutionPath();

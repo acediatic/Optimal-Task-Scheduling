@@ -61,7 +61,7 @@ public interface TaskNode {
      *
      * @return : ID of the Task whose state the Task Node represents.
      */
-    int getTaskID();
+    short getTaskID();
 
     /**
      * Returns the amount of time required for the task to complete when actively being run on a processor.
@@ -81,7 +81,7 @@ public interface TaskNode {
     int[][] getChildLinks();
 
     /**
-     * @return : // TODO... Remember what bottom level is
+     * @return :The critical path from a node to the finish, including the node's own computation time.
      */
     int getBottomLevel();
 

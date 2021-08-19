@@ -7,7 +7,8 @@ public enum SchedulerErrorMessages {
     CLINotEnoughProcessors("Error: Number of processors must be greater than 0"),
     CLICannotFindInputFile("Error: Unable to find file"),
     CLIInvalidProcessorNum("Error: Unable to parse inputted number of processors as an integer"),
-    CLIFailedOptionParsing("Error: Failed to successfully parse optional arguments, please ensure you're following correct command line formatting");
+    CLIFailedOptionParsing("Error: Failed to successfully parse optional arguments, please ensure you're following correct command line formatting"),
+    CLIProperFormat("Attempting to parse arguments in the form [-Xmx4G] inputFileName numProcessors [-o outputFileName] [-p numberCores]");
 
 
     private final String message;

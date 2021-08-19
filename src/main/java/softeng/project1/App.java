@@ -6,20 +6,20 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import org.graphstream.graph.Graph;
-import org.graphstream.stream.ProxyPipe;
-import org.graphstream.stream.Source;
-import org.graphstream.ui.fx_viewer.FxViewPanel;
-import org.graphstream.ui.fx_viewer.FxViewer;
-import org.graphstream.ui.graphicGraph.GraphicGraph;
-import org.graphstream.ui.view.GraphRenderer;
-import org.graphstream.ui.view.Viewer;
-import softeng.project1.algorithms.valid.ListSchedulingAlgorithm;
+import softeng.project1.algorithms.SchedulingAlgorithm;
+import softeng.project1.algorithms.astar.heuristics.AStarHeuristicManager;
+import softeng.project1.algorithms.astar.heuristics.HeuristicManager;
+import softeng.project1.algorithms.astar.parallel.ParallelAStarSchedulingAlgorithm;
+import softeng.project1.algorithms.astar.sequential.SequentialAStarSchedulingAlgorithm;
+import softeng.project1.graph.Schedule;
 import softeng.project1.gui.GuiController;
+import softeng.project1.io.AStarIOHandler;
 import softeng.project1.io.CommandLineProcessor;
 import softeng.project1.io.IOHandler;
 
-import java.io.File;
 import java.util.List;
+import java.util.HashMap;
+import java.util.PriorityQueue;
 
 
 public final class App extends Application {
@@ -50,23 +50,44 @@ public final class App extends Application {
         System.out.println(runInformation);
 
         // use clp here to make choices about what parts to execute.
+        IOHandler ioHandler = new AStarIOHandler(
+                clp.getInputFileName(),
+                clp.getOutputFileName(),
+                clp.getGraphName(),
+                clp.getNumProcessors()
+        );
 
-        inputGraph = IOHandler.readFile(clp.getInputFileName());
+        Schedule originalSchedule = ioHandler.readFile();
+        HeuristicManager heuristicManager = new AStarHeuristicManager(ioHandler.getSumWeights(), (short)clp.getNumProcessors());
+        SchedulingAlgorithm algorithm;
 
-        ListSchedulingAlgorithm listScheduler = new ListSchedulingAlgorithm(IOHandler.readFile(clp.getInputFileName()), clp.getNumProcessors());
+        if (clp.getNumThreads() > 1) {
+            algorithm = new ParallelAStarSchedulingAlgorithm(
+                    originalSchedule,
+                    heuristicManager,
+                    clp.getNumThreads()
+            );
+        } else {
+            algorithm = new SequentialAStarSchedulingAlgorithm(
+                    originalSchedule,
+                    heuristicManager,
+                    new HashMap<>(),
+                    new PriorityQueue<>()
+            );
+        }
 
-        List<int[]> schedule = listScheduler.generateSchedule();
-
-        testSchedule = schedule;
         numProcessors = clp.getNumProcessors();
+        inputGraph = ((AStarIOHandler) ioHandler).getGraph();
+        testSchedule = algorithm.generateSchedule();
 
-        IOHandler.writeFile(listScheduler.scheduleToGraph(schedule), clp.getGraphName(), clp.getOutputFileName());
+        System.out.println(testSchedule);
+
+        String result = ioHandler.writeFile(testSchedule);
+        System.out.println(result);
 
         System.out.println("Successfully created " + clp.getOutputFileName() + '\n');
         launch(args);
     }
-
-
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -75,9 +96,7 @@ public final class App extends Application {
         Scene scene = new Scene(root);
 
         guiController = loader.getController();
-
         guiController.setup(numProcessors, inputGraph);
-
         guiController.updateScheduleView(testSchedule);
 
         primaryStage.setTitle("Task Scheduler");
