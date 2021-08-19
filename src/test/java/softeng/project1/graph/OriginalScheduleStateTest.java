@@ -55,9 +55,9 @@ public class OriginalScheduleStateTest {
 
     @Test
     public void testGenerateStateChange() {
-        assertArrayEquals(new ScheduleStateChange(null,0,0,0).rebuildSolutionPath().toArray(), o1.generateStateChange(0,0,0).rebuildSolutionPath().toArray());
-        assertNotEquals(new ScheduleStateChange(null,0,0,0), o1.generateStateChange(1,0,0));
-        assertNotEquals(new ScheduleStateChange(null,1,0,0), o1.generateStateChange(0,0,0));
+        assertArrayEquals(new ScheduleStateChange(null,0,0,0, 0).rebuildSolutionPath().toArray(), o1.generateStateChange(0,0,0, 0).rebuildSolutionPath().toArray());
+        assertNotEquals(new ScheduleStateChange(null,0,0,0, 0), o1.generateStateChange(1,0,0, 0));
+        assertNotEquals(new ScheduleStateChange(null,1,0,0, 0), o1.generateStateChange(0,0,0, 0));
     }
 
     @Test
