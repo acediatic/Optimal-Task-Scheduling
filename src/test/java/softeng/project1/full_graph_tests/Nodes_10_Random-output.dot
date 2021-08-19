@@ -1,0 +1,37 @@
+digraph {
+	graph [ "No of nodes"=10.0 ];
+	graph [ "CCR"=10.0 ];
+	graph [ "Density"=1.9 ];
+	graph [ "Total sequential time"=63.0 ];
+	graph [ "No of edges"=19.0 ];
+	graph [ "Node concurrency"=-1.0 ];
+	"0" ["Start"=0,"Weight"=6.0,"Processor"=3];
+	"3" ["Weight"=10.0];
+	"4" ["Start"=6,"Weight"=3.0,"Processor"=3];
+	"9" ["Weight"=8.0];
+	"1" ["Weight"=5.0];
+	"2" ["Weight"=5.0];
+	"5" ["Weight"=7.0];
+	"6" ["Weight"=8.0];
+	"7" ["Weight"=3.0];
+	"8" ["Weight"=8.0];
+	"0" -> "3" ["Weight"=34.0];
+	"0" -> "4" ["Weight"=24.0];
+	"0" -> "9" ["Weight"=44.0];
+	"1" -> "2" ["Weight"=48.0];
+	"1" -> "5" ["Weight"=19.0];
+	"1" -> "6" ["Weight"=39.0];
+	"2" -> "3" ["Weight"=10.0];
+	"2" -> "7" ["Weight"=48.0];
+	"2" -> "8" ["Weight"=48.0];
+	"4" -> "6" ["Weight"=10.0];
+	"4" -> "7" ["Weight"=48.0];
+	"4" -> "8" ["Weight"=48.0];
+	"4" -> "9" ["Weight"=39.0];
+	"6" -> "7" ["Weight"=15.0];
+	"6" -> "8" ["Weight"=39.0];
+	"6" -> "9" ["Weight"=29.0];
+	"7" -> "8" ["Weight"=15.0];
+	"7" -> "9" ["Weight"=34.0];
+	"8" -> "9" ["Weight"=39.0];
+}

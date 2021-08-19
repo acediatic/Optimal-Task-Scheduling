@@ -19,13 +19,13 @@ public class AStarIOHandler implements IOHandler {
     private static final String PROCESSING_COST_ATTRIBUTE_KEY = "Weight";
     private final InputStream inputFileStream;
     private final OutputStream outputStream;
-    private final int numProcessors; // Kinda cursed that this has to be here tbh
+    private final short numProcessors; // Kinda cursed that this has to be here tbh
     private final String graphName;
     private Map<Short, String> taskNames;
     private int sumTaskWeights = 0;
     private Graph graphStreamInput;
 
-    public AStarIOHandler(String inputFilePath, String outputFilePath, String graphName, int numProcessors) {
+    public AStarIOHandler(String inputFilePath, String outputFilePath, String graphName, short numProcessors) {
 
         // TODO... sanitise inputs, check accessibility etc.
         try {
