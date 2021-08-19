@@ -46,7 +46,7 @@ public final class App {
         );
 
         Schedule originalSchedule = ioHandler.readFile();
-        HeuristicManager heuristicManager = new AStarHeuristicManager(ioHandler.getSumWeights(), (short)clp.getNumProcessors());
+        HeuristicManager heuristicManager = new AStarHeuristicManager(ioHandler.getSumWeights(), (short)clp.getNumProcessors(), ioHandler.getListSchedulingAlgoStep());
         SchedulingAlgorithm algorithm;
 
         if (clp.getNumThreads() > 1) {
@@ -60,9 +60,11 @@ public final class App {
                     originalSchedule,
                     heuristicManager,
                     new HashMap<>(),
-                    new PriorityQueue<>()
+                    new PriorityQueue<>(),
+                    ioHandler.getListSchedulingAlgoStep()
             );
         }
+
 
         ioHandler.writeFile(algorithm.generateSchedule());
 

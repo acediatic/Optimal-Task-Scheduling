@@ -1,8 +1,7 @@
 package softeng.project1.io;
 
-import org.graphstream.graph.Graph;
+import softeng.project1.algorithms.astar.heuristics.AlgorithmStep;
 import softeng.project1.graph.Schedule;
-import softeng.project1.graph.tasks.TaskNode;
 
 import java.util.List;
 
@@ -13,4 +12,6 @@ public interface IOHandler {
     void writeFile(List<int[]> scheduledTaskData);
 
     int getSumWeights();
+
+    AlgorithmStep getListSchedulingAlgoStep();
 }
