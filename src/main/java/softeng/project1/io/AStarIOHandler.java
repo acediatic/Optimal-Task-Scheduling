@@ -147,6 +147,8 @@ public class AStarIOHandler implements IOHandler {
             e.printStackTrace(); // TODO...
             throw new RuntimeException();
         }
+
+        System.out.println("Max processor length: " + getScheduleMaxLength(scheduledTaskData));
     }
 
     @Override
@@ -181,6 +183,19 @@ public class AStarIOHandler implements IOHandler {
         }
 
         throw new RuntimeException("Failed to find Task: " + taskName + " in task ID -> name map"); // TODO... add better error handling
+    }
+
+    private int getScheduleMaxLength(List<int[]> scheduleLocations) {
+        int maxLength = 0;
+
+        for (int[] scheduleLocation: scheduleLocations) {
+            int scheduleLastPoint = IOHelper.getProcessingCost(this.graphStreamInput.getNode(this.taskNames.get(scheduleLocation[0])));
+            if (scheduleLastPoint > maxLength) {
+                maxLength = scheduleLastPoint;
+            }
+
+        }
+        return maxLength;
     }
 
 
