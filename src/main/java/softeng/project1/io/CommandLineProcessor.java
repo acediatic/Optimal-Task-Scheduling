@@ -13,7 +13,7 @@ import java.nio.file.Paths;
 public class CommandLineProcessor {
     private final String[] args;
     private CommandLine cmd;
-    private int numProcessors;
+    private short numProcessors;
     private int numThreads;
     private String inputFileName;
     private String outputFileName;
@@ -135,7 +135,7 @@ public class CommandLineProcessor {
     private void initNumProcessors() {
         try {
             // number of processors is second positional argument
-            numProcessors = Integer.parseInt(args[cmd.hasOption("Xmx4G") ? 2 : 1]);
+            numProcessors = Short.parseShort(args[cmd.hasOption("Xmx4G") ? 2 : 1]);
 
             if (numProcessors <= 0) {
                 System.err.println(SchedulerErrorMessages.CLINotEnoughProcessors);
@@ -192,7 +192,7 @@ public class CommandLineProcessor {
         return options;
     }
 
-    public int getNumProcessors() {
+    public short getNumProcessors() {
         return numProcessors;
     }
 
