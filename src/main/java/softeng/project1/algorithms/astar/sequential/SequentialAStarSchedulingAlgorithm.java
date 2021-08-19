@@ -9,21 +9,25 @@ import softeng.project1.graph.processors.Processors;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.PriorityQueue;
 
 public class SequentialAStarSchedulingAlgorithm implements AStarSchedulingAlgorithm {
 
     private final HeuristicManager heuristicManager;
     private final Map<Processors, Schedule> closedSchedules;
+    private final PriorityQueue<AlgorithmStep> priorityQueue;
 
     public SequentialAStarSchedulingAlgorithm(Schedule originalSchedule,
-                                    HeuristicManager heuristicManager,
-                                    Map<Processors, Schedule> closedSchedules) {
+                                              HeuristicManager heuristicManager,
+                                              Map<Processors, Schedule> closedSchedules,
+                                              PriorityQueue<AlgorithmStep> priorityQueue) {
 
         this.heuristicManager = heuristicManager;
         heuristicManager.addSchedule(originalSchedule);
 
         // TODO... Calculate a relevant initial size
         this.closedSchedules = closedSchedules;
+        this.priorityQueue = priorityQueue;
     }
 
     @Override
@@ -33,8 +37,8 @@ public class SequentialAStarSchedulingAlgorithm implements AStarSchedulingAlgori
         AlgorithmStep step;
 
         // TODO... Find a better way to indicate finish than null
-        while ((fringeSchedules = (step = this.heuristicManager.getAlgorithmStepQueueHead()).takeStep()) != null) {
-            this.heuristicManager.addAllSchedules(pruneExpandedSchedulesAndAddToMap(fringeSchedules));
+        while ((fringeSchedules = (step = this.priorityQueue.poll()).takeStep()) != null) {
+            this.priorityQueue.addAll(this.heuristicManager.addAllSchedules(pruneExpandedSchedulesAndAddToMap(fringeSchedules)));
         }
         // Just calling ScheduleStateChange.rebuildSolutionPath() but via a few parent objects.
         return step.rebuildPath();

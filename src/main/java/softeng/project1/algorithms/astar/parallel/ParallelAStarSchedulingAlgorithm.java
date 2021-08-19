@@ -29,7 +29,7 @@ public class ParallelAStarSchedulingAlgorithm extends ThreadPoolExecutor impleme
         // TODO... give map a useful original size
         this.heuristicManager = heuristicManager;
         this.closedSchedules = new ConcurrentHashMap<>();
-        this.optimalSchedules = new ArrayList<>();
+        this.optimalSchedules = new CopyOnWriteArrayList<>();
         this.originalSchedule = originalSchedule;
     }
 
