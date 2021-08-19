@@ -63,7 +63,11 @@ public class ParallelAStarSchedulingAlgorithm extends ThreadPoolExecutor impleme
         } else {
 
             for (AlgorithmStep step: this.heuristicManager.getAlgorithmStepsFromSchedules(pruneExpandedSchedulesAndAddToMap(fringeSchedules))) {
-                execute(step);
+                try {
+                    execute(step);
+                } catch (RejectedExecutionException e) {
+                    // This is fine...
+                }
             }
         }
     }
