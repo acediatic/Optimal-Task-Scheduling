@@ -109,10 +109,16 @@ public class OriginalScheduleStateTest {
     }
 
     @Test
-    public void testGetMaxDataReadyTime() {}
+    public void testGetMaxDataReadyTime() {
+        assertEquals(0,o1.getMaxDataReadyTime());
+        assertNotEquals(5,o1.getMaxDataReadyTime());
+    }
 
     @Test
-    public void testGetIdleTime() {}
+    public void testGetIdleTime() {
+        assertEquals(0,o1.getIdleTime());
+        assertNotEquals(5,o1.getIdleTime());
+    }
 
     @Test
     public void testToString() {}
