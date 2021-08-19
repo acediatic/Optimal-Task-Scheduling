@@ -23,11 +23,11 @@ import static softeng.project1.graph.processors.processor.ProcessorHelper.fillPr
 public class ProcessorState implements Processor {
 
     // Immutable fields describing the state of the specific processor
-    private final int processorID; // ID of the processor this object represents a state of
+    private final short processorID; // ID of the processor this object represents a state of
     private final int[][] processorSpaces; // Array of spaces between tasks currently scheduled on this processor
     private final int lastInsertLocation; // Start location of the task that was last inserted
     private int currentInsert; // TODO... find some way not to store this
-    private int changeInIdleTime; // The increase/decrease in idle time due to the insertion of last inserted task
+    private short changeInIdleTime; // The increase/decrease in idle time due to the insertion of last inserted task
 
     /**
      * Protected constructor for the generation of new ProcessorState objects.
@@ -40,7 +40,7 @@ public class ProcessorState implements Processor {
      * @param processorID : The processor that the object represents a state of.
      * @param processorSpaces : The current set of spaces between tasks assigned to the processor.
      */
-    protected ProcessorState(int processorID, int[][] processorSpaces, int lastInsertLocation) {
+    protected ProcessorState(short processorID, int[][] processorSpaces, int lastInsertLocation) {
         this.processorID = processorID;
         this.processorSpaces = processorSpaces;
         this.lastInsertLocation = lastInsertLocation;
@@ -125,7 +125,7 @@ public class ProcessorState implements Processor {
 
                     // Can insert task directly into start of space
                     this.currentInsert = this.processorSpaces[i][0];
-                    this.changeInIdleTime = -taskLength;
+                    this.changeInIdleTime = (short) -taskLength;
 
                     // We've found the insert position so copy the first half of array across
                     if (i > 1) {
@@ -162,7 +162,7 @@ public class ProcessorState implements Processor {
 
                     // We can insert task directly at prerequisite location as the space is big enough
                     this.currentInsert = prerequisite;
-                    this.changeInIdleTime = -taskLength;
+                    this.changeInIdleTime = (short) -taskLength;
 
                     // We've found the insert position so copy the first half of array across
                     if (i > 1) {
@@ -201,7 +201,7 @@ public class ProcessorState implements Processor {
         System.arraycopy(this.processorSpaces, 0, newProcessorSpaces, 0, lastSpaceIndex);
         // Getting where to put it
         this.currentInsert = Math.max(prerequisite, this.processorSpaces[lastSpaceIndex][0]);
-        this.changeInIdleTime = currentInsert - this.processorSpaces[lastSpaceIndex][0];
+        this.changeInIdleTime = (short) (currentInsert - this.processorSpaces[lastSpaceIndex][0]);
 
         // updating old final space to now stretch to insertPoint
         fillProcessorSpace(newProcessorSpaces, lastSpaceIndex,

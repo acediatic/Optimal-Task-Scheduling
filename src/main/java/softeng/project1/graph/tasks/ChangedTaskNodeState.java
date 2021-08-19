@@ -87,7 +87,7 @@ public class ChangedTaskNodeState extends TaskNodeState {
      * @return : ID of the Task whose state the Task Node represents.
      */
     @Override
-    public int getTaskID() {
+    public short getTaskID() {
         // retrieving info from where it's stored in the original task node state
         return this.originalTaskNode.getTaskID();
     }

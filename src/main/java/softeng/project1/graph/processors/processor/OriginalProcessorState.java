@@ -26,7 +26,7 @@ public class OriginalProcessorState implements Processor {
 
     // Immutable Processor ID. ID's should be unique within the 
     // OriginalProcessorState set.
-    private final int processorID;
+    private final short processorID;
 
     /**
      * Main constructor / entry point for the entire Processor set.
@@ -35,7 +35,7 @@ public class OriginalProcessorState implements Processor {
      * copyAndInsert() method.
      * @param processorID : ID of the processor this object represents the original state of.
      */
-    public OriginalProcessorState(int processorID) {
+    public OriginalProcessorState(short processorID) {
         this.processorID = processorID;
     }
 

@@ -36,13 +36,13 @@ public class IOHelper {
         return returnGraph;
     }
 
-    static Map<Integer, String> mapTaskNamesToIDs(Graph graph) {
+    static Map<Short, String> mapTaskNamesToIDs(Graph graph) {
 
-        Map<Integer, String> taskNameIDMap = new HashMap<>();
+        Map<Short, String> taskNameIDMap = new HashMap<>();
 
         for (int i = 0; i < graph.getNodeCount(); i++) {
             taskNameIDMap.put(
-                    i,
+                    (short)i,
                     graph.getNode(i).getId()
             );
         }
@@ -90,7 +90,18 @@ public class IOHelper {
     static void addSchedulingToTask(Node task, int[] schedulingData) {
         task.setAttribute(SCHEDULE_PROCESSOR_KEY, schedulingData[1]);
         task.setAttribute(SCHEDULE_START_LOCATION_KEY, schedulingData[2]);
+    }
 
+    static short getBranchingFactor(Graph graph) {
+        short branchingFactor = 0;
+
+        for (int i = 0; i < graph.getNodeCount(); i++) {
+            if (graph.getNode(i).getOutDegree() > branchingFactor) {
+                branchingFactor = (short) graph.getNode(i).getOutDegree();
+            }
+        }
+
+        return branchingFactor;
     }
 
 }

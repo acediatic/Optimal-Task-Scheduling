@@ -2,6 +2,7 @@ package softeng.project1.graph;
 
 import softeng.project1.algorithms.astar.heuristics.HeuristicManager;
 import softeng.project1.graph.processors.Processors;
+import softeng.project1.graph.tasks.TaskNode;
 
 import java.util.List;
 
@@ -76,5 +77,7 @@ public interface Schedule {
      * processors.
      */
     int getMaxDataReadyTime();
+
+    TaskNode getTaskNode(short taskID);
 
 }

@@ -3,6 +3,7 @@ package softeng.project1.graph;
 import softeng.project1.graph.processors.Processors;
 import softeng.project1.graph.tasks.TaskNode;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -43,8 +44,8 @@ public class ChangedScheduleState extends ScheduleState{
     protected ChangedScheduleState(
             OriginalScheduleState originalScheduleState,
             ScheduleStateChange change,
-            Map<Integer, TaskNode> taskNodes,
-            Map<Integer, TaskNode> freeNodes,
+            Map<Short, TaskNode> taskNodes,
+            Map<Short, TaskNode> freeNodes,
             Processors processors,
             int maxBottomLevel,
             int maxDataReadyTime) {
@@ -98,7 +99,8 @@ public class ChangedScheduleState extends ScheduleState{
      * @param taskID : The ID of the task to return.
      * @return : Returns the current state of the task with the given ID.
      */
-    protected TaskNode getTaskNode(int taskID) {
+    @Override
+    public TaskNode getTaskNode(short taskID) {
         TaskNode returnNode;
         // Has the task been changed?
         if ((returnNode = this.taskNodes.get(taskID)) != null) {
@@ -109,5 +111,16 @@ public class ChangedScheduleState extends ScheduleState{
             return this.originalScheduleState.getTaskNode(taskID);
         }
     }
+
+    @Override
+    protected Map<Short, TaskNode> copyFreeNodesHook() {
+        return new HashMap<>(this.freeNodes);
+    }
+
+    @Override
+    protected Map<Short, TaskNode> copyTaskNodesHook() {
+        return new HashMap<>(this.taskNodes);
+    }
+
 
 }

@@ -9,7 +9,7 @@ public interface IOHandler {
 
     Schedule readFile();
 
-    void writeFile(List<int[]> scheduledTaskData);
+    String writeFile(List<int[]> scheduledTaskData);
 
     int getSumWeights();
 

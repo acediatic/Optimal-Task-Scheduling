@@ -24,7 +24,7 @@ public class AStarIOHandler implements IOHandler {
     private final OutputStream outputStream;
     private final int numProcessors; // Kinda cursed that this has to be here tbh
     private final String graphName;
-    private Map<Integer, String> taskNames;
+    private Map<Short, String> taskNames;
     private int sumTaskWeights = 0;
     private Graph graph;
     private AlgorithmStep listScheduleAlgoStep;
@@ -50,7 +50,7 @@ public class AStarIOHandler implements IOHandler {
      * 3. Children
      * 4. Parent Communication Weights
      * 5. Child Communication Weights
-     * <p>
+     *
      * By forcing an ordering between them, we can cut down the search space
      * As otherwise, there's a different schedule created for all the permutations
      * of these equivalent tasks.
@@ -95,8 +95,8 @@ public class AStarIOHandler implements IOHandler {
 
     @Override
     public Schedule readFile() {
-        Map<Integer, TaskNode> taskNodeMap = new HashMap<>();
-        Map<Integer, TaskNode> freeTaskNodeMap = new HashMap<>();
+        Map<Short, TaskNode> taskNodeMap = new HashMap<>();
+        Map<Short, TaskNode> freeTaskNodeMap = new HashMap<>();
 
         this.graph = IOHelper.readFileAsGraphStream(this.inputFileStream);
         this.taskNames = IOHelper.mapTaskNamesToIDs(this.graph);
@@ -110,7 +110,7 @@ public class AStarIOHandler implements IOHandler {
 
         Node task;
         OriginalTaskNodeState originalTaskNode;
-        int newTaskID;
+        short newTaskID;
         int taskWeight;
 
         for (int i = 0; i < numTasks; i++) {
@@ -137,18 +137,23 @@ public class AStarIOHandler implements IOHandler {
             }
         }
 
-        return new OriginalScheduleState(taskNodeMap, freeTaskNodeMap, this.numProcessors);
+        return new OriginalScheduleState(
+                taskNodeMap,
+                freeTaskNodeMap,
+                this.numProcessors,
+                IOHelper.getBranchingFactor(this.graph)
+        );
 
     }
 
     @Override
-    public void writeFile(List<int[]> scheduledTaskData) {
+    public String writeFile(List<int[]> scheduledTaskData) {
 
 
         for (int[] scheduling : scheduledTaskData) {
             IOHelper.addSchedulingToTask(
                     this.graph.getNode(
-                            this.taskNames.get(scheduling[0]) // Get name from task ID
+                            this.taskNames.get((short) scheduling[0]) // Get name from task ID
                     ),
                     scheduling);
         }
@@ -161,6 +166,8 @@ public class AStarIOHandler implements IOHandler {
             e.printStackTrace(); // TODO...
             throw new RuntimeException();
         }
+
+        return "Max processor length: " + getScheduleMaxLength(scheduledTaskData);
     }
 
     @Override
@@ -185,16 +192,29 @@ public class AStarIOHandler implements IOHandler {
         return childLinkArrays;
     }
 
-    private int getKeyFromTaskName(String taskName) {
+    private short getKeyFromTaskName(String taskName) {
 
         // Lazy O(n) search for backwards value -> key mapping. Importing a bi-map would make this better
-        for (Map.Entry<Integer, String> taskNameIDMapping : this.taskNames.entrySet()) {
+        for (Map.Entry<Short, String> taskNameIDMapping : this.taskNames.entrySet()) {
             if (taskNameIDMapping.getValue().equals(taskName)) {
                 return taskNameIDMapping.getKey();
             }
         }
 
         throw new RuntimeException("Failed to find Task: " + taskName + " in task ID -> name map"); // TODO... add better error handling
+    }
+
+    private int getScheduleMaxLength(List<int[]> scheduleLocations) {
+        int maxLength = 0;
+
+        for (int[] scheduleLocation: scheduleLocations) {
+            int scheduleLastPoint = IOHelper.getProcessingCost(this.graph.getNode(this.taskNames.get((short) scheduleLocation[0]))) + scheduleLocation[2];
+            if (scheduleLastPoint > maxLength) {
+                maxLength = scheduleLastPoint;
+            }
+
+        }
+        return maxLength;
     }
 
 

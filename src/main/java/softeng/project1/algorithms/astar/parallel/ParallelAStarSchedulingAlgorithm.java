@@ -38,11 +38,16 @@ public class ParallelAStarSchedulingAlgorithm extends ThreadPoolExecutor impleme
     public List<int[]> generateSchedule() {
 
         this.closedSchedules.put(originalSchedule.getHashKey(), originalSchedule);
-        execute(heuristicManager.getAlgorithmStepFromSchedule(originalSchedule));
+        AlgorithmStep firstStep;
+        if ((firstStep = heuristicManager.getAlgorithmStepFromSchedule(originalSchedule)) != null) {
+            execute(firstStep);
+        } else {
+            // TODO... Return list schedule
+        }
 
         try {
             if (this.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS)) {
-                return this.optimalSchedules.get(0);
+                return getBestStoredSchedule();
             } else {
                 throw new RuntimeException();
             }
@@ -88,5 +93,33 @@ public class ParallelAStarSchedulingAlgorithm extends ThreadPoolExecutor impleme
         }
 
         return unexploredSchedules;
+    }
+
+    private List<int[]> getBestStoredSchedule() {
+
+        List<int[]> bestSchedule = null;
+        int bestScheduleLength = Integer.MAX_VALUE;
+        int maxLength;
+        int endLocation;
+
+        for (List<int[]> schedule: this.optimalSchedules) {
+
+            maxLength = 0;
+            for (int[] task: schedule) {
+
+                endLocation = this.originalSchedule.getTaskNode((short) task[0]).getTaskCost() + task[2];
+                if (endLocation > maxLength) {
+                    maxLength = endLocation;
+                }
+
+            }
+            if (maxLength < bestScheduleLength) {
+                bestScheduleLength = maxLength;
+                bestSchedule = schedule;
+            }
+        }
+        return bestSchedule;
+
+
     }
 }
