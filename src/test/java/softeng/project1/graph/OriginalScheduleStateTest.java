@@ -103,7 +103,10 @@ public class OriginalScheduleStateTest {
     public void testFillProcessorPrerequisites() {}
 
     @Test
-    public void testGetMaxBottomLevel() {}
+    public void testGetMaxBottomLevel() {
+        assertEquals(0,o1.getMaxBottomLevel());
+        assertNotEquals(5,o1.getMaxBottomLevel());
+    }
 
     @Test
     public void testGetMaxDataReadyTime() {}
