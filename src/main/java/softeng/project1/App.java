@@ -1,7 +1,9 @@
 package softeng.project1;
 
 import softeng.project1.algorithms.SchedulingAlgorithm;
+import softeng.project1.algorithms.astar.heuristics.AlgorithmPriorityBlockingQueue;
 import softeng.project1.algorithms.astar.heuristics.PriorityQueueHeuristicManager;
+import softeng.project1.algorithms.astar.parallel.ParallelAStarSchedulingAlgorithm;
 import softeng.project1.algorithms.astar.sequential.SequentialAStarSchedulingAlgorithm;
 import softeng.project1.algorithms.valid.ListSchedulingAlgorithm;
 import softeng.project1.graph.Schedule;
@@ -13,6 +15,8 @@ import softeng.project1.io.ListIOHandler;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.PriorityQueue;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 public final class App {
@@ -46,11 +50,25 @@ public final class App {
                 clp.getNumProcessors()
         );
 
-        SchedulingAlgorithm schedulingAlgorithm = new SequentialAStarSchedulingAlgorithm(
-                ioHandler.readFile(),
-                new PriorityQueueHeuristicManager(ioHandler.getSumWeights(), (short)clp.getNumProcessors()),
-                new HashMap<>()
-        );
+        Schedule originalSchedule = ioHandler.readFile();
+        SchedulingAlgorithm algorithm;
+
+        if (clp.getNumThreads() > 1) {
+            algorithm = new ParallelAStarSchedulingAlgorithm(
+                    originalSchedule,
+                    new AlgorithmPriorityBlockingQueue(ioHandler.getSumWeights(), (short)clp.getNumProcessors()),
+                    clp.getNumThreads()
+            );
+        } else {
+            algorithm = new SequentialAStarSchedulingAlgorithm(
+                    ioHandler.readFile(),
+                    new PriorityQueueHeuristicManager(ioHandler.getSumWeights(), (short)clp.getNumProcessors()),
+                    new HashMap<>(),
+                    new PriorityQueue<>()
+            );
+        }
+
+
 
         ioHandler.writeFile(schedulingAlgorithm.generateSchedule());
 
