@@ -65,7 +65,7 @@
       <optional>false</optional>
     </dependency>
     <dependency>
-      <artifactId>gs-ui-swing</artifactId>
+      <artifactId>gs-ui-javafx</artifactId>
       <groupId>org.graphstream</groupId>
       <version>2.0</version>
       <optional>false</optional>

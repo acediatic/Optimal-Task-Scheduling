@@ -1,22 +1,34 @@
 package softeng.project1;
 
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+import org.graphstream.graph.Graph;
 import softeng.project1.algorithms.SchedulingAlgorithm;
 import softeng.project1.algorithms.astar.heuristics.AStarHeuristicManager;
 import softeng.project1.algorithms.astar.heuristics.HeuristicManager;
 import softeng.project1.algorithms.astar.parallel.ParallelAStarSchedulingAlgorithm;
 import softeng.project1.algorithms.astar.sequential.SequentialAStarSchedulingAlgorithm;
 import softeng.project1.graph.Schedule;
+import softeng.project1.gui.GuiController;
 import softeng.project1.io.AStarIOHandler;
 import softeng.project1.io.CommandLineProcessor;
 import softeng.project1.io.IOHandler;
 
+import java.util.List;
 import java.util.HashMap;
 import java.util.PriorityQueue;
 
 
-public final class App {
-    private App() {
-    }
+public final class App extends Application {
+
+    private GuiController guiController;
+    private static int numProcessors;
+    private static List<int[]> testSchedule;
+    private static Graph inputGraph;
+
 
     /**
      * Runs the scheduling program
@@ -24,6 +36,7 @@ public final class App {
      * @param args The arguments of the program.
      */
     public static void main(String[] args) {
+        System.setProperty("org.graphstream.ui", "javafx");
         CommandLineProcessor clp = new CommandLineProcessor(args);
 
         String runInformation = "***** Outsourced to Pakistan - Scheduling Algorithm *****\n" +
@@ -37,7 +50,6 @@ public final class App {
         System.out.println(runInformation);
 
         // use clp here to make choices about what parts to execute.
-
         IOHandler ioHandler = new AStarIOHandler(
                 clp.getInputFileName(),
                 clp.getOutputFileName(),
@@ -64,15 +76,31 @@ public final class App {
             );
         }
 
-        String result = ioHandler.writeFile(algorithm.generateSchedule());
+        numProcessors = clp.getNumProcessors();
+        inputGraph = ((AStarIOHandler) ioHandler).getGraph();
+        testSchedule = algorithm.generateSchedule();
+
+        System.out.println(testSchedule);
+
+        String result = ioHandler.writeFile(testSchedule);
         System.out.println(result);
 
-//        ListSchedulingAlgorithm listScheduler = new ListSchedulingAlgorithm(ListIOHandler.readFile(clp.getInputFileName()), clp.getNumProcessors());
-//
-//        List<int[]> schedule = listScheduler.generateSchedule();
-//
-//        ListIOHandler.writeFile(listScheduler.scheduleToGraph(schedule), clp.getGraphName(), clp.getOutputFileName());
-//
         System.out.println("Successfully created " + clp.getOutputFileName() + '\n');
+        launch(args);
+    }
+
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("gui/MainScreen.fxml"));
+        Parent root = loader.load();
+        Scene scene = new Scene(root);
+
+        guiController = loader.getController();
+        guiController.setup(numProcessors, inputGraph);
+        guiController.updateScheduleView(testSchedule);
+
+        primaryStage.setTitle("Task Scheduler");
+        primaryStage.setScene(scene);
+        primaryStage.show();
     }
 }

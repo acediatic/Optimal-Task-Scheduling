@@ -120,7 +120,7 @@ public abstract class ScheduleState implements Schedule {
                 // Make new Schedule object to hold changed data
                 expandedSchedules.add(new ChangedScheduleState(
                         getOriginalSchedule(),
-                        generateStateChange(freeTask.getTaskID(), processorID, insertLocation),
+                        generateStateChange(freeTask.getTaskID(), processorID, insertLocation, freeTask.getTaskCost()),
                         newTaskNodes,
                         newFreeNodes,
                         newProcessors,
@@ -206,7 +206,7 @@ public abstract class ScheduleState implements Schedule {
      * @return : A new ScheduleStateChange object describing the change in state that occurs from inserting a specified
      *           task into a specified processor at a specified location.
      */
-    protected abstract ScheduleStateChange generateStateChange(int freeTaskID, int processorID, int insertLocation);
+    protected abstract ScheduleStateChange generateStateChange(int freeTaskID, int processorID, int insertLocation, int freeTaskWeight);
 
     /**
      * Abstract helper method.
