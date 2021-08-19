@@ -121,6 +121,28 @@ public class OriginalScheduleStateTest {
     }
 
     @Test
-    public void testToString() {}
+    public void testToString() {
+        assertEquals("-----------------------------\n" +
+                "Schedule State:\n" +
+                "Free Task Nodes: \n" +
+                "TaskNodeState:\n" +
+                "numLinks: 3\n" +
+                "Processor Prerequisites:\n" +
+                "\n" +
+                "TaskNodeState:\n" +
+                "numLinks: 3\n" +
+                "Processor Prerequisites:\n" +
+                "\n" +
+                "General Task Nodes: \n" +
+                "TaskNodeState:\n" +
+                "numLinks: 3\n" +
+                "Processor Prerequisites:\n" +
+                "\n" +
+                "TaskNodeState:\n" +
+                "numLinks: 3\n" +
+                "Processor Prerequisites:\n" +
+                "\n" +
+                "-----------------------------\n",o1.toString());
+    }
 
 }
