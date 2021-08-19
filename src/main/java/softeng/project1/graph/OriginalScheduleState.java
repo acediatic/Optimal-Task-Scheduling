@@ -121,7 +121,7 @@ public class OriginalScheduleState extends ScheduleState {
 
     @Override
     protected Map<Short, TaskNode> copyFreeNodesHook() {
-        return new HashMap<>(this.branchingFactor, LOAD_FACTOR);
+        return new HashMap<>(this.freeNodes);
     }
 
     @Override
