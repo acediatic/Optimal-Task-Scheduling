@@ -64,7 +64,8 @@ public final class App {
             );
         }
 
-        ioHandler.writeFile(algorithm.generateSchedule());
+        String result = ioHandler.writeFile(algorithm.generateSchedule());
+        System.out.println(result);
 
 //        ListSchedulingAlgorithm listScheduler = new ListSchedulingAlgorithm(ListIOHandler.readFile(clp.getInputFileName()), clp.getNumProcessors());
 //

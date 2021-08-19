@@ -128,7 +128,7 @@ public class AStarIOHandler implements IOHandler {
     }
 
     @Override
-    public void writeFile(List<int[]> scheduledTaskData) {
+    public String writeFile(List<int[]> scheduledTaskData) {
 
 
         for (int[] scheduling : scheduledTaskData) {
@@ -148,7 +148,7 @@ public class AStarIOHandler implements IOHandler {
             throw new RuntimeException();
         }
 
-        System.out.println("Max processor length: " + getScheduleMaxLength(scheduledTaskData));
+        return "Max processor length: " + getScheduleMaxLength(scheduledTaskData);
     }
 
     @Override
@@ -189,7 +189,7 @@ public class AStarIOHandler implements IOHandler {
         int maxLength = 0;
 
         for (int[] scheduleLocation: scheduleLocations) {
-            int scheduleLastPoint = IOHelper.getProcessingCost(this.graphStreamInput.getNode(this.taskNames.get(scheduleLocation[0])));
+            int scheduleLastPoint = IOHelper.getProcessingCost(this.graphStreamInput.getNode(this.taskNames.get(scheduleLocation[0]))) + scheduleLocation[2];
             if (scheduleLastPoint > maxLength) {
                 maxLength = scheduleLastPoint;
             }
