@@ -19,15 +19,15 @@ import java.util.*;
  */
 public abstract class ScheduleState implements Schedule {
 
-    protected final Map<Integer, TaskNode> taskNodes;
-    protected final Map<Integer, TaskNode> freeNodes;
+    protected final Map<Short, TaskNode> taskNodes;
+    protected final Map<Short, TaskNode> freeNodes;
     protected final Processors processors;
     protected final ScheduleStateChange change;
     protected final int maxBottomLevel;
     protected final int maxDataReadyTime;
 
-    protected ScheduleState(Map<Integer, TaskNode> taskNodes,
-                            Map<Integer, TaskNode> freeNodes,
+    protected ScheduleState(Map<Short, TaskNode> taskNodes,
+                            Map<Short, TaskNode> freeNodes,
                             Processors processors,
                             ScheduleStateChange change,
                             int maxBottomLevel,
@@ -87,8 +87,8 @@ public abstract class ScheduleState implements Schedule {
                 Processors newProcessors = this.processors.copyAndAddProcessor(freeTask, processorID);
                 int insertLocation = newProcessors.getProcessor(processorID).getLastInsertLocation();
 
-                Map<Integer, TaskNode> newFreeNodes = copyFreeNodesHook();
-                Map<Integer, TaskNode> newTaskNodes = copyTaskNodesHook();
+                Map<Short, TaskNode> newFreeNodes = copyFreeNodesHook();
+                Map<Short, TaskNode> newTaskNodes = copyTaskNodesHook();
                 // Inserted task no longer needs to be stored
                 newFreeNodes.remove(freeTask.getTaskID());
                 newTaskNodes.remove(freeTask.getTaskID());
@@ -98,7 +98,7 @@ public abstract class ScheduleState implements Schedule {
 
                 for (int[] childLink: changedChildLinks) {
                     // Get old version of changed child from own storage or from original if not in own
-                    TaskNode changedChild = this.getTaskNode(childLink[0]);
+                    TaskNode changedChild = this.getTaskNode((short)childLink[0]);
                     // Generate array of prerequisite locations
                     fillProcessorPrerequisites(
                             insertLocation,
@@ -213,14 +213,14 @@ public abstract class ScheduleState implements Schedule {
      * @param taskID : The ID of the task to return.
      * @return : TaskNode object that represents the current state of the Task with the given ID.
      */
-    protected abstract TaskNode getTaskNode(int taskID);
+    public abstract TaskNode getTaskNode(short taskID);
 
     /**
      * TODO...
      */
-    protected abstract Map<Integer, TaskNode> copyFreeNodesHook();
+    protected abstract Map<Short, TaskNode> copyFreeNodesHook();
 
-    protected abstract Map<Integer, TaskNode> copyTaskNodesHook();
+    protected abstract Map<Short, TaskNode> copyTaskNodesHook();
     /**
      * Generic Object.toString() override.
      * @return : String representation of the ScheduleState for use in debugging.

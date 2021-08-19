@@ -36,13 +36,13 @@ public class IOHelper {
         return returnGraph;
     }
 
-    static Map<Integer, String> mapTaskNamesToIDs(Graph graph) {
+    static Map<Short, String> mapTaskNamesToIDs(Graph graph) {
 
-        Map<Integer, String> taskNameIDMap = new HashMap<>();
+        Map<Short, String> taskNameIDMap = new HashMap<>();
 
         for (int i = 0; i < graph.getNodeCount(); i++) {
             taskNameIDMap.put(
-                    i,
+                    (short)i,
                     graph.getNode(i).getId()
             );
         }

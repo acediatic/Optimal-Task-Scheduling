@@ -21,7 +21,7 @@ public class AStarIOHandler implements IOHandler {
     private final OutputStream outputStream;
     private final int numProcessors; // Kinda cursed that this has to be here tbh
     private final String graphName;
-    private Map<Integer, String> taskNames;
+    private Map<Short, String> taskNames;
     private int sumTaskWeights = 0;
     private Graph graphStreamInput;
 
@@ -79,8 +79,8 @@ public class AStarIOHandler implements IOHandler {
 
     @Override
     public Schedule readFile() {
-        Map<Integer, TaskNode> taskNodeMap = new HashMap<>();
-        Map<Integer, TaskNode> freeTaskNodeMap = new HashMap<>();
+        Map<Short, TaskNode> taskNodeMap = new HashMap<>();
+        Map<Short, TaskNode> freeTaskNodeMap = new HashMap<>();
 
         this.graphStreamInput = IOHelper.readFileAsGraphStream(this.inputFileStream);
         this.taskNames = IOHelper.mapTaskNamesToIDs(this.graphStreamInput);
@@ -91,7 +91,7 @@ public class AStarIOHandler implements IOHandler {
 
         Node task;
         OriginalTaskNodeState originalTaskNode;
-        int newTaskID;
+        short newTaskID;
         int taskWeight;
 
         for (int i = 0; i < numTasks; i++) {
@@ -134,7 +134,7 @@ public class AStarIOHandler implements IOHandler {
         for (int[] scheduling : scheduledTaskData) {
             IOHelper.addSchedulingToTask(
                     this.graphStreamInput.getNode(
-                            this.taskNames.get(scheduling[0]) // Get name from task ID
+                            this.taskNames.get((short) scheduling[0]) // Get name from task ID
                     ),
                     scheduling);
         }
@@ -173,10 +173,10 @@ public class AStarIOHandler implements IOHandler {
         return childLinkArrays;
     }
 
-    private int getKeyFromTaskName(String taskName) {
+    private short getKeyFromTaskName(String taskName) {
 
         // Lazy O(n) search for backwards value -> key mapping. Importing a bi-map would make this better
-        for (Map.Entry<Integer, String> taskNameIDMapping : this.taskNames.entrySet()) {
+        for (Map.Entry<Short, String> taskNameIDMapping : this.taskNames.entrySet()) {
             if (taskNameIDMapping.getValue().equals(taskName)) {
                 return taskNameIDMapping.getKey();
             }
@@ -189,7 +189,7 @@ public class AStarIOHandler implements IOHandler {
         int maxLength = 0;
 
         for (int[] scheduleLocation: scheduleLocations) {
-            int scheduleLastPoint = IOHelper.getProcessingCost(this.graphStreamInput.getNode(this.taskNames.get(scheduleLocation[0]))) + scheduleLocation[2];
+            int scheduleLastPoint = IOHelper.getProcessingCost(this.graphStreamInput.getNode(this.taskNames.get((short) scheduleLocation[0]))) + scheduleLocation[2];
             if (scheduleLastPoint > maxLength) {
                 maxLength = scheduleLastPoint;
             }

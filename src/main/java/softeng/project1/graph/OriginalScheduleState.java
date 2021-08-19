@@ -51,8 +51,8 @@ public class OriginalScheduleState extends ScheduleState {
      * @param freeTaskNodes : A map of TaskID to Original Task states including ONLY tasks that have no parents.
      * @param numProcessors : The number of processors that the tasks can be scheduled upon.
      */
-    public OriginalScheduleState(Map<Integer, TaskNode> taskNodes,
-                                 Map<Integer, TaskNode> freeTaskNodes,
+    public OriginalScheduleState(Map<Short, TaskNode> taskNodes,
+                                 Map<Short, TaskNode> freeTaskNodes,
                                  int numProcessors,
                                  short branchingFactor) {
         // Making these immutable, note that the underlying map can still be changed.
@@ -115,17 +115,17 @@ public class OriginalScheduleState extends ScheduleState {
      * @param taskID : The ID of the task to return.
      * @return : The original state of the task with the given ID.
      */
-    protected TaskNode getTaskNode(int taskID) {
+    public TaskNode getTaskNode(short taskID) {
        return this.taskNodes.get(taskID);
     }
 
     @Override
-    protected Map<Integer, TaskNode> copyFreeNodesHook() {
+    protected Map<Short, TaskNode> copyFreeNodesHook() {
         return new HashMap<>(this.branchingFactor, LOAD_FACTOR);
     }
 
     @Override
-    protected Map<Integer, TaskNode> copyTaskNodesHook() {
+    protected Map<Short, TaskNode> copyTaskNodesHook() {
         return new HashMap<>(this.branchingFactor, LOAD_FACTOR);
     }
 }
