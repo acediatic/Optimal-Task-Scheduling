@@ -19,11 +19,12 @@ import static org.junit.jupiter.api.Assertions.*;
 public class OriginalScheduleStateTest {
 
     private static final int[][] childLinks = new int[2][2];
-    private static final OriginalTaskNodeState original1 = new OriginalTaskNodeState(150,20, 3, childLinks, 0, 0);
-    private static final OriginalTaskNodeState original2 = new OriginalTaskNodeState(150,20, 3, childLinks, 0, 0);
-    private static final Map<Integer, TaskNode>  tNode = new HashMap<>();
-    private static final Map<Integer, TaskNode>  fNode = new HashMap<>();
-    private static final Map<Integer, TaskNode>  otherFNode = new HashMap<>();
+    private static final OriginalTaskNodeState original1 = new OriginalTaskNodeState((short)150,20, 3, childLinks, 0, 0);
+    private static final OriginalTaskNodeState original2 = new OriginalTaskNodeState((short)150,20, 3, childLinks, 0, 0);
+    private static final Map<Short, TaskNode>  tNode = new HashMap<>();
+    private static final Map<Short, TaskNode>  fNode = new HashMap<>();
+    private static final Map<Short, TaskNode>  otherFNode = new HashMap<>();
+    private static final Map<Short, TaskNode> copyCheckMap = new HashMap<>((short)1,100);
     private static OriginalScheduleState o1;
     private static OriginalScheduleState o2;
     private static OriginalScheduleState o3;
@@ -32,15 +33,15 @@ public class OriginalScheduleStateTest {
 
     @BeforeAll
     private static void setup() {
-        tNode.put(0, original1);
-        tNode.put(1, original2);
-        fNode.put(0, original1);
-        fNode.put(1, original2);
-        o1 = new OriginalScheduleState(tNode, fNode, 5);
-        o2 = new OriginalScheduleState(tNode, fNode, 5);
-        o3 = new OriginalScheduleState(tNode, fNode, 0);
-        o4 = new OriginalScheduleState(tNode, otherFNode, 5);
-        o5 = new OriginalScheduleState(tNode, otherFNode, 5);
+        tNode.put((short)0, original1);
+        tNode.put((short)1, original2);
+        fNode.put((short)0, original1);
+        fNode.put((short)1, original2);
+        o1 = new OriginalScheduleState(tNode, fNode, 5, (short)1);
+        o2 = new OriginalScheduleState(tNode, fNode, 5, (short)1);
+        o3 = new OriginalScheduleState(tNode, fNode, 0, (short)0);
+        o4 = new OriginalScheduleState(tNode, otherFNode, 5, (short)0);
+        o5 = new OriginalScheduleState(tNode, otherFNode, 5, (short)1);
     }
 
     @Test
@@ -67,9 +68,23 @@ public class OriginalScheduleStateTest {
 
     @Test
     public void testGetTaskNode() {
-        assertEquals(original1,o1.getTaskNode(0));
-        assertNotEquals(original2,o1.getTaskNode(0));
-        assertEquals(o1.getTaskNode(0),o2.getTaskNode(0));
+        assertEquals(original1,o1.getTaskNode((short)0));
+        assertNotEquals(original2,o1.getTaskNode((short)0));
+        assertEquals(o1.getTaskNode((short)0),o2.getTaskNode((short)0));
+    }
+
+    @Test
+    public void testCopyFreeNodesHook() {
+        assertEquals(copyCheckMap,o1.copyFreeNodesHook());
+        assertEquals(copyCheckMap,o2.copyFreeNodesHook());
+//        assertNotEquals(copyCheckMap,o3.copyFreeNodesHook());
+    }
+
+    @Test
+    public void testCopyTaskNodesHook() {
+        assertEquals(copyCheckMap,o1.copyTaskNodesHook());
+        assertEquals(copyCheckMap,o2.copyTaskNodesHook());
+//        assertNotEquals(copyCheckMap,o3.copyTaskNodesHook());
     }
 
     @Test
