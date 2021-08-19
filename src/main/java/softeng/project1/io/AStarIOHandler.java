@@ -198,5 +198,13 @@ public class AStarIOHandler implements IOHandler {
         return maxLength;
     }
 
+    public String getTaskName(short taskID){
+        return this.taskNames.get(taskID);
+    }
+
+    public Graph getGraph(){
+        return this.graphStreamInput;
+    }
+
 
 }
