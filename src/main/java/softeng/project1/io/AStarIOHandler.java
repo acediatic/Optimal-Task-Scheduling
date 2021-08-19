@@ -118,7 +118,12 @@ public class AStarIOHandler implements IOHandler {
             }
         }
 
-        return new OriginalScheduleState(taskNodeMap, freeTaskNodeMap, this.numProcessors);
+        return new OriginalScheduleState(
+                taskNodeMap,
+                freeTaskNodeMap,
+                this.numProcessors,
+                IOHelper.getBranchingFactor(this.graphStreamInput)
+        );
 
     }
 

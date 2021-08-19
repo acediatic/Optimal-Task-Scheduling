@@ -90,7 +90,18 @@ public class IOHelper {
     static void addSchedulingToTask(Node task, int[] schedulingData) {
         task.setAttribute(SCHEDULE_PROCESSOR_KEY, schedulingData[1]);
         task.setAttribute(SCHEDULE_START_LOCATION_KEY, schedulingData[2]);
+    }
 
+    static short getBranchingFactor(Graph graph) {
+        short branchingFactor = 0;
+
+        for (int i = 0; i < graph.getNodeCount(); i++) {
+            if (graph.getNode(i).getOutDegree() > branchingFactor) {
+                branchingFactor = (short) graph.getNode(i).getOutDegree();
+            }
+        }
+
+        return branchingFactor;
     }
 
 }
