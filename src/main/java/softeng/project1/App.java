@@ -1,9 +1,8 @@
 package softeng.project1;
 
 import softeng.project1.algorithms.SchedulingAlgorithm;
+import softeng.project1.algorithms.astar.heuristics.AStarHeuristicManager;
 import softeng.project1.algorithms.astar.heuristics.HeuristicManager;
-import softeng.project1.algorithms.astar.heuristics.ParallelAStarHeuristicManager;
-import softeng.project1.algorithms.astar.heuristics.SequentialAStarHeuristicManager;
 import softeng.project1.algorithms.astar.parallel.ParallelAStarSchedulingAlgorithm;
 import softeng.project1.algorithms.astar.sequential.SequentialAStarSchedulingAlgorithm;
 import softeng.project1.graph.Schedule;
@@ -25,6 +24,8 @@ public final class App {
      * @param args The arguments of the program.
      */
     public static void main(String[] args) {
+        long startTime = System.nanoTime();
+
         CommandLineProcessor clp = new CommandLineProcessor(args);
 
         String runInformation = "***** Outsourced to Pakistan - Scheduling Algorithm *****\n" +
@@ -47,12 +48,11 @@ public final class App {
         );
 
         Schedule originalSchedule = ioHandler.readFile();
-        HeuristicManager heuristicManager;
+        HeuristicManager heuristicManager = new AStarHeuristicManager(ioHandler.getSumWeights(), clp.getNumProcessors(), ioHandler.getListSchedulingAlgoStep());
         SchedulingAlgorithm algorithm;
 
         if (clp.getNumThreads() > 1) {
             // PARALLEL
-            heuristicManager = new ParallelAStarHeuristicManager(ioHandler.getSumWeights(), clp.getNumProcessors(), ioHandler.getListSchedulingAlgoStep());
             algorithm = new ParallelAStarSchedulingAlgorithm(
                     originalSchedule,
                     heuristicManager,
@@ -61,7 +61,6 @@ public final class App {
             );
         } else {
             // SEQUENTIAL
-            heuristicManager = new SequentialAStarHeuristicManager(ioHandler.getSumWeights(), clp.getNumProcessors(), ioHandler.getListSchedulingAlgoStep());
             algorithm = new SequentialAStarSchedulingAlgorithm(
                     originalSchedule,
                     heuristicManager,
@@ -73,14 +72,11 @@ public final class App {
 
 
         String result = ioHandler.writeFile(algorithm.generateSchedule());
-        System.out.println(result);
+        long endTime = System.nanoTime();
+        long duration = (endTime - startTime) / 1000000;  //divide by  to get milliseconds.
 
-//        ListSchedulingAlgorithm listScheduler = new ListSchedulingAlgorithm(ListIOHandler.readFile(clp.getInputFileName()), clp.getNumProcessors());
-//
-//        List<int[]> schedule = listScheduler.generateSchedule();
-//
-//        ListIOHandler.writeFile(listScheduler.scheduleToGraph(schedule), clp.getGraphName(), clp.getOutputFileName());
-//
+        System.out.printf("Took: %d ms to complete.%n", duration);
+        System.out.println(result);
         System.out.println("Successfully created " + clp.getOutputFileName() + '\n');
     }
 }

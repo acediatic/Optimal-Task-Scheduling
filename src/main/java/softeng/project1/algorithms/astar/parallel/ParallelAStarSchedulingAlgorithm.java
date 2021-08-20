@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class ParallelAStarSchedulingAlgorithm extends ThreadPoolExecutor implements AStarSchedulingAlgorithm {
 
@@ -20,6 +21,7 @@ public class ParallelAStarSchedulingAlgorithm extends ThreadPoolExecutor impleme
     private final List<List<int[]>> optimalSchedules;
     private final Schedule originalSchedule;
     private final AlgorithmStep listSchedule;
+    private final AtomicLong atomicLong;
 
     public ParallelAStarSchedulingAlgorithm(Schedule originalSchedule,
                                             HeuristicManager heuristicManager,
@@ -33,6 +35,7 @@ public class ParallelAStarSchedulingAlgorithm extends ThreadPoolExecutor impleme
         this.optimalSchedules = new CopyOnWriteArrayList<>();
         this.originalSchedule = originalSchedule;
         this.listSchedule = listSchedule;
+        this.atomicLong = new AtomicLong();
     }
 
     @Override
@@ -41,6 +44,7 @@ public class ParallelAStarSchedulingAlgorithm extends ThreadPoolExecutor impleme
         this.closedSchedules.put(originalSchedule.getHashKey(), originalSchedule);
         AlgorithmStep firstStep;
         if ((firstStep = heuristicManager.getAlgorithmStepFromSchedule(originalSchedule)) != null) {
+            atomicLong.incrementAndGet();
             execute(firstStep);
         }
 
@@ -63,8 +67,6 @@ public class ParallelAStarSchedulingAlgorithm extends ThreadPoolExecutor impleme
 
     @Override
     protected void afterExecute(Runnable runnable, Throwable throwable) {
-
-
         List<Schedule> fringeSchedules;
         AlgorithmStep algorithmStep = (AlgorithmStep) runnable;
 
@@ -72,13 +74,17 @@ public class ParallelAStarSchedulingAlgorithm extends ThreadPoolExecutor impleme
             this.optimalSchedules.add(algorithmStep.rebuildPath());
             shutdown();
         } else {
-
             for (AlgorithmStep step : this.heuristicManager.getAlgorithmStepsFromSchedules(pruneExpandedSchedulesAndAddToMap(fringeSchedules))) {
                 try {
+                    atomicLong.incrementAndGet();
                     execute(step);
                 } catch (RejectedExecutionException e) {
                     // This is fine...
                 }
+            }
+            if (atomicLong.decrementAndGet() == 0) {
+                System.out.println("Shutting down");
+                shutdown();
             }
         }
     }

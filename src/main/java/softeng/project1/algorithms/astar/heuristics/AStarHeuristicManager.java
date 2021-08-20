@@ -5,7 +5,7 @@ import softeng.project1.graph.Schedule;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class AStarHeuristicManager implements HeuristicManager {
+public class AStarHeuristicManager implements HeuristicManager {
     private final int taskLengthsSum;
     private final short numberOfProcesses;
     int listSchedulingPriority;
@@ -48,6 +48,14 @@ public abstract class AStarHeuristicManager implements HeuristicManager {
                         schedule.getMaxBottomLevel()),                                      // f_bl
                 schedule.getMaxDataReadyTime());                                            // f_DRT
     }
-
-    public abstract AlgorithmStep getAlgoStep(Schedule fringeSchedule);
+    
+    public AlgorithmStep getAlgoStep(Schedule fringeSchedule) {
+        AlgorithmStep algorithmStep = new AlgorithmStep(calculateHeuristicValue(fringeSchedule), fringeSchedule);
+        if (algorithmStep.getPriorityValue() > listSchedulingPriority) {
+            // Don't add to schedule, already have better/equivalent in there.
+            return null;
+        } else {
+            return algorithmStep;
+        }
+    }
 }
