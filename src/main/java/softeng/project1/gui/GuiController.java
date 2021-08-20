@@ -47,6 +47,24 @@ public class GuiController {
     @FXML
     private VBox InputContainer;
 
+    @FXML
+    private Label numProcessorsLabel;
+
+    @FXML
+    private Label numCoresLabel;
+
+    @FXML
+    private Label scheduleStatusLabel;
+
+    @FXML
+    private Label optimalLengthLabel;
+
+    @FXML
+    private Label numTasksLabel;
+
+    @FXML
+    private Label scheduleLengthLabel;
+
     private LocalTime timer = LocalTime.parse("00:00");
     private Timeline timeline;
     private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("mm:ss");
