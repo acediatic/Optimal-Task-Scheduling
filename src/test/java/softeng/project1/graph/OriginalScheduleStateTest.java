@@ -22,8 +22,8 @@ import static org.junit.jupiter.api.Assertions.*;
 public class OriginalScheduleStateTest {
 
     private static final int[][] childLinks = new int[2][2];
-    private static final OriginalTaskNodeState original1 = new OriginalTaskNodeState((short)150,20, 3, childLinks, 0, 0);
-    private static final OriginalTaskNodeState original2 = new OriginalTaskNodeState((short)150,20, 3, childLinks, 0, 0);
+    private static final OriginalTaskNodeState original1 = new OriginalTaskNodeState((short)150,20, 3, childLinks, 0, 3);
+    private static final OriginalTaskNodeState original2 = new OriginalTaskNodeState((short)150,20, 3, childLinks, 0, 3);
     private static final Map<Short, TaskNode>  tNode = new HashMap<>();
     private static final Map<Short, TaskNode>  fNode = new HashMap<>();
     private static final Map<Short, TaskNode>  otherFNode = new HashMap<>();
@@ -40,8 +40,8 @@ public class OriginalScheduleStateTest {
         tNode.put((short)1, original2);
         fNode.put((short)0, original1);
         fNode.put((short)1, original2);
-        o1 = new OriginalScheduleState(tNode, fNode, 5, (short)1);
-        o2 = new OriginalScheduleState(tNode, fNode, 5, (short)1);
+        o1 = new OriginalScheduleState(tNode, fNode, 3, (short)1);
+        o2 = new OriginalScheduleState(tNode, fNode, 3, (short)1);
         o3 = new OriginalScheduleState(tNode, fNode, 0, (short)0);
         o4 = new OriginalScheduleState(tNode, otherFNode, 5, (short)0);
         o5 = new OriginalScheduleState(tNode, otherFNode, 5, (short)1);
@@ -78,7 +78,19 @@ public class OriginalScheduleStateTest {
 
     @Test
     public void testCopyFreeNodesHook() {
-        assertEquals(copyCheckMap,o1.copyFreeNodesHook()); // Possibly redundant test.
+        assertEquals("{0=TaskNodeState:\n" +
+                "numLinks: 3\n" +
+                "Processor Prerequisites:\n" +
+                "0 - 0\n" +
+                "1 - 0\n" +
+                "2 - 0\n" +
+                ", 1=TaskNodeState:\n" +
+                "numLinks: 3\n" +
+                "Processor Prerequisites:\n" +
+                "0 - 0\n" +
+                "1 - 0\n" +
+                "2 - 0\n" +
+                "}",o1.copyFreeNodesHook().toString()); // Possibly redundant test.
     }
 
     @Test
@@ -88,7 +100,7 @@ public class OriginalScheduleStateTest {
 
     @Test
     public void testGetHashKey() {
-        Processors p1 = new OriginalProcessorsState(5);
+        Processors p1 = new OriginalProcessorsState(3);
         Processors p2 = new OriginalProcessorsState(0);
         assertEquals(p1.toString(), o1.getHashKey().toString());
         assertEquals(p2.toString(), o3.getHashKey().toString());
@@ -97,7 +109,167 @@ public class OriginalScheduleStateTest {
     }
 
     @Test
-    public void testExpand() {}
+    public void testExpand() {
+        assertEquals(null, o4.expand());
+        assertNotEquals(null, o1.expand());
+        assertEquals("[-----------------------------\n" +
+                "Schedule State:\n" +
+                "Free Task Nodes: \n" +
+                "TaskNodeState:\n" +
+                "numLinks: 3\n" +
+                "Processor Prerequisites:\n" +
+                "0 - 0\n" +
+                "1 - 0\n" +
+                "2 - 0\n" +
+                "\n" +
+                "TaskNodeState:\n" +
+                "numLinks: 3\n" +
+                "Processor Prerequisites:\n" +
+                "0 - 0\n" +
+                "1 - 0\n" +
+                "2 - 0\n" +
+                "\n" +
+                "General Task Nodes: \n" +
+                "TaskNodeState:\n" +
+                "numLinks: 2\n" +
+                "Processor Prerequisites:\n" +
+                "0 - 20\n" +
+                "1 - 20\n" +
+                "2 - 20\n" +
+                "\n" +
+                "-----------------------------\n" +
+                ", -----------------------------\n" +
+                "Schedule State:\n" +
+                "Free Task Nodes: \n" +
+                "TaskNodeState:\n" +
+                "numLinks: 3\n" +
+                "Processor Prerequisites:\n" +
+                "0 - 0\n" +
+                "1 - 0\n" +
+                "2 - 0\n" +
+                "\n" +
+                "TaskNodeState:\n" +
+                "numLinks: 3\n" +
+                "Processor Prerequisites:\n" +
+                "0 - 0\n" +
+                "1 - 0\n" +
+                "2 - 0\n" +
+                "\n" +
+                "General Task Nodes: \n" +
+                "TaskNodeState:\n" +
+                "numLinks: 2\n" +
+                "Processor Prerequisites:\n" +
+                "0 - 20\n" +
+                "1 - 20\n" +
+                "2 - 20\n" +
+                "\n" +
+                "-----------------------------\n" +
+                ", -----------------------------\n" +
+                "Schedule State:\n" +
+                "Free Task Nodes: \n" +
+                "TaskNodeState:\n" +
+                "numLinks: 3\n" +
+                "Processor Prerequisites:\n" +
+                "0 - 0\n" +
+                "1 - 0\n" +
+                "2 - 0\n" +
+                "\n" +
+                "TaskNodeState:\n" +
+                "numLinks: 3\n" +
+                "Processor Prerequisites:\n" +
+                "0 - 0\n" +
+                "1 - 0\n" +
+                "2 - 0\n" +
+                "\n" +
+                "General Task Nodes: \n" +
+                "TaskNodeState:\n" +
+                "numLinks: 2\n" +
+                "Processor Prerequisites:\n" +
+                "0 - 20\n" +
+                "1 - 20\n" +
+                "2 - 20\n" +
+                "\n" +
+                "-----------------------------\n" +
+                ", -----------------------------\n" +
+                "Schedule State:\n" +
+                "Free Task Nodes: \n" +
+                "TaskNodeState:\n" +
+                "numLinks: 3\n" +
+                "Processor Prerequisites:\n" +
+                "0 - 0\n" +
+                "1 - 0\n" +
+                "2 - 0\n" +
+                "\n" +
+                "TaskNodeState:\n" +
+                "numLinks: 3\n" +
+                "Processor Prerequisites:\n" +
+                "0 - 0\n" +
+                "1 - 0\n" +
+                "2 - 0\n" +
+                "\n" +
+                "General Task Nodes: \n" +
+                "TaskNodeState:\n" +
+                "numLinks: 2\n" +
+                "Processor Prerequisites:\n" +
+                "0 - 20\n" +
+                "1 - 20\n" +
+                "2 - 20\n" +
+                "\n" +
+                "-----------------------------\n" +
+                ", -----------------------------\n" +
+                "Schedule State:\n" +
+                "Free Task Nodes: \n" +
+                "TaskNodeState:\n" +
+                "numLinks: 3\n" +
+                "Processor Prerequisites:\n" +
+                "0 - 0\n" +
+                "1 - 0\n" +
+                "2 - 0\n" +
+                "\n" +
+                "TaskNodeState:\n" +
+                "numLinks: 3\n" +
+                "Processor Prerequisites:\n" +
+                "0 - 0\n" +
+                "1 - 0\n" +
+                "2 - 0\n" +
+                "\n" +
+                "General Task Nodes: \n" +
+                "TaskNodeState:\n" +
+                "numLinks: 2\n" +
+                "Processor Prerequisites:\n" +
+                "0 - 20\n" +
+                "1 - 20\n" +
+                "2 - 20\n" +
+                "\n" +
+                "-----------------------------\n" +
+                ", -----------------------------\n" +
+                "Schedule State:\n" +
+                "Free Task Nodes: \n" +
+                "TaskNodeState:\n" +
+                "numLinks: 3\n" +
+                "Processor Prerequisites:\n" +
+                "0 - 0\n" +
+                "1 - 0\n" +
+                "2 - 0\n" +
+                "\n" +
+                "TaskNodeState:\n" +
+                "numLinks: 3\n" +
+                "Processor Prerequisites:\n" +
+                "0 - 0\n" +
+                "1 - 0\n" +
+                "2 - 0\n" +
+                "\n" +
+                "General Task Nodes: \n" +
+                "TaskNodeState:\n" +
+                "numLinks: 2\n" +
+                "Processor Prerequisites:\n" +
+                "0 - 20\n" +
+                "1 - 20\n" +
+                "2 - 20\n" +
+                "\n" +
+                "-----------------------------\n" +
+                "]",o1.expand().toString());
+    }
 
     @Test
     public void testFillProcessorPrerequisites() {}
@@ -134,19 +306,31 @@ public class OriginalScheduleStateTest {
                 "TaskNodeState:\n" +
                 "numLinks: 3\n" +
                 "Processor Prerequisites:\n" +
+                "0 - 0\n" +
+                "1 - 0\n" +
+                "2 - 0\n" +
                 "\n" +
                 "TaskNodeState:\n" +
                 "numLinks: 3\n" +
                 "Processor Prerequisites:\n" +
+                "0 - 0\n" +
+                "1 - 0\n" +
+                "2 - 0\n" +
                 "\n" +
                 "General Task Nodes: \n" +
                 "TaskNodeState:\n" +
                 "numLinks: 3\n" +
                 "Processor Prerequisites:\n" +
+                "0 - 0\n" +
+                "1 - 0\n" +
+                "2 - 0\n" +
                 "\n" +
                 "TaskNodeState:\n" +
                 "numLinks: 3\n" +
                 "Processor Prerequisites:\n" +
+                "0 - 0\n" +
+                "1 - 0\n" +
+                "2 - 0\n" +
                 "\n" +
                 "-----------------------------\n",o1.toString());
     }
