@@ -16,6 +16,8 @@ import softeng.project1.graph.tasks.TaskNode;
 import java.io.*;
 import java.util.*;
 
+import static softeng.project1.io.IOHelper.getSortedNodes;
+
 public class AStarIOHandler implements IOHandler {
 
     private static final int NUM_CHILD_LINK_DATA_FIELDS = 2;
@@ -28,6 +30,8 @@ public class AStarIOHandler implements IOHandler {
     private int sumTaskWeights = 0;
     private Graph graph;
     private AlgorithmStep listScheduleAlgoStep;
+    private List<Node> sortedNodes;
+    private Map<Node, Short> nodeShortMap;
 
     public AStarIOHandler(String inputFilePath, String outputFilePath, String graphName, short numProcessors) {
 
@@ -41,6 +45,13 @@ public class AStarIOHandler implements IOHandler {
         }
         this.graphName = graphName;
         this.numProcessors = numProcessors;
+        this.nodeShortMap = new HashMap<>();
+    }
+
+    private void createNodeShortMap() {
+        for (short i = 0; i < sortedNodes.size(); i++) {
+            nodeShortMap.put(sortedNodes.get(i), i);
+        }
     }
 
     /**
@@ -50,7 +61,7 @@ public class AStarIOHandler implements IOHandler {
      * 3. Children
      * 4. Parent Communication Weights
      * 5. Child Communication Weights
-     *
+     * <p>
      * By forcing an ordering between them, we can cut down the search space
      * As otherwise, there's a different schedule created for all the permutations
      * of these equivalent tasks.
@@ -81,12 +92,13 @@ public class AStarIOHandler implements IOHandler {
 
     }
 
-    private void createListSchedulingAlgoStep() {
-        ListSchedulingAlgorithm listScheduler = new ListSchedulingAlgorithm(graph, numProcessors);
+    private void createListSchedulingAlgoStep(List<Node> sortedNodes) {
+        ListSchedulingAlgorithm listScheduler = new ListSchedulingAlgorithm(graph, numProcessors, sortedNodes);
         List<int[]> listSchedulePath = listScheduler.generateSchedule();
         int listScheduleEnd = listScheduler.getEndTime();
 
         listScheduleAlgoStep = new ListSchedulingAlgorithmStep(listScheduleEnd, listSchedulePath);
+        Graph yeet = listScheduler.scheduleToGraph(listSchedulePath);
     }
 
     public AlgorithmStep getListSchedulingAlgoStep() {
@@ -105,25 +117,26 @@ public class AStarIOHandler implements IOHandler {
         // Check for and create edges between equivalent children
         createEdgesBetweenEquivalentNodes();
 
+        sortedNodes = getSortedNodes(graph);
+
+        createNodeShortMap();
+
         // Uses a list scheduling to calculate the best heuristic, and use it to prune A*.
-        createListSchedulingAlgoStep();
+        createListSchedulingAlgoStep(sortedNodes);
 
         Node task;
         OriginalTaskNodeState originalTaskNode;
-        short newTaskID;
         int taskWeight;
 
-        for (int i = 0; i < numTasks; i++) {
+        for (short i = 0; i < numTasks; i++) {
 
-            task = this.graph.getNode(i);
-            // Can this be avoided by assuming that the retrieval order is the same?
-            newTaskID = getKeyFromTaskName(task.getId());
+            task = sortedNodes.get(i);
 
             taskWeight = IOHelper.getProcessingCost(task);
             this.sumTaskWeights += taskWeight;
 
             originalTaskNode = new OriginalTaskNodeState(
-                    newTaskID,
+                    i,
                     taskWeight,
                     IOHelper.getNumParents(task),
                     buildChildLinkArrays(task),
@@ -131,9 +144,9 @@ public class AStarIOHandler implements IOHandler {
                     this.numProcessors
             );
 
-            taskNodeMap.put(newTaskID, originalTaskNode);
+            taskNodeMap.put(i, originalTaskNode);
             if (originalTaskNode.isFree()) {
-                freeTaskNodeMap.put(newTaskID, originalTaskNode);
+                freeTaskNodeMap.put(i, originalTaskNode);
             }
         }
 
@@ -185,29 +198,29 @@ public class AStarIOHandler implements IOHandler {
             childLink = childLinks[i];
 
             childLinkArrays[i] = new int[]{
-                    getKeyFromTaskName(childLink.getTargetNode().getId()),
+                    nodeShortMap.get(childLink.getTargetNode()),
                     IOHelper.getProcessingCost(childLink)
             };
         }
         return childLinkArrays;
     }
 
-    private short getKeyFromTaskName(String taskName) {
-
-        // Lazy O(n) search for backwards value -> key mapping. Importing a bi-map would make this better
-        for (Map.Entry<Short, String> taskNameIDMapping : this.taskNames.entrySet()) {
-            if (taskNameIDMapping.getValue().equals(taskName)) {
-                return taskNameIDMapping.getKey();
-            }
-        }
-
-        throw new RuntimeException("Failed to find Task: " + taskName + " in task ID -> name map"); // TODO... add better error handling
-    }
+//    private short getKeyFromTaskName(String taskName) {
+//
+//        // Lazy O(n) search for backwards value -> key mapping. Importing a bi-map would make this better
+//        for (Map.Entry<Short, String> taskNameIDMapping : this.taskNames.entrySet()) {
+//            if (taskNameIDMapping.getValue().equals(taskName)) {
+//                return taskNameIDMapping.getKey();
+//            }
+//        }
+//
+//        throw new RuntimeException("Failed to find Task: " + taskName + " in task ID -> name map"); // TODO... add better error handling
+//    }
 
     private int getScheduleMaxLength(List<int[]> scheduleLocations) {
         int maxLength = 0;
 
-        for (int[] scheduleLocation: scheduleLocations) {
+        for (int[] scheduleLocation : scheduleLocations) {
             int scheduleLastPoint = IOHelper.getProcessingCost(this.graph.getNode(this.taskNames.get((short) scheduleLocation[0]))) + scheduleLocation[2];
             if (scheduleLastPoint > maxLength) {
                 maxLength = scheduleLastPoint;

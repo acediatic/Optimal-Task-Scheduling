@@ -1,5 +1,6 @@
 package softeng.project1.io;
 
+import org.graphstream.algorithm.TopologicalSortDFS;
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Element;
 import org.graphstream.graph.Graph;
@@ -10,6 +11,7 @@ import org.graphstream.stream.file.FileSourceDOT;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class IOHelper {
@@ -42,7 +44,7 @@ public class IOHelper {
 
         for (int i = 0; i < graph.getNodeCount(); i++) {
             taskNameIDMap.put(
-                    (short)i,
+                    (short) i,
                     graph.getNode(i).getId()
             );
         }
@@ -51,7 +53,7 @@ public class IOHelper {
     }
 
     static int getProcessingCost(Element graphElement) {
-        return (int) ((double) graphElement.getAttribute(PROCESSING_COST_ATTRIBUTE_KEY));
+        return ((Number) graphElement.getAttribute(PROCESSING_COST_ATTRIBUTE_KEY)).intValue();
     }
 
     static int getNumParents(Node task) {
@@ -104,4 +106,13 @@ public class IOHelper {
         return branchingFactor;
     }
 
+    static List<Node> getSortedNodes(Graph graph) {
+        //Sorts nodes into a topological ordering
+        TopologicalSortDFS sorter = new TopologicalSortDFS();
+        sorter.init(graph);
+        sorter.compute();
+        List<Node> sortedNodes = sorter.getSortedNodes();
+
+        return sortedNodes;
+    }
 }

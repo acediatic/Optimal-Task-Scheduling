@@ -1,11 +1,9 @@
 package softeng.project1.algorithms.valid;
 
-import org.graphstream.algorithm.TopologicalSortDFS;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 import org.jetbrains.annotations.NotNull;
 import softeng.project1.algorithms.SchedulingAlgorithm;
-import softeng.project1.algorithms.astar.heuristics.AlgorithmStep;
 import softeng.project1.graph.processors.processor.ListProcessor;
 import softeng.project1.graph.tasks.ListTask;
 import softeng.project1.graph.tasks.edges.ListCommunicationCost;
@@ -39,7 +37,9 @@ public class ListSchedulingAlgorithm implements SchedulingAlgorithm {
     private final ListProcessor[] processors;
     private final ListCommunicationCost[][] communicationCosts; // Needs to be retrieved from graph
     private final Map<Node, Integer> nodeToIDMap;
+    private final Map<Integer, Node> IDToNodeMap;
     private int endTime;
+    private List<Node> sortedNodes;
 
     /**
      * Constructor for ListSchedulingAlgorithm, uses a graph to initialise data
@@ -48,16 +48,18 @@ public class ListSchedulingAlgorithm implements SchedulingAlgorithm {
      * @param read
      * @param numberOfProcessors
      */
-    public ListSchedulingAlgorithm(Graph read, int numberOfProcessors) {
+    public ListSchedulingAlgorithm(Graph read, int numberOfProcessors, List<Node> sortedNodes) {
         this.graph = read;
         this.processors = new ListProcessor[numberOfProcessors];
         this.nodeToIDMap = new HashMap<>();
+        this.IDToNodeMap = new HashMap<>();
         for (int i = 0; i < numberOfProcessors; i++) {
             processors[i] = (new ListProcessor(i));
         }
 
         this.tasksInTopology = new ArrayList<>();
         this.communicationCosts = new ListCommunicationCost[read.getNodeCount()][];
+        this.sortedNodes = sortedNodes;
 
         graphToTaskAndCC();
     }
@@ -102,17 +104,14 @@ public class ListSchedulingAlgorithm implements SchedulingAlgorithm {
      * i.e. ListTask and ListCommunicationCost
      */
     private void graphToTaskAndCC() {
-        //Sorts nodes into a topological ordering
-        TopologicalSortDFS sorter = new TopologicalSortDFS();
-        sorter.init(graph);
-        sorter.compute();
-        List<Node> sortedNodes = sorter.getSortedNodes();
+
 
         //Converts Nodes to ListTask
         for (int i = 0; i < sortedNodes.size(); i++) {
             ListTask task = new ListTask(i, getNodeWeight(sortedNodes.get(i)), processors.length);
             this.tasksInTopology.add(task);
             this.nodeToIDMap.put(sortedNodes.get(i), i);
+            this.IDToNodeMap.put(i, sortedNodes.get(i));
         }
 
         //Converts edges into communication costs
