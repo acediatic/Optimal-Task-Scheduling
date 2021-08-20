@@ -1,8 +1,9 @@
 package softeng.project1;
 
 import softeng.project1.algorithms.SchedulingAlgorithm;
-import softeng.project1.algorithms.astar.heuristics.AStarHeuristicManager;
 import softeng.project1.algorithms.astar.heuristics.HeuristicManager;
+import softeng.project1.algorithms.astar.heuristics.ParallelAStarHeuristicManager;
+import softeng.project1.algorithms.astar.heuristics.SequentialAStarHeuristicManager;
 import softeng.project1.algorithms.astar.parallel.ParallelAStarSchedulingAlgorithm;
 import softeng.project1.algorithms.astar.sequential.SequentialAStarSchedulingAlgorithm;
 import softeng.project1.graph.Schedule;
@@ -46,16 +47,21 @@ public final class App {
         );
 
         Schedule originalSchedule = ioHandler.readFile();
-        HeuristicManager heuristicManager = new AStarHeuristicManager(ioHandler.getSumWeights(), clp.getNumProcessors(), ioHandler.getListSchedulingAlgoStep());
+        HeuristicManager heuristicManager;
         SchedulingAlgorithm algorithm;
 
         if (clp.getNumThreads() > 1) {
+            // PARALLEL
+            heuristicManager = new ParallelAStarHeuristicManager(ioHandler.getSumWeights(), clp.getNumProcessors(), ioHandler.getListSchedulingAlgoStep());
             algorithm = new ParallelAStarSchedulingAlgorithm(
                     originalSchedule,
                     heuristicManager,
-                    clp.getNumThreads()
+                    clp.getNumThreads(),
+                    ioHandler.getListSchedulingAlgoStep()
             );
         } else {
+            // SEQUENTIAL
+            heuristicManager = new SequentialAStarHeuristicManager(ioHandler.getSumWeights(), clp.getNumProcessors(), ioHandler.getListSchedulingAlgoStep());
             algorithm = new SequentialAStarSchedulingAlgorithm(
                     originalSchedule,
                     heuristicManager,

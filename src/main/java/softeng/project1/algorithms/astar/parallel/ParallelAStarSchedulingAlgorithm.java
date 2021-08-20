@@ -19,11 +19,12 @@ public class ParallelAStarSchedulingAlgorithm extends ThreadPoolExecutor impleme
     private final Map<Processors, Schedule> closedSchedules;
     private final List<List<int[]>> optimalSchedules;
     private final Schedule originalSchedule;
-    private final BlockingQueue<Runnable> queue;
+    private final AlgorithmStep listSchedule;
 
     public ParallelAStarSchedulingAlgorithm(Schedule originalSchedule,
                                             HeuristicManager heuristicManager,
-                                            int numThreads) {
+                                            int numThreads,
+                                            AlgorithmStep listSchedule) {
         super(numThreads, numThreads, KEEP_ALIVE_TIME_MILLISECONDS, TimeUnit.MILLISECONDS, new PriorityBlockingQueue<>());
 
         // TODO... give map a useful original size
@@ -31,7 +32,7 @@ public class ParallelAStarSchedulingAlgorithm extends ThreadPoolExecutor impleme
         this.closedSchedules = new ConcurrentHashMap<>();
         this.optimalSchedules = new CopyOnWriteArrayList<>();
         this.originalSchedule = originalSchedule;
-        this.queue = super.getQueue();
+        this.listSchedule = listSchedule;
     }
 
     @Override
@@ -41,13 +42,16 @@ public class ParallelAStarSchedulingAlgorithm extends ThreadPoolExecutor impleme
         AlgorithmStep firstStep;
         if ((firstStep = heuristicManager.getAlgorithmStepFromSchedule(originalSchedule)) != null) {
             execute(firstStep);
-        } else {
-            // TODO... Return list schedule
         }
 
         try {
             if (this.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS)) {
-                return getBestStoredSchedule();
+                List<int[]> bestStoredSchedule = getBestStoredSchedule();
+                if (bestStoredSchedule != null) {
+                    return bestStoredSchedule;
+                } else {
+                    return listSchedule.rebuildPath();
+                }
             } else {
                 throw new RuntimeException();
             }
@@ -59,6 +63,7 @@ public class ParallelAStarSchedulingAlgorithm extends ThreadPoolExecutor impleme
 
     @Override
     protected void afterExecute(Runnable runnable, Throwable throwable) {
+
 
         List<Schedule> fringeSchedules;
         AlgorithmStep algorithmStep = (AlgorithmStep) runnable;
@@ -102,10 +107,10 @@ public class ParallelAStarSchedulingAlgorithm extends ThreadPoolExecutor impleme
         int maxLength;
         int endLocation;
 
-        for (List<int[]> schedule: this.optimalSchedules) {
+        for (List<int[]> schedule : this.optimalSchedules) {
 
             maxLength = 0;
-            for (int[] task: schedule) {
+            for (int[] task : schedule) {
 
                 endLocation = this.originalSchedule.getTaskNode((short) task[0]).getTaskCost() + task[2];
                 if (endLocation > maxLength) {
