@@ -16,14 +16,10 @@ import org.graphstream.ui.fx_viewer.FxViewPanel;
 import org.graphstream.ui.fx_viewer.FxViewer;
 import org.graphstream.ui.javafx.FxGraphRenderer;
 import org.graphstream.ui.view.Viewer;
-import softeng.project1.io.AStarIOHandler;
-import softeng.project1.io.IOHelper;
 
-import javax.swing.text.View;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class GuiController {
@@ -102,8 +98,6 @@ public class GuiController {
         }
 
         for(int[] task : newSchedule){
-            System.out.println(task[1]);
-            System.out.println(processorTasks.get(task[1]));
             processorTasks.get(task[1]).add(task[0]);
         }
 
