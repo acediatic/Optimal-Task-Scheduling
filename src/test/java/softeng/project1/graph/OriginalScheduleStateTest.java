@@ -4,7 +4,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import softeng.project1.graph.processors.OriginalProcessorsState;
 import softeng.project1.graph.processors.Processors;
-import softeng.project1.graph.processors.processor.Processor;
 import softeng.project1.graph.tasks.OriginalTaskNodeState;
 import softeng.project1.graph.tasks.TaskNode;
 
@@ -110,7 +109,7 @@ public class OriginalScheduleStateTest {
 
     @Test
     public void testExpand() {
-        assertEquals(null, o4.expand());
+        assertNull(o4.expand());
         assertNotEquals(null, o1.expand());
         assertEquals("[-----------------------------\n" +
                 "Schedule State:\n" +
@@ -270,9 +269,6 @@ public class OriginalScheduleStateTest {
                 "-----------------------------\n" +
                 "]",o1.expand().toString());
     }
-
-    @Test
-    public void testFillProcessorPrerequisites() {}
 
     @Test
     public void testRebuildPath() {
