@@ -1,7 +1,6 @@
 package softeng.project1.algorithms.astar.parallel;
 
 import softeng.project1.algorithms.astar.AStarSchedulingAlgorithm;
-import softeng.project1.algorithms.astar.heuristics.AStarHeuristicManager;
 import softeng.project1.algorithms.astar.heuristics.AlgorithmStep;
 import softeng.project1.algorithms.astar.heuristics.HeuristicManager;
 import softeng.project1.graph.Schedule;
@@ -20,6 +19,7 @@ public class ParallelAStarSchedulingAlgorithm extends ThreadPoolExecutor impleme
     private final Map<Processors, Schedule> closedSchedules;
     private final List<List<int[]>> optimalSchedules;
     private final Schedule originalSchedule;
+    private final BlockingQueue<Runnable> queue;
 
     public ParallelAStarSchedulingAlgorithm(Schedule originalSchedule,
                                             HeuristicManager heuristicManager,
@@ -31,6 +31,7 @@ public class ParallelAStarSchedulingAlgorithm extends ThreadPoolExecutor impleme
         this.closedSchedules = new ConcurrentHashMap<>();
         this.optimalSchedules = new CopyOnWriteArrayList<>();
         this.originalSchedule = originalSchedule;
+        this.queue = super.getQueue();
     }
 
     @Override
@@ -40,8 +41,6 @@ public class ParallelAStarSchedulingAlgorithm extends ThreadPoolExecutor impleme
         AlgorithmStep firstStep;
         if ((firstStep = heuristicManager.getAlgorithmStepFromSchedule(originalSchedule)) != null) {
             execute(firstStep);
-        } else {
-            // TODO... Return list schedule
         }
 
         try {
@@ -67,7 +66,7 @@ public class ParallelAStarSchedulingAlgorithm extends ThreadPoolExecutor impleme
             shutdown();
         } else {
 
-            for (AlgorithmStep step: this.heuristicManager.getAlgorithmStepsFromSchedules(pruneExpandedSchedulesAndAddToMap(fringeSchedules))) {
+            for (AlgorithmStep step : this.heuristicManager.getAlgorithmStepsFromSchedules(pruneExpandedSchedulesAndAddToMap(fringeSchedules))) {
                 try {
                     execute(step);
                 } catch (RejectedExecutionException e) {

@@ -21,7 +21,8 @@ public class SequentialAStarSchedulingAlgorithm implements AStarSchedulingAlgori
     public SequentialAStarSchedulingAlgorithm(Schedule originalSchedule,
                                               HeuristicManager heuristicManager,
                                               Map<Processors, Schedule> closedSchedules,
-                                              PriorityQueue<AlgorithmStep> priorityQueue) {
+                                              PriorityQueue<AlgorithmStep> priorityQueue,
+                                              AlgorithmStep listSchedule) {
 
         this.originalSchedule = originalSchedule;
         this.heuristicManager = heuristicManager;
@@ -29,6 +30,7 @@ public class SequentialAStarSchedulingAlgorithm implements AStarSchedulingAlgori
         // TODO... Calculate a relevant initial size
         this.closedSchedules = closedSchedules;
         this.priorityQueue = priorityQueue;
+        this.priorityQueue.add(listSchedule);
     }
 
     @Override

@@ -8,10 +8,14 @@ import java.util.List;
 public class AStarHeuristicManager implements HeuristicManager {
     private final int taskLengthsSum;
     private final short numberOfProcesses;
+    private AlgorithmStep listScheduling;
+    private int listSchedulingPriority;
 
-    public AStarHeuristicManager(int taskLengthsSum, short numberOfProcesses) {
+    public AStarHeuristicManager(int taskLengthsSum, short numberOfProcesses, AlgorithmStep listScheduling) {
         this.taskLengthsSum = taskLengthsSum;
         this.numberOfProcesses = numberOfProcesses;
+        this.listScheduling = listScheduling;
+        this.listSchedulingPriority = listScheduling.getPriorityValue();
     }
 
     @Override
@@ -20,7 +24,10 @@ public class AStarHeuristicManager implements HeuristicManager {
 
         // Convert schedules to algorithm steps
         for (Schedule schedule : newFringeSchedules) {
-            algoSteps.add(getAlgoStep(schedule));
+            AlgorithmStep algoStep = getAlgoStep(schedule);
+            if (algoStep != null) {
+                algoSteps.add(algoStep);
+            }
         }
 
         // add all to priority queue.
@@ -45,6 +52,14 @@ public class AStarHeuristicManager implements HeuristicManager {
     }
 
     public AlgorithmStep getAlgoStep(Schedule fringeSchedule) {
-        return new AlgorithmStep(calculateHeuristicValue(fringeSchedule), fringeSchedule);
+        AlgorithmStep algorithmStep = new AlgorithmStep(calculateHeuristicValue(fringeSchedule), fringeSchedule);
+        if (algorithmStep.getPriorityValue() >= listSchedulingPriority) {
+            // Don't add to schedule, already have better/equivalent in there.
+            return null;
+        } else {
+            return algorithmStep;
+        }
     }
+
+
 }
