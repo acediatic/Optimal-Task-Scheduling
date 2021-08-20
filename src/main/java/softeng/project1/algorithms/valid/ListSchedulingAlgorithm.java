@@ -5,9 +5,10 @@ import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 import org.jetbrains.annotations.NotNull;
 import softeng.project1.algorithms.SchedulingAlgorithm;
+import softeng.project1.algorithms.astar.heuristics.AlgorithmStep;
 import softeng.project1.graph.processors.processor.ListProcessor;
-import softeng.project1.graph.tasks.edges.ListCommunicationCost;
 import softeng.project1.graph.tasks.ListTask;
+import softeng.project1.graph.tasks.edges.ListCommunicationCost;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,11 +19,11 @@ import java.util.Map;
  * @author Osama Kashif, Remus Courtenay
  * @version 1.0
  * @since 1.8
- *
+ * <p>
  * Valid but incomplete and non-optimal implementation of Scheduling Algorithm.
  * List Scheduling Algorithm works by first ordering all nodes topologically, then greedily inserting nodes into
  * the earliest possible location available on any processor.
- *
+ * <p>
  * ListSchedulingAlgorithm returns a list of int[] with each int[] containing the location of a scheduled task.
  * Specifically:
  * index 0 - Task ID
@@ -30,7 +31,6 @@ import java.util.Map;
  * index 2 - Task's scheduled start point in processor
  * The list is ordered topologically but should be treated as though it is ordered arbitrarily as specific ordering
  * depends on the order of the initial inputted list and thus is inconsistent.
-
  */
 public class ListSchedulingAlgorithm implements SchedulingAlgorithm {
 
@@ -39,18 +39,20 @@ public class ListSchedulingAlgorithm implements SchedulingAlgorithm {
     private final ListProcessor[] processors;
     private final ListCommunicationCost[][] communicationCosts; // Needs to be retrieved from graph
     private final Map<Node, Integer> nodeToIDMap;
+    private int endTime;
 
     /**
      * Constructor for ListSchedulingAlgorithm, uses a graph to initialise data
      * and the number of processors it can schedule the graph tasks on.
+     *
      * @param read
      * @param numberOfProcessors
      */
     public ListSchedulingAlgorithm(Graph read, int numberOfProcessors) {
         this.graph = read;
         this.processors = new ListProcessor[numberOfProcessors];
-        this.nodeToIDMap = new HashMap<Node, Integer>();
-        for (int i = 0; i<numberOfProcessors; i++) {
+        this.nodeToIDMap = new HashMap<>();
+        for (int i = 0; i < numberOfProcessors; i++) {
             processors[i] = (new ListProcessor(i));
         }
 
@@ -58,6 +60,21 @@ public class ListSchedulingAlgorithm implements SchedulingAlgorithm {
         this.communicationCosts = new ListCommunicationCost[read.getNodeCount()][];
 
         graphToTaskAndCC();
+    }
+
+    /**
+     * Calculates the earliest possible location in a processor that a specific task could be scheduled.
+     *
+     * @param task      : Free ListTask to calculate the earliest possible insert location for.
+     * @param processor : ListProcessor that the Task is being placed in.
+     * @return : Earliest/lowest possible time/location that the Task could be scheduled in the processor without
+     * breaking any constraints.
+     */
+    private static int getCostForProcessor(@NotNull ListTask task, @NotNull ListProcessor processor) {
+        return Math.max(
+                task.getPrerequisite(processor.getProcessorID()),
+                processor.getOngoingTime()
+        );
     }
 
     /**
@@ -73,7 +90,7 @@ public class ListSchedulingAlgorithm implements SchedulingAlgorithm {
     public List<int[]> generateSchedule() {
         List<int[]> returnList = new ArrayList<>();
 
-        for (ListTask task: tasksInTopology) {
+        for (ListTask task : tasksInTopology) {
             compareAndAdd(task);
             returnList.add(task.getAsIntArray());
         }
@@ -92,18 +109,18 @@ public class ListSchedulingAlgorithm implements SchedulingAlgorithm {
         List<Node> sortedNodes = sorter.getSortedNodes();
 
         //Converts Nodes to ListTask
-        for(int i = 0; i < sortedNodes.size(); i++){
+        for (int i = 0; i < sortedNodes.size(); i++) {
             ListTask task = new ListTask(i, getNodeWeight(sortedNodes.get(i)), processors.length);
             this.tasksInTopology.add(task);
             this.nodeToIDMap.put(sortedNodes.get(i), i);
         }
 
         //Converts edges into communication costs
-        for(Node n: sortedNodes){
+        for (Node n : sortedNodes) {
 
             communicationCosts[nodeToIDMap.get(n)] = new ListCommunicationCost[n.getOutDegree()];
 
-            for(int i = 0; i < n.getOutDegree(); i++){
+            for (int i = 0; i < n.getOutDegree(); i++) {
 
                 ListTask currentTask = tasksInTopology.get(nodeToIDMap.get(n));
 
@@ -119,11 +136,12 @@ public class ListSchedulingAlgorithm implements SchedulingAlgorithm {
 
     /**
      * Converts a schedule into a graph object
+     *
      * @param schedule List of integer arrays where each entry in list is a task with integer array of properties
      * @return Graph object with updated attributes for nodes
      */
     public Graph scheduleToGraph(List<int[]> schedule) {
-        for(int[] task: schedule){
+        for (int[] task : schedule) {
             int taskID = task[0];
             int processor = task[1] + 1;
             int startTime = task[2];
@@ -135,7 +153,7 @@ public class ListSchedulingAlgorithm implements SchedulingAlgorithm {
             currentNode.setAttribute("Processor", processor);
         }
 
-        graph.edges().forEach(e ->{
+        graph.edges().forEach(e -> {
             int edgeWeight = (int) Double.parseDouble(e.getAttribute("Weight").toString());
             e.setAttribute("Weight", edgeWeight);
         });
@@ -143,9 +161,9 @@ public class ListSchedulingAlgorithm implements SchedulingAlgorithm {
         return this.graph;
     }
 
-    private Node findNode(int i){
-        for(Node n: nodeToIDMap.keySet()){
-            if(nodeToIDMap.get(n) == i){
+    private Node findNode(int i) {
+        for (Node n : nodeToIDMap.keySet()) {
+            if (nodeToIDMap.get(n) == i) {
                 return n;
             }
         }
@@ -162,42 +180,37 @@ public class ListSchedulingAlgorithm implements SchedulingAlgorithm {
      *
      * @param task: Free ListTask object to be greedily scheduled into the processors.
      */
-    private void compareAndAdd (@NotNull ListTask task) {
+    private void compareAndAdd(@NotNull ListTask task) {
         int bestProcessorID = 0;
         int earliestScheduleTime = Integer.MAX_VALUE;
-        int earliestProcessorScheduleTime;
+        int earliestProcessorScheduleTime = Integer.MAX_VALUE;
 
         // Greedily calculating the processor with the earliest possible schedule time
-        for (ListProcessor processor: processors) {
+        for (ListProcessor processor : processors) {
             earliestProcessorScheduleTime = getCostForProcessor(task, processor);
             if (earliestProcessorScheduleTime < earliestScheduleTime) {
                 earliestScheduleTime = earliestProcessorScheduleTime;
                 bestProcessorID = processor.getProcessorID();
             }
         }
+
+        // See if we've just increased the latest end time, and update if so.
+        // Used in A*.
+        if (earliestScheduleTime + task.getWeight() > endTime) {
+            endTime = earliestScheduleTime + task.getWeight();
+        }
+
         // Updating stored Processor values
         processors[bestProcessorID].addTaskAtLocation(task, earliestScheduleTime);
         // Updating stored Task values
         task.notifyChildren(bestProcessorID, earliestScheduleTime, this.communicationCosts[task.getTaskID()]);
     }
 
-    /**
-     * Calculates the earliest possible location in a processor that a specific task could be scheduled.
-     *
-     * @param task : Free ListTask to calculate the earliest possible insert location for.
-     * @param processor : ListProcessor that the Task is being placed in.
-     *
-     * @return : Earliest/lowest possible time/location that the Task could be scheduled in the processor without
-     *           breaking any constraints.
-     */
-    private static int getCostForProcessor(@NotNull ListTask task, @NotNull ListProcessor processor) {
-        return Math.max(
-                task.getPrerequisite(processor.getProcessorID()),
-                processor.getOngoingTime()
-        );
+    private int getNodeWeight(Node n) {
+        return (int) Double.parseDouble(n.getAttribute("Weight").toString());
     }
 
-    private int getNodeWeight(Node n){
-        return (int) Double.parseDouble(n.getAttribute("Weight").toString());
+    public int getEndTime() {
+        return endTime;
     }
 }

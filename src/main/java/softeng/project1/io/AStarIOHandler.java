@@ -4,6 +4,9 @@ import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 import org.graphstream.stream.file.FileSinkDOT;
+import softeng.project1.algorithms.astar.heuristics.AlgorithmStep;
+import softeng.project1.algorithms.astar.heuristics.ListSchedulingAlgorithmStep;
+import softeng.project1.algorithms.valid.ListSchedulingAlgorithm;
 import softeng.project1.graph.OriginalScheduleState;
 import softeng.project1.graph.Schedule;
 import softeng.project1.graph.tasks.ComparableTask;
@@ -23,7 +26,8 @@ public class AStarIOHandler implements IOHandler {
     private final String graphName;
     private Map<Short, String> taskNames;
     private int sumTaskWeights = 0;
-    private Graph graphStreamInput;
+    private Graph graph;
+    private AlgorithmStep listScheduleAlgoStep;
 
     public AStarIOHandler(String inputFilePath, String outputFilePath, String graphName, short numProcessors) {
 
@@ -52,12 +56,12 @@ public class AStarIOHandler implements IOHandler {
      * of these equivalent tasks.
      */
     private void createEdgesBetweenEquivalentNodes() {
-        int numTasks = this.graphStreamInput.getNodeCount();
+        int numTasks = this.graph.getNodeCount();
 
         ComparableTask[] nodeEqArr = new ComparableTask[numTasks];
 
         for (int i = 0; i < numTasks; i++) {
-            Node task = this.graphStreamInput.getNode(i);
+            Node task = this.graph.getNode(i);
             int taskWeight = IOHelper.getProcessingCost(task);
             ComparableTask ct = new ComparableTask(task, taskWeight);
             nodeEqArr[i] = ct;
@@ -70,11 +74,23 @@ public class AStarIOHandler implements IOHandler {
         for (int i = 0; i < nodeEqArr.length - 1; i++) {
             if (nodeEqArr[i].compareTo(nodeEqArr[i + 1]) == 0) {
                 String edgeID = UUID.randomUUID().toString();
-                graphStreamInput.addEdge(edgeID, nodeEqArr[i].getTask(), nodeEqArr[i + 1].getTask(), true);
-                graphStreamInput.getEdge(edgeID).setAttribute(PROCESSING_COST_ATTRIBUTE_KEY, (double) 0);
+                graph.addEdge(edgeID, nodeEqArr[i].getTask(), nodeEqArr[i + 1].getTask(), true);
+                graph.getEdge(edgeID).setAttribute(PROCESSING_COST_ATTRIBUTE_KEY, (double) 0);
             }
         }
 
+    }
+
+    private void createListSchedulingAlgoStep() {
+        ListSchedulingAlgorithm listScheduler = new ListSchedulingAlgorithm(graph, numProcessors);
+        List<int[]> listSchedulePath = listScheduler.generateSchedule();
+        int listScheduleEnd = listScheduler.getEndTime();
+
+        listScheduleAlgoStep = new ListSchedulingAlgorithmStep(listScheduleEnd, listSchedulePath);
+    }
+
+    public AlgorithmStep getListSchedulingAlgoStep() {
+        return listScheduleAlgoStep;
     }
 
     @Override
@@ -82,12 +98,15 @@ public class AStarIOHandler implements IOHandler {
         Map<Short, TaskNode> taskNodeMap = new HashMap<>();
         Map<Short, TaskNode> freeTaskNodeMap = new HashMap<>();
 
-        this.graphStreamInput = IOHelper.readFileAsGraphStream(this.inputFileStream);
-        this.taskNames = IOHelper.mapTaskNamesToIDs(this.graphStreamInput);
-        int numTasks = this.graphStreamInput.getNodeCount();
+        this.graph = IOHelper.readFileAsGraphStream(this.inputFileStream);
+        this.taskNames = IOHelper.mapTaskNamesToIDs(this.graph);
+        int numTasks = this.graph.getNodeCount();
 
         // Check for and create edges between equivalent children
         createEdgesBetweenEquivalentNodes();
+
+        // Uses a list scheduling to calculate the best heuristic, and use it to prune A*.
+        createListSchedulingAlgoStep();
 
         Node task;
         OriginalTaskNodeState originalTaskNode;
@@ -96,7 +115,7 @@ public class AStarIOHandler implements IOHandler {
 
         for (int i = 0; i < numTasks; i++) {
 
-            task = this.graphStreamInput.getNode(i);
+            task = this.graph.getNode(i);
             // Can this be avoided by assuming that the retrieval order is the same?
             newTaskID = getKeyFromTaskName(task.getId());
 
@@ -122,7 +141,7 @@ public class AStarIOHandler implements IOHandler {
                 taskNodeMap,
                 freeTaskNodeMap,
                 this.numProcessors,
-                IOHelper.getBranchingFactor(this.graphStreamInput)
+                IOHelper.getBranchingFactor(this.graph)
         );
 
     }
@@ -133,7 +152,7 @@ public class AStarIOHandler implements IOHandler {
 
         for (int[] scheduling : scheduledTaskData) {
             IOHelper.addSchedulingToTask(
-                    this.graphStreamInput.getNode(
+                    this.graph.getNode(
                             this.taskNames.get((short) scheduling[0]) // Get name from task ID
                     ),
                     scheduling);
@@ -142,7 +161,7 @@ public class AStarIOHandler implements IOHandler {
         FileSinkDOT fileSink = new FileSinkDOT(true);
 
         try {
-            fileSink.writeAll(this.graphStreamInput, this.outputStream);
+            fileSink.writeAll(this.graph, this.outputStream);
         } catch (IOException e) {
             e.printStackTrace(); // TODO...
             throw new RuntimeException();
@@ -189,7 +208,7 @@ public class AStarIOHandler implements IOHandler {
         int maxLength = 0;
 
         for (int[] scheduleLocation: scheduleLocations) {
-            int scheduleLastPoint = IOHelper.getProcessingCost(this.graphStreamInput.getNode(this.taskNames.get((short) scheduleLocation[0]))) + scheduleLocation[2];
+            int scheduleLastPoint = IOHelper.getProcessingCost(this.graph.getNode(this.taskNames.get((short) scheduleLocation[0]))) + scheduleLocation[2];
             if (scheduleLastPoint > maxLength) {
                 maxLength = scheduleLastPoint;
             }

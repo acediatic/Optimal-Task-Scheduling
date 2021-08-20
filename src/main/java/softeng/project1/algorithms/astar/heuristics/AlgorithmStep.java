@@ -4,7 +4,7 @@ import softeng.project1.graph.Schedule;
 
 import java.util.List;
 
-public class AlgorithmStep implements Comparable<AlgorithmStep>, Runnable{
+public class AlgorithmStep implements Comparable<AlgorithmStep>, Runnable {
     private final int priorityValue;
     private final Schedule schedule;
     private List<Schedule> generatedSchedules;
@@ -17,6 +17,10 @@ public class AlgorithmStep implements Comparable<AlgorithmStep>, Runnable{
     @Override
     public int compareTo(AlgorithmStep o) {
         return this.priorityValue - o.priorityValue;
+    }
+
+    public int getPriorityValue() {
+        return priorityValue;
     }
 
     public List<Schedule> takeStep() {
