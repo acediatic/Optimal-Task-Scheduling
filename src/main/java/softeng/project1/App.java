@@ -1,5 +1,6 @@
 package softeng.project1;
 
+import com.sun.javafx.application.PlatformImpl;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -13,6 +14,7 @@ import softeng.project1.algorithms.astar.parallel.ParallelAStarSchedulingAlgorit
 import softeng.project1.algorithms.astar.sequential.SequentialAStarSchedulingAlgorithm;
 import softeng.project1.graph.Schedule;
 import softeng.project1.gui.GuiController;
+import softeng.project1.gui.GuiMain;
 import softeng.project1.io.AStarIOHandler;
 import softeng.project1.io.CommandLineProcessor;
 import softeng.project1.io.IOHandler;
@@ -22,13 +24,7 @@ import java.util.HashMap;
 import java.util.PriorityQueue;
 
 
-public final class App extends Application {
-
-    private GuiController guiController;
-    private static int numProcessors;
-    private static List<int[]> testSchedule;
-    private static Graph inputGraph;
-
+public final class App {
 
     /**
      * Runs the scheduling program
@@ -76,9 +72,8 @@ public final class App extends Application {
             );
         }
 
-        numProcessors = clp.getNumProcessors();
-        inputGraph = ((AStarIOHandler) ioHandler).getGraph();
-        testSchedule = algorithm.generateSchedule();
+        Graph inputGraph = ((AStarIOHandler) ioHandler).getGraph();
+        List<int[]> testSchedule = algorithm.generateSchedule();
 
         System.out.println(testSchedule);
 
@@ -86,21 +81,8 @@ public final class App extends Application {
         System.out.println(result);
 
         System.out.println("Successfully created " + clp.getOutputFileName() + '\n');
-        launch(args);
-    }
 
-    @Override
-    public void start(Stage primaryStage) throws Exception {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("gui/MainScreen.fxml"));
-        Parent root = loader.load();
-        Scene scene = new Scene(root);
-
-        guiController = loader.getController();
-        guiController.setup(numProcessors, inputGraph);
-        guiController.updateScheduleView(testSchedule);
-
-        primaryStage.setTitle("Task Scheduler");
-        primaryStage.setScene(scene);
-        primaryStage.show();
+        GuiMain.setupGui(clp.getNumProcessors(), testSchedule, inputGraph);
+        GuiMain.main(args);
     }
 }
