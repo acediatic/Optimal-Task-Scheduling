@@ -30,7 +30,7 @@ public final class App {
                 String.format("- Creating schedule for input graph from file: %s\n", clp.getInputFileName()) +
                 String.format("- Number of Processors Available for Tasks: %o\n", clp.getNumProcessors()) +
                 String.format("- Storing output in file: %s\n\n", clp.getOutputFileName()) +
-                String.format("-- Cores used in determining schedule: %o\n", clp.getNumThreads()) +
+                String.format("-- Cores used in determining schedule: %d\n", clp.getNumThreads()) +
                 "-- visualisation " + (clp.isVisual() ? "on" : "off") +
                 "\n";
 
@@ -46,7 +46,7 @@ public final class App {
         );
 
         Schedule originalSchedule = ioHandler.readFile();
-        HeuristicManager heuristicManager = new AStarHeuristicManager(ioHandler.getSumWeights(), (short)clp.getNumProcessors(), ioHandler.getListSchedulingAlgoStep());
+        HeuristicManager heuristicManager = new AStarHeuristicManager(ioHandler.getSumWeights(), clp.getNumProcessors(), ioHandler.getListSchedulingAlgoStep());
         SchedulingAlgorithm algorithm;
 
         if (clp.getNumThreads() > 1) {
