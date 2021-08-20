@@ -10,6 +10,7 @@ import org.graphstream.graph.Graph;
 
 import java.io.File;
 import java.util.List;
+import java.util.Map;
 
 public class GuiMain extends Application {
 
@@ -17,6 +18,7 @@ public class GuiMain extends Application {
     private static int numProcessors;
     private static List<int[]> testSchedule;
     private static Graph inputGraph;
+    private static Map<Short, String> taskNames;
 
     public static void main(String[] args) {
         launch(args);
@@ -30,19 +32,22 @@ public class GuiMain extends Application {
         Scene scene = new Scene(root);
 
         guiController = loader.getController();
-        guiController.setup(numProcessors, inputGraph);
+        guiController.setup(numProcessors, inputGraph, taskNames);
         guiController.updateScheduleView(testSchedule);
 
         primaryStage.setTitle("Task Scheduler");
         primaryStage.setScene(scene);
         primaryStage.show();
 
+        primaryStage.setResizable(false);
+
         primaryStage.setOnCloseRequest(e -> System.exit(0));
     }
 
-    public static void setupGui(int processors, List<int[]> schedule, Graph graph){
+    public static void setupGui(int processors, List<int[]> schedule, Graph graph, Map<Short, String> names){
         numProcessors = processors;
         testSchedule = schedule;
         inputGraph = graph;
+        taskNames = names;
     }
 }

@@ -7,6 +7,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import org.graphstream.graph.Graph;
+import org.graphstream.graph.Node;
 import softeng.project1.algorithms.SchedulingAlgorithm;
 import softeng.project1.algorithms.astar.heuristics.AStarHeuristicManager;
 import softeng.project1.algorithms.astar.heuristics.HeuristicManager;
@@ -72,7 +73,22 @@ public final class App {
             );
         }
 
+        String graphStyle = "graph { fill-color: #86aff0; }" +
+                "node { size: 15px; text-color: white; text-size: 12px; }" +
+                "node:clicked {fill-color: red;}" +
+                "edge { text-mode: hidden; text-size: 12px; text-alignment: along; text-color: white; text-style: bold; text-background-mode: rounded-box; text-background-color: black; text-padding: 2px, 1px; text-offset: 0px, 2px; }";
+
         Graph inputGraph = ((AStarIOHandler) ioHandler).getGraph();
+        inputGraph.setAttribute("ui.stylesheet", graphStyle);
+        for(Node n: inputGraph){
+            n.setAttribute("ui.label", n.getId());
+        }
+
+        inputGraph.edges().forEach(e -> {
+            e.setAttribute("ui.label", e.getAttribute("Weight"));
+        });
+
+
         List<int[]> testSchedule = algorithm.generateSchedule();
 
         System.out.println(testSchedule);
@@ -82,7 +98,7 @@ public final class App {
 
         System.out.println("Successfully created " + clp.getOutputFileName() + '\n');
 
-        GuiMain.setupGui(clp.getNumProcessors(), testSchedule, inputGraph);
+        GuiMain.setupGui(clp.getNumProcessors(), testSchedule, inputGraph, ((AStarIOHandler) ioHandler).getTaskName());
         GuiMain.main(args);
     }
 }
