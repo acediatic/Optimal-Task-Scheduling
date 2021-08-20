@@ -26,7 +26,6 @@ public class AStarIOHandler implements IOHandler {
     private final OutputStream outputStream;
     private final short numProcessors; // Kinda cursed that this has to be here tbh
     private final String graphName;
-    private Map<Short, String> taskNames;
     private int sumTaskWeights = 0;
     private Graph graph;
     private AlgorithmStep listScheduleAlgoStep;
@@ -111,7 +110,6 @@ public class AStarIOHandler implements IOHandler {
         Map<Short, TaskNode> freeTaskNodeMap = new HashMap<>();
 
         this.graph = IOHelper.readFileAsGraphStream(this.inputFileStream);
-        this.taskNames = IOHelper.mapTaskNamesToIDs(this.graph);
         int numTasks = this.graph.getNodeCount();
 
         // Check for and create edges between equivalent children
@@ -165,9 +163,7 @@ public class AStarIOHandler implements IOHandler {
 
         for (int[] scheduling : scheduledTaskData) {
             IOHelper.addSchedulingToTask(
-                    this.graph.getNode(
-                            this.taskNames.get((short) scheduling[0]) // Get name from task ID
-                    ),
+                    this.sortedNodes.get(scheduling[0]), // Get name from task ID
                     scheduling);
         }
 
@@ -221,7 +217,7 @@ public class AStarIOHandler implements IOHandler {
         int maxLength = 0;
 
         for (int[] scheduleLocation : scheduleLocations) {
-            int scheduleLastPoint = IOHelper.getProcessingCost(this.graph.getNode(this.taskNames.get((short) scheduleLocation[0]))) + scheduleLocation[2];
+            int scheduleLastPoint = IOHelper.getProcessingCost(sortedNodes.get(scheduleLocation[0])) + scheduleLocation[2];
             if (scheduleLastPoint > maxLength) {
                 maxLength = scheduleLastPoint;
             }

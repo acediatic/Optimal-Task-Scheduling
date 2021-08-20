@@ -10,9 +10,7 @@ import org.graphstream.stream.file.FileSourceDOT;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class IOHelper {
 
@@ -38,19 +36,6 @@ public class IOHelper {
         return returnGraph;
     }
 
-    static Map<Short, String> mapTaskNamesToIDs(Graph graph) {
-
-        Map<Short, String> taskNameIDMap = new HashMap<>();
-
-        for (int i = 0; i < graph.getNodeCount(); i++) {
-            taskNameIDMap.put(
-                    (short) i,
-                    graph.getNode(i).getId()
-            );
-        }
-
-        return taskNameIDMap;
-    }
 
     static int getProcessingCost(Element graphElement) {
         return ((Number) graphElement.getAttribute(PROCESSING_COST_ATTRIBUTE_KEY)).intValue();
@@ -111,8 +96,6 @@ public class IOHelper {
         TopologicalSortDFS sorter = new TopologicalSortDFS();
         sorter.init(graph);
         sorter.compute();
-        List<Node> sortedNodes = sorter.getSortedNodes();
-
-        return sortedNodes;
+        return sorter.getSortedNodes();
     }
 }
