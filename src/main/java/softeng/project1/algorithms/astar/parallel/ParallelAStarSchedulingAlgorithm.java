@@ -92,9 +92,8 @@ public class ParallelAStarSchedulingAlgorithm extends ThreadPoolExecutor impleme
             if (!(this.closedSchedules.containsKey(expandedSchedule.getHashKey()) && this.closedSchedules.get(expandedSchedule.getHashKey()).deepEquals(expandedSchedule))) {
                 this.closedSchedules.put(expandedSchedule.getHashKey(), expandedSchedule);
                 unexploredSchedules.add(expandedSchedule);
-            } else {
-                // TODO... ensure that our heuristic is consistent so we don't have to do anything here
             }
+            // Our heuristic is consistent, so we don't have to do anything in an else here.
         }
 
         return unexploredSchedules;
