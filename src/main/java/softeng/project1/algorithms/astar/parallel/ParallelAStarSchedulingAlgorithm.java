@@ -72,19 +72,23 @@ public class ParallelAStarSchedulingAlgorithm extends ThreadPoolExecutor impleme
 
         if ((fringeSchedules = algorithmStep.getFringeSchedules()) == null) {
             this.optimalSchedules.add(algorithmStep.rebuildPath());
-            shutdown();
+            shutdownNow();
         } else {
-            for (AlgorithmStep step : this.heuristicManager.getAlgorithmStepsFromSchedules(pruneExpandedSchedulesAndAddToMap(fringeSchedules))) {
-                try {
-                    atomicLong.incrementAndGet();
-                    execute(step);
-                } catch (RejectedExecutionException e) {
-                    // This is fine...
+            List<AlgorithmStep> algoSteps = this.heuristicManager.getAlgorithmStepsFromSchedules(pruneExpandedSchedulesAndAddToMap(fringeSchedules));
+            int algoStepsSize;
+            if ((algoStepsSize = algoSteps.size()) != 0) {
+                atomicLong.addAndGet(algoStepsSize);
+                for (AlgorithmStep algoStep : algoSteps) {
+                    try {
+                        execute(algoStep);
+                    } catch (RejectedExecutionException e) {
+                        // pool is shutting down
+                    }
                 }
-            }
-            if (atomicLong.decrementAndGet() == 0) {
-                System.out.println("Shutting down");
-                shutdown();
+            } else {
+                if (atomicLong.decrementAndGet() == 0) {
+                    shutdownNow();
+                }
             }
         }
     }
