@@ -85,12 +85,13 @@ public class ChangedScheduleState extends ScheduleState{
      * @return : The state change that occurs when a specific task is inserted into the current state of the Processors
      */
     @Override
-    protected ScheduleStateChange generateStateChange(int freeTaskID, int processorID, int insertLocation) {
+    protected ScheduleStateChange generateStateChange(int freeTaskID, int processorID, int insertLocation, int freeTaskWeight) {
         return new ScheduleStateChange(
                 this.change,
                 freeTaskID,
                 processorID,
-                insertLocation
+                insertLocation,
+                freeTaskWeight
         );
     }
 

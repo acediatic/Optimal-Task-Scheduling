@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="softeng.project1.gui.GuiController">
+   <children>
+      <VBox id="InputContainer" fx:id="InputContainer" layoutX="55.0" layoutY="158.0" prefHeight="353.0" prefWidth="505.0" style="-fx-border-color: black;" />
+      <Label id="InputLabel" layoutX="260.0" layoutY="130.0" text="Input Graph">
+         <font>
+            <Font size="18.0" />
+         </font></Label>
+      <Label id="ScheduleLabel" layoutX="843.0" layoutY="130.0" text="Current Best Schedule">
+         <font>
+            <Font size="18.0" />
+         </font></Label>
+      <Label id="TimerLabel" layoutX="605.0" layoutY="73.0" text="Time Elapsed">
+         <font>
+            <Font size="18.0" />
+         </font></Label>
+      <Label fx:id="TimerText" layoutX="617.0" layoutY="100.0" prefHeight="59.0" prefWidth="82.0" textAlignment="CENTER">
+         <font>
+            <Font size="34.0" />
+         </font>
+      </Label>
+      <StackedBarChart id="Schedule" fx:id="schedule" horizontalGridLinesVisible="false" layoutX="754.0" layoutY="21.0" legendSide="TOP" prefHeight="628.0" prefWidth="352.0" rotate="90.0" style="-fx-border-color: black;">
+        <xAxis>
+          <CategoryAxis fx:id="processors" label="Processor #" side="BOTTOM" />
+        </xAxis>
+        <yAxis>
+          <NumberAxis fx:id="startTime" label="Start Time" side="LEFT" />
+        </yAxis>
+      </StackedBarChart>
+      <Label layoutX="535.0" layoutY="17.0" text="Task Scheuler ">
+         <font>
+            <Font size="39.0" />
+         </font>
+      </Label>
+   </children>
+</AnchorPane>
