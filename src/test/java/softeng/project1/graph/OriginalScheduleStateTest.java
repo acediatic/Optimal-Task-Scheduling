@@ -272,8 +272,10 @@ public class OriginalScheduleStateTest {
 
     @Test
     public void testRebuildPath() {
-//        ScheduleStateChange change = new ScheduleStateChange()
-//        assertEquals(change.rebuildSolutionPath(), o1.rebuildPath());
+//        ScheduleStateChange trial = new ScheduleStateChange(null, 0, 0, 0, 0);
+//        assertArrayEquals(trial.rebuildSolutionPath().toArray(), o1.rebuildPath().toArray()); // Won't work as o1 has null ScheduleStateStage so can't call .rebuildSolutionPath.
+        Throwable exception = assertThrows(NullPointerException.class, () -> o1.rebuildPath());
+        assertEquals(null, exception.getMessage());
     }
 
     @Test
