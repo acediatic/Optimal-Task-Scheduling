@@ -24,7 +24,8 @@ public class SequentialAStarSchedulingAlgorithm implements AStarSchedulingAlgori
     public SequentialAStarSchedulingAlgorithm(Schedule originalSchedule,
                                               HeuristicManager heuristicManager,
                                               Map<Processors, Schedule> closedSchedules,
-                                              PriorityQueue<AlgorithmStep> priorityQueue) {
+                                              PriorityQueue<AlgorithmStep> priorityQueue,
+                                              AlgorithmStep listSchedule) {
 
         this.originalSchedule = originalSchedule;
         this.heuristicManager = heuristicManager;
@@ -33,6 +34,7 @@ public class SequentialAStarSchedulingAlgorithm implements AStarSchedulingAlgori
         this.closedSchedules = closedSchedules;
         this.priorityQueue = priorityQueue;
         this.numSchedulesChecked = new AtomicInteger(0);
+        this.priorityQueue.add(listSchedule);
     }
 
     @Override
@@ -55,7 +57,7 @@ public class SequentialAStarSchedulingAlgorithm implements AStarSchedulingAlgori
     @Override
     public List<Schedule> pruneExpandedSchedulesAndAddToMap(List<Schedule> expandedSchedules) {
         List<Schedule> unexploredSchedules = new ArrayList<>();
-        for (Schedule expandedSchedule: expandedSchedules) {
+        for (Schedule expandedSchedule : expandedSchedules) {
             if (!this.closedSchedules.containsKey(expandedSchedule.getHashKey())) {
                 this.closedSchedules.put(expandedSchedule.getHashKey(), expandedSchedule);
                 unexploredSchedules.add(expandedSchedule);
