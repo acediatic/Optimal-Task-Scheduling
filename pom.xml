@@ -23,7 +23,7 @@
     <jacoco.unit-tests.limit.branch-ratio>0%</jacoco.unit-tests.limit.branch-ratio>
     <jacoco.unit-tests.limit.class-complexity>20</jacoco.unit-tests.limit.class-complexity>
     <jacoco.unit-tests.limit.method-complexity>5</jacoco.unit-tests.limit.method-complexity>
-    <javafx.version>16</javafx.version>
+    <javafx.version>11</javafx.version>
   </properties>
   <dependencies> <!-- PUT DEPENDENCIES HERE, NOT DOWN IN THE PLUGINS SECTION -->
     <dependency>
