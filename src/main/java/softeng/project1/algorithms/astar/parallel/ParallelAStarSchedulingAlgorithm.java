@@ -2,7 +2,6 @@ package softeng.project1.algorithms.astar.parallel;
 
 import softeng.project1.algorithms.AlgorithmState;
 import softeng.project1.algorithms.astar.AStarSchedulingAlgorithm;
-import softeng.project1.algorithms.astar.heuristics.AStarHeuristicManager;
 import softeng.project1.algorithms.astar.heuristics.AlgorithmStep;
 import softeng.project1.algorithms.astar.heuristics.HeuristicManager;
 import softeng.project1.graph.Schedule;
@@ -13,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class ParallelAStarSchedulingAlgorithm extends ThreadPoolExecutor implements AStarSchedulingAlgorithm {
 
@@ -21,10 +19,11 @@ public class ParallelAStarSchedulingAlgorithm extends ThreadPoolExecutor impleme
 
     private final HeuristicManager heuristicManager;
     private final Map<Processors, Schedule> closedSchedules;
-    private final List<List<int[]>> optimalSchedules;
+    private final List<AlgorithmStep> optimalSchedules;
     private final Schedule originalSchedule;
 
     private AlgorithmState state;
+    private AlgorithmStep bestScheduleStep;
 
     public ParallelAStarSchedulingAlgorithm(Schedule originalSchedule,
                                             HeuristicManager heuristicManager,
@@ -71,7 +70,7 @@ public class ParallelAStarSchedulingAlgorithm extends ThreadPoolExecutor impleme
         AlgorithmStep algorithmStep = (AlgorithmStep) runnable;
 
         if ((fringeSchedules = algorithmStep.getFringeSchedules()) == null) {
-            this.optimalSchedules.add(algorithmStep.rebuildPath());
+            this.optimalSchedules.add(algorithmStep);
             shutdown();
         } else {
 
@@ -102,18 +101,39 @@ public class ParallelAStarSchedulingAlgorithm extends ThreadPoolExecutor impleme
         return unexploredSchedules;
     }
 
+    @Override
     public GuiData getGuiData() {
-        return new GuiData((AlgorithmStep) this.getQueue().peek(), this.state, this.closedSchedules.size());
+
+        if (this.state == AlgorithmState.WAITING) {
+            return null;
+        } else if (this.state == AlgorithmState.ACTIVE) {
+            return new GuiData(
+                    (AlgorithmStep) this.getQueue().peek(),
+                    this.state,
+                    this.closedSchedules.size()
+            );
+        } else if (this.state == AlgorithmState.FINISHED) {
+            return new GuiData(
+                    this.bestScheduleStep,
+                    this.state,
+                    this.closedSchedules.size()
+            );
+        } else {
+            throw new RuntimeException("Case not setup in getGuiData");
+        }
     }
 
     private List<int[]> getBestStoredSchedule() {
 
         List<int[]> bestSchedule = null;
         int bestScheduleLength = Integer.MAX_VALUE;
+        AlgorithmStep bestStep = this.optimalSchedules.get(0);
         int maxLength;
         int endLocation;
 
-        for (List<int[]> schedule: this.optimalSchedules) {
+        for (AlgorithmStep step: this.optimalSchedules) {
+
+            List<int[]> schedule = step.rebuildPath();
 
             maxLength = 0;
             for (int[] task: schedule) {
@@ -125,10 +145,12 @@ public class ParallelAStarSchedulingAlgorithm extends ThreadPoolExecutor impleme
 
             }
             if (maxLength < bestScheduleLength) {
+                bestStep = step;
                 bestScheduleLength = maxLength;
                 bestSchedule = schedule;
             }
         }
+        this.bestScheduleStep = bestStep;
         return bestSchedule;
     }
 }

@@ -22,6 +22,7 @@ public class SequentialAStarSchedulingAlgorithm implements AStarSchedulingAlgori
     private final Schedule originalSchedule;
 
     private AlgorithmState state;
+    private AlgorithmStep bestSchedule;
 
     public SequentialAStarSchedulingAlgorithm(Schedule originalSchedule,
                                               HeuristicManager heuristicManager,
@@ -50,6 +51,7 @@ public class SequentialAStarSchedulingAlgorithm implements AStarSchedulingAlgori
             this.priorityQueue.addAll(this.heuristicManager.getAlgorithmStepsFromSchedules(pruneExpandedSchedulesAndAddToMap(fringeSchedules)));
         }
         // Just calling ScheduleStateChange.rebuildSolutionPath() but via a few parent objects.
+        this.bestSchedule = step;
         this.state = AlgorithmState.FINISHED;
         return step.rebuildPath();
     }
@@ -71,10 +73,23 @@ public class SequentialAStarSchedulingAlgorithm implements AStarSchedulingAlgori
 
     @Override
     public GuiData getGuiData() {
-        return new GuiData(
-                this.priorityQueue.peek(),
-                this.state,
-                this.closedSchedules.size()
-        );
+
+        if (this.state == AlgorithmState.WAITING) {
+            return null;
+        } else if (this.state == AlgorithmState.ACTIVE) {
+            return new GuiData(
+                    this.priorityQueue.peek(),
+                    this.state,
+                    this.closedSchedules.size()
+            );
+        } else if (this.state == AlgorithmState.FINISHED) {
+            return new GuiData(
+                    this.bestSchedule,
+                    this.state,
+                    this.closedSchedules.size()
+            );
+        } else {
+            throw new RuntimeException("Case not setup in getGuiData");
+        }
     }
 }
