@@ -163,7 +163,7 @@ public class GuiController {
                     }
 
                 //If previous task doesn't exist then it is the first task on the processor
-                } catch (ArrayIndexOutOfBoundsException e){
+                } catch (IndexOutOfBoundsException e){
                     XYChart.Data<String, Number> block = new XYChart.Data<>(Integer.toString(currentProcessor + 1), startTime);
                     block.nodeProperty().addListener((ov, oldNode, node) -> {
                         node.setStyle("-fx-bar-fill: transparent");
