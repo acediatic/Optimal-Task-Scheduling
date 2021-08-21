@@ -39,7 +39,7 @@
             <Font size="39.0" />
          </font>
       </Label>
-      <VBox alignment="TOP_CENTER" layoutX="746.0" layoutY="530.0" prefHeight="154.0" prefWidth="302.0">
+      <VBox alignment="TOP_CENTER" layoutX="780.0" layoutY="524.0" prefHeight="154.0" prefWidth="302.0">
          <children>
             <Label text="Status:">
                <font>
@@ -113,7 +113,7 @@
             </HBox>
             <HBox prefHeight="37.0" prefWidth="298.0">
                <children>
-                  <Label prefHeight="36.0" prefWidth="262.0" text="Current Best Schedule Length : ">
+                  <Label prefHeight="36.0" prefWidth="299.0" text="Current Estimated Schedule Length : ">
                      <font>
                         <Font size="18.0" />
                      </font>

@@ -4,6 +4,7 @@ import com.sun.javafx.charts.Legend;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.collections.FXCollections;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
@@ -68,7 +69,6 @@ public class GuiController {
     private LocalTime timer = LocalTime.parse("00:00");
     private Timeline timeline;
     private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("mm:ss");
-    private AlgorithmDataCache dataCache;
 
     private int numProcessors;
     private Map<Short, String> taskNames;
@@ -89,14 +89,13 @@ public class GuiController {
      *
      * @param numProcessors number of processors to divide tasks on
      */
-    public void setup(int numProcessors, int numCores, Graph g, Map<Short, String> taskNames, AlgorithmDataCache dataCache) {
+    public void setup(int numProcessors, int numCores, Graph g, Map<Short, String> taskNames) {
         //Setup fields
         this.numProcessors = numProcessors;
-        this.dataCache = dataCache;
 
-        updateNumProcessors(Integer.toString(numProcessors));
-        updateNumCores(Integer.toString(numCores));
-        updateNumTasks(Integer.toString(taskNames.keySet().size()));
+        updateNumProcessors(numProcessors);
+        updateNumCores(numCores);
+        updateNumTasks(taskNames.keySet().size());
 
         //Setup requirements for schedule display
         List<String> processorNums = new ArrayList<>();
@@ -114,21 +113,25 @@ public class GuiController {
         InputContainer.getChildren().add(viewPanel);
         this.taskNames = taskNames;
     }
-//
-//    @FXML
-//    void startSchedule(ActionEvent event) {
-//        timeline.play();
-//        startScheduleButton.setDisable(true);
-//        GuiMain.startAlgorithm();
-//    }
+
+    @FXML
+    void startSchedule(ActionEvent event) {
+        timeline.play();
+        startScheduleButton.setDisable(true);
+        // Starts the algorithm service, which finds the optimal schedule.
+        GuiMain.startAlgorithm();
+    }
 
     public void updateView(GuiData data) {
         updateScheduleView(data.getCurrentBestSchedule().rebuildPath());
-        updateScheduleStatus("COMPLETED");
+        updateScheduleLength(data.getHeuristic());
     }
 
-    public void stopGui() {
+    public void stopGui(GuiData data) {
+
         timeline.stop();
+        updateScheduleStatus("COMPLETED");
+        updateOptimalLength(data.getHeuristic());
     }
 
     /**
@@ -243,12 +246,12 @@ public class GuiController {
         return -1;
     }
 
-    public void updateNumProcessors(String numProcessors) {
-        numProcessorsLabel.setText(numProcessors);
+    public void updateNumProcessors(int numProcessors) {
+        numProcessorsLabel.setText(Integer.toString(numProcessors));
     }
 
-    public void updateNumCores(String numCores) {
-        numCoresLabel.setText(numCores);
+    public void updateNumCores(int numCores) {
+        numCoresLabel.setText(Integer.toString(numCores));
     }
 
     public void updateScheduleStatus(String scheduleStatus) {
@@ -256,17 +259,16 @@ public class GuiController {
         scheduleStatusLabel.setStyle("-fx-text-fill: green");
     }
 
-    public void updateOptimalLength(String optimalLength) {
-        optimalLengthLabel.setText(optimalLength);
-
+    public void updateOptimalLength(int optimalLength) {
+        optimalLengthLabel.setText(Integer.toString(optimalLength));
     }
 
-    public void updateNumTasks(String numTasks) {
-        numTasksLabel.setText(numTasks);
+    public void updateNumTasks(int numTasks) {
+        numTasksLabel.setText(Integer.toString(numTasks));
     }
 
-    public void updateScheduleLength(String scheduleLength) {
-        scheduleLengthLabel.setText(scheduleLength);
+    public void updateScheduleLength(int scheduleLength) {
+        scheduleLengthLabel.setText(Integer.toString(scheduleLength));
     }
 
     /**

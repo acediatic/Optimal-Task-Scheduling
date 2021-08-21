@@ -16,12 +16,6 @@
 }
 
 VBox {
-    -fx-border-color: blue;
-    -fx-border-radius: 15px;
-    -fx-background-radius: 15px;
+    -fx-border-color: black;
 }
 
-.inputGraph{
-    -fx-border-radius: 15px;
-    -fx-background-radius: 15px;
-}

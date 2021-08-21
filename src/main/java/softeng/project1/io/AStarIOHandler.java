@@ -3,6 +3,7 @@ package softeng.project1.io;
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
+import org.graphstream.graph.implementations.Graphs;
 import org.graphstream.stream.file.FileSinkDOT;
 import softeng.project1.graph.OriginalScheduleState;
 import softeng.project1.graph.Schedule;
@@ -129,8 +130,6 @@ public class AStarIOHandler implements IOHandler {
 
     @Override
     public String writeFile(List<int[]> scheduledTaskData) {
-
-
         for (int[] scheduling : scheduledTaskData) {
             IOHelper.addSchedulingToTask(
                     this.graphStreamInput.getNode(
@@ -203,7 +202,7 @@ public class AStarIOHandler implements IOHandler {
     }
 
     public Graph getGraph(){
-        return this.graphStreamInput;
+        return Graphs.clone(this.graphStreamInput);
     }
 
 

@@ -34,8 +34,10 @@ public class GuiMain extends Application {
     }
 
     public static void notifyGuiCompleted() {
-        guiController.stopGui();
+        guiController.stopGui(dataCache.readData());
     }
+
+    public static void startAlgorithm(){ algorithmRunner.start(); }
 
     public static void setupGui(int processors, int cores, Graph graph, AlgorithmDataCache cache,
                                 Map<Short, String> names, AlgorithmService algorithmService) {
@@ -57,7 +59,7 @@ public class GuiMain extends Application {
         scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("style.css")).toExternalForm());
 
         guiController = loader.getController();
-        guiController.setup(numProcessors, numCores, inputGraph, taskNames, dataCache);
+        guiController.setup(numProcessors, numCores, inputGraph, taskNames);
 
         primaryStage.setTitle("Task Scheduler");
         primaryStage.setScene(scene);
@@ -65,9 +67,6 @@ public class GuiMain extends Application {
 
         primaryStage.setResizable(false);
         primaryStage.setOnCloseRequest(e -> System.exit(0));
-
-        // Starts the algorithm service, which finds the optimal schedule.
-        algorithmRunner.start();
 
         Timer repeat = new Timer();
         repeat.schedule(new TimerTask() {
