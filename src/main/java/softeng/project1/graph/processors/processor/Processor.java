@@ -83,6 +83,7 @@ public interface Processor {
      */
     int getID();
 
+    int getFirstTaskId();
 
     /**
      * The number of spaces between tasks in the current set of tasks queued
