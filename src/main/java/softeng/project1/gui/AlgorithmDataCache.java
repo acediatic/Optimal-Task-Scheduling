@@ -11,8 +11,7 @@ public class AlgorithmDataCache {
 
     private final SchedulingAlgorithm algorithm;
     private final ScheduledExecutorService scheduledExecutor;
-
-    private AtomicInteger numSchedulesChecked = new AtomicInteger(0);
+    private GuiData cachedData;
 
     public AlgorithmDataCache(SchedulingAlgorithm algorithm) {
 
@@ -21,16 +20,13 @@ public class AlgorithmDataCache {
         scheduledExecutor.scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
-                numSchedulesChecked.set(algorithm.addReporterTask());
-                System.out.println("Checked num of Schedules:" + numSchedulesChecked.intValue());
+                cachedData = algorithm.getGuiData();
             }
         }, 100, 100, TimeUnit.MILLISECONDS);
     }
 
-    public int readData() {
-
-        return this.numSchedulesChecked.intValue();
-
+    public GuiData readData() {
+        return this.cachedData;
     }
 
 
