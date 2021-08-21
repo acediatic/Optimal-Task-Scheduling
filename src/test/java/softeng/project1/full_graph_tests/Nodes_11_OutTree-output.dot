@@ -1,0 +1,23 @@
+digraph {
+	"0" ["Start"=-1,"Weight"=50,"Processor"=2];
+	"1" ["Start"=-1,"Weight"=70,"Processor"=3];
+	"2" ["Start"=-1,"Weight"=90,"Processor"=3];
+	"3" ["Start"=58,"Weight"=100,"Processor"=3];
+	"4" ["Start"=79,"Weight"=40,"Processor"=0];
+	"5" ["Start"=146,"Weight"=20,"Processor"=1];
+	"6" ["Start"=119,"Weight"=100,"Processor"=0];
+	"7" ["Start"=128,"Weight"=80,"Processor"=3];
+	"8" ["Start"=153,"Weight"=50,"Processor"=1];
+	"9" ["Start"=186,"Weight"=20,"Processor"=2];
+	"10" ["Start"=166,"Weight"=20,"Processor"=2];
+	"0" -> "1" ["Weight"=9];
+	"0" -> "2" ["Weight"=7];
+	"0" -> "3" ["Weight"=4];
+	"1" -> "4" ["Weight"=10];
+	"1" -> "5" ["Weight"=7];
+	"1" -> "6" ["Weight"=5];
+	"2" -> "7" ["Weight"=5];
+	"2" -> "8" ["Weight"=3];
+	"2" -> "9" ["Weight"=10];
+	"3" -> "10" ["Weight"=4];
+}

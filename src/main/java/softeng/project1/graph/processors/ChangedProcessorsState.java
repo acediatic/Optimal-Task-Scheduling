@@ -47,16 +47,14 @@ public class ChangedProcessorsState extends ProcessorsState {
         
         int numBytesNeeded = 0;
 
-        Processor[] orderedProcessors = orderProcessorsByFirstTaskNum();
-
-        for (Processor processor: orderedProcessors) {
+        for (Processor processor: this.processors) {
             // we multiply by 3 because each space has 3 values
             numBytesNeeded = numBytesNeeded + processor.getNumSpaces()*3;
         }
         // Kind of dirty to do this with two loops
         byte[] byteArrayForHash = new byte[numBytesNeeded];
         int index = 0;
-        for (Processor processor: orderedProcessors) {
+        for (Processor processor: this.processors) {
             processor.asByteArray(index, byteArrayForHash);
             index = index + processor.getNumSpaces()*3;
         }
@@ -64,30 +62,6 @@ public class ChangedProcessorsState extends ProcessorsState {
         // TODO... find nicer way to do this than int casting
         return (int) Murmur3.hash_x86_32(byteArrayForHash, byteArrayForHash.length, 0);
 
-    }
-
-    // TODO... do this when making new objects not in hashcode
-    private Processor[] orderProcessorsByFirstTaskNum() {
-        Processor[] orderedProcessors = this.processors.clone();
-        Processor temp;
-        while (!isInsertionSorted(orderedProcessors));
-        return orderedProcessors;
-    }
-
-    private boolean isInsertionSorted(Processor[] orderedProcessors) {
-        Processor temp;
-        for (int i = 1; i < orderedProcessors.length; i++) {
-
-            if (orderedProcessors[i].getFirstTaskId() < orderedProcessors[i-1].getFirstTaskId()) {
-
-                temp = orderedProcessors[i];
-                orderedProcessors[i] = orderedProcessors[i-1];
-                orderedProcessors[i-1] = temp;
-
-                return false;
-            }
-        }
-        return true;
     }
 
     /**
@@ -108,10 +82,8 @@ public class ChangedProcessorsState extends ProcessorsState {
             return false;
         }
 
-        Processor[] orderedProcessors = orderProcessorsByFirstTaskNum();
-
-        for (int i = 0; i < orderedProcessors.length; i++) {
-            if (!otherProcessors.getProcessor(i).deepEquals(orderedProcessors[i])) {
+        for (int i = 0; i < this.processors.length; i++) {
+            if (!otherProcessors.getProcessor(i).deepEquals(this.processors[i])) {
                 return false;
             }
         }
