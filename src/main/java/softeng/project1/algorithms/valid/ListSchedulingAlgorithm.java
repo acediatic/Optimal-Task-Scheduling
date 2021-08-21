@@ -7,6 +7,7 @@ import softeng.project1.algorithms.SchedulingAlgorithm;
 import softeng.project1.graph.processors.processor.ListProcessor;
 import softeng.project1.graph.tasks.ListTask;
 import softeng.project1.graph.tasks.edges.ListCommunicationCost;
+import softeng.project1.gui.GuiData;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,11 +18,11 @@ import java.util.Map;
  * @author Osama Kashif, Remus Courtenay
  * @version 1.0
  * @since 1.8
- * <p>
+ *
  * Valid but incomplete and non-optimal implementation of Scheduling Algorithm.
  * List Scheduling Algorithm works by first ordering all nodes topologically, then greedily inserting nodes into
  * the earliest possible location available on any processor.
- * <p>
+ *
  * ListSchedulingAlgorithm returns a list of int[] with each int[] containing the location of a scheduled task.
  * Specifically:
  * index 0 - Task ID
@@ -99,6 +100,11 @@ public class ListSchedulingAlgorithm implements SchedulingAlgorithm {
         return returnList;
     }
 
+    @Override
+    public GuiData getGuiData() {
+        return null;
+    }
+
     /**
      * Converts a graph object from graphstream into the relevant data structures
      * i.e. ListTask and ListCommunicationCost
@@ -158,11 +164,6 @@ public class ListSchedulingAlgorithm implements SchedulingAlgorithm {
         });
 
         return this.graph;
-    }
-
-    @Override
-    public int addReporterTask() {
-        return 0; // TODO..
     }
 
     private Node findNode(int i) {

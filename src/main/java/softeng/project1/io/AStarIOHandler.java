@@ -60,7 +60,7 @@ public class AStarIOHandler implements IOHandler {
      * 3. Children
      * 4. Parent Communication Weights
      * 5. Child Communication Weights
-     * <p>
+     *
      * By forcing an ordering between them, we can cut down the search space
      * As otherwise, there's a different schedule created for all the permutations
      * of these equivalent tasks.

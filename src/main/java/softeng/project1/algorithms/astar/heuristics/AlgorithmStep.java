@@ -32,6 +32,10 @@ public class AlgorithmStep implements Comparable<AlgorithmStep>, Runnable {
         this.generatedSchedules = this.schedule.expand();
     }
 
+    public Schedule getSchedule() {
+        return this.schedule;
+    }
+
     public List<Schedule> getFringeSchedules() {
         return this.generatedSchedules;
     }

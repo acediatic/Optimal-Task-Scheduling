@@ -53,6 +53,7 @@ public final class App {
         HeuristicManager heuristicManager = new AStarHeuristicManager(ioHandler.getSumWeights(), clp.getNumProcessors(), ioHandler.getListSchedulingAlgoStep());
         SchedulingAlgorithm algorithm;
 
+        //Sequential or Parallel
         if (clp.getNumThreads() > 1) {
             // PARALLEL
             algorithm = new ParallelAStarSchedulingAlgorithm(
