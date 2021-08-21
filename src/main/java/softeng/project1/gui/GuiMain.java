@@ -1,5 +1,6 @@
 package softeng.project1.gui;
 
+import com.sun.corba.se.spi.orbutil.threadpool.Work;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -10,6 +11,7 @@ import javafx.stage.Stage;
 import org.graphstream.graph.Graph;
 import softeng.project1.algorithms.AlgorithmState;
 import softeng.project1.algorithms.SchedulingAlgorithm;
+import softeng.project1.algorithms.Worker;
 
 import java.io.File;
 import java.util.List;
@@ -28,6 +30,7 @@ public class GuiMain extends Application {
     private static Map<Short, String> taskNames;
     private static AlgorithmDataCache dataCache;
     private static SchedulingAlgorithm algorithm;
+    private static Worker helperThread ;
 
     public static void main(String[] args) {
         launch(args);
@@ -50,7 +53,6 @@ public class GuiMain extends Application {
         primaryStage.show();
 
         primaryStage.setResizable(false);
-
         primaryStage.setOnCloseRequest(e -> System.exit(0));
 
         Timer repeat = new Timer();
@@ -78,6 +80,7 @@ public class GuiMain extends Application {
 
     public static void notifyGuiCompleted(){
         guiController.stopGui();
+        helperThread.setExit();
     }
 
     public static void setupGui(int processors, int cores, Graph graph, AlgorithmDataCache cache, Map<Short, String> names, SchedulingAlgorithm algo){
@@ -87,9 +90,13 @@ public class GuiMain extends Application {
         numCores = cores;
         dataCache = cache;
         algorithm = algo;
+        helperThread = new Worker(algorithm);
     }
 
     public static void startAlgorithm(){
-        algorithm.generateSchedule();
+        Thread helper = new Thread(helperThread, "helper");
+        helper.start();
     }
+
+
 }

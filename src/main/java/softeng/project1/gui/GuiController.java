@@ -95,6 +95,10 @@ public class GuiController {
         this.numProcessors = numProcessors;
         this.dataCache = dataCache;
 
+        updateNumProcessors(Integer.toString(numProcessors));
+        updateNumCores(Integer.toString(numCores));
+        updateNumTasks(Integer.toString(taskNames.keySet().size()));
+
         //Setup requirements for schedule display
         List<String> processorNums = new ArrayList<>();
         for (int i = 0; i < numProcessors; i++) {
