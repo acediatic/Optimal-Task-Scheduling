@@ -7,16 +7,20 @@ import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import org.graphstream.graph.Graph;
+import org.graphstream.graph.Node;
 
 import java.io.File;
 import java.util.List;
+import java.util.Map;
 
 public class GuiMain extends Application {
 
     private static GuiController guiController;
     private static int numProcessors;
+    private static int numCores;
     private static List<int[]> testSchedule;
     private static Graph inputGraph;
+    private static List<Node> taskNames;
 
     public static void main(String[] args) {
         launch(args);
@@ -30,19 +34,23 @@ public class GuiMain extends Application {
         Scene scene = new Scene(root);
 
         guiController = loader.getController();
-        guiController.setup(numProcessors, inputGraph);
+        guiController.setup(numProcessors, numCores, inputGraph, taskNames);
         guiController.updateScheduleView(testSchedule);
 
         primaryStage.setTitle("Task Scheduler");
         primaryStage.setScene(scene);
         primaryStage.show();
 
+        primaryStage.setResizable(false);
+
         primaryStage.setOnCloseRequest(e -> System.exit(0));
     }
 
-    public static void setupGui(int processors, List<int[]> schedule, Graph graph){
+    public static void setupGui(int processors, int cores, List<int[]> schedule, Graph graph, List<Node> taskNodes){
         numProcessors = processors;
         testSchedule = schedule;
         inputGraph = graph;
+        taskNames = taskNodes;
+        numCores = cores;
     }
 }

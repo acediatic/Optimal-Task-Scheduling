@@ -1,6 +1,7 @@
 package softeng.project1;
 
 import org.graphstream.graph.Graph;
+import org.graphstream.graph.Node;
 import softeng.project1.algorithms.SchedulingAlgorithm;
 import softeng.project1.algorithms.astar.heuristics.AStarHeuristicManager;
 import softeng.project1.algorithms.astar.heuristics.HeuristicManager;
@@ -71,12 +72,27 @@ public final class App {
             );
         }
 
+        String graphStyle = "graph { fill-color: #86aff0; }" +
+                "node { size: 15px; text-color: white; text-size: 12px; }" +
+                "node:clicked {fill-color: red;}" +
+                "edge { text-mode: hidden; text-size: 12px; text-alignment: along; text-color: white; text-style: bold; text-background-mode: rounded-box; text-background-color: black; text-padding: 2px, 1px; text-offset: 0px, 2px; }";
+
         Graph inputGraph = ioHandler.getGraph();
+        inputGraph.setAttribute("ui.stylesheet", graphStyle);
+        for (Node n : inputGraph) {
+            n.setAttribute("ui.label", n.getId());
+        }
+
+        inputGraph.edges().forEach(e -> {
+            e.setAttribute("ui.label", e.getAttribute("Weight"));
+        });
+
+
         List<int[]> optimalSchedule = algorithm.generateSchedule();
 
         if (clp.isVisual()) {
-        AlgorithmDataCache dataCache = new AlgorithmDataCache(algorithm);
-            GuiMain.setupGui(clp.getNumProcessors(), optimalSchedule, inputGraph);
+            AlgorithmDataCache dataCache = new AlgorithmDataCache(algorithm);
+            GuiMain.setupGui(clp.getNumProcessors(), clp.getNumThreads(), optimalSchedule, inputGraph, ioHandler.getListSortedNodes());
             GuiMain.main(args);
             System.out.println(optimalSchedule);
         }

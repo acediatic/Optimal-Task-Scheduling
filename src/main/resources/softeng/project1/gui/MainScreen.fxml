@@ -39,5 +39,93 @@
             <Font size="39.0" />
          </font>
       </Label>
+      <VBox alignment="TOP_CENTER" layoutX="813.0" layoutY="530.0" prefHeight="154.0" prefWidth="235.0">
+         <children>
+            <Label text="Status:">
+               <font>
+                  <Font size="30.0" />
+               </font>
+            </Label>
+            <Label fx:id="scheduleStatusLabel" text="SCHEDULING" textFill="RED">
+               <font>
+                  <Font size="30.0" />
+               </font>
+            </Label>
+            <HBox prefHeight="46.0" prefWidth="235.0">
+               <children>
+                  <Label prefHeight="44.0" prefWidth="225.0" text="Optimal Schedule Length : ">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="optimalLengthLabel" prefHeight="53.0" prefWidth="14.0" text="0">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+      <VBox layoutX="55.0" layoutY="530.0" prefHeight="137.0" prefWidth="298.0">
+         <children>
+            <HBox prefHeight="30.0" prefWidth="298.0">
+               <children>
+                  <Label text="Number of Tasks : ">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="numTasksLabel" text="0">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+               </children>
+            </HBox>
+            <HBox prefHeight="37.0" prefWidth="298.0">
+               <children>
+                  <Label prefHeight="36.0" prefWidth="197.0" text="Number of Processors : ">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="numProcessorsLabel" prefHeight="64.0" prefWidth="48.0" text="0">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+               </children>
+            </HBox>
+            <HBox prefHeight="37.0" prefWidth="298.0">
+               <children>
+                  <Label prefHeight="51.0" prefWidth="199.0" text="Number of Cores Used : ">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="numCoresLabel" prefHeight="64.0" prefWidth="48.0" text="0">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+               </children>
+            </HBox>
+            <HBox prefHeight="37.0" prefWidth="298.0">
+               <children>
+                  <Label prefHeight="36.0" prefWidth="262.0" text="Current Best Schedule Length : ">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="scheduleLengthLabel" prefHeight="64.0" prefWidth="48.0" text="0">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
    </children>
 </AnchorPane>

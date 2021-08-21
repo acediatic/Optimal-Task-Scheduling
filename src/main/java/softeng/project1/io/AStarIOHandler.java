@@ -97,7 +97,6 @@ public class AStarIOHandler implements IOHandler {
         int listScheduleEnd = listScheduler.getEndTime();
 
         listScheduleAlgoStep = new ListSchedulingAlgorithmStep(listScheduleEnd, listSchedulePath);
-        Graph yeet = listScheduler.scheduleToGraph(listSchedulePath);
     }
 
     public AlgorithmStep getListSchedulingAlgoStep() {
@@ -214,9 +213,11 @@ public class AStarIOHandler implements IOHandler {
         return maxLength;
     }
 
-    public Graph getGraph(){
+    public Graph getGraph() {
         return this.graph;
     }
 
-
+    public List<Node> getListSortedNodes() {
+        return sortedNodes;
+    }
 }

@@ -1,5 +1,6 @@
 package softeng.project1.gui;
 
+import com.sun.javafx.charts.Legend;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.collections.FXCollections;
@@ -10,8 +11,11 @@ import javafx.scene.chart.StackedBarChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 import org.graphstream.graph.Graph;
+import org.graphstream.graph.Node;
 import org.graphstream.ui.fx_viewer.FxViewPanel;
 import org.graphstream.ui.fx_viewer.FxViewer;
 import org.graphstream.ui.javafx.FxGraphRenderer;
@@ -39,18 +43,36 @@ public class GuiController {
     @FXML
     private VBox InputContainer;
 
+    @FXML
+    private Label numProcessorsLabel;
+
+    @FXML
+    private Label numCoresLabel;
+
+    @FXML
+    private Label scheduleStatusLabel;
+
+    @FXML
+    private Label optimalLengthLabel;
+
+    @FXML
+    private Label numTasksLabel;
+
+    @FXML
+    private Label scheduleLengthLabel;
+
     private LocalTime timer = LocalTime.parse("00:00");
     private Timeline timeline;
     private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("mm:ss");
 
     private int numProcessors;
+    private List<Node> taskNames;
 
     /**
      * Initializes the timer
      */
-    public void initialize(){
+    public void initialize() {
         TimerText.setText(timer.format(formatter));
-
         timeline = new Timeline();
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(1), ae -> updateTimer()));
@@ -59,9 +81,10 @@ public class GuiController {
 
     /**
      * Setups required fields for controller
+     *
      * @param numProcessors number of processors to divide tasks on
      */
-    public void setup(int numProcessors, Graph g){
+    public void setup(int numProcessors, int numCores, Graph g, List<Node> taskNames) {
         //Setup fields
         this.numProcessors = numProcessors;
 
@@ -76,35 +99,42 @@ public class GuiController {
         //Setup input graph display
         FxViewer viewer = new FxViewer(g, Viewer.ThreadingModel.GRAPH_IN_GUI_THREAD);
         viewer.enableAutoLayout();
-        FxViewPanel viewPanel = (FxViewPanel)viewer.addDefaultView(false, new FxGraphRenderer());
+        FxViewPanel viewPanel = (FxViewPanel) viewer.addDefaultView(false, new FxGraphRenderer());
 
         InputContainer.getChildren().add(viewPanel);
+        this.taskNames = taskNames;
+
+        //Sets up labels
+        updateNumProcessors(Integer.toString(numProcessors));
+        updateNumTasks(Integer.toString(taskNames.size()));
+        updateNumCores(Integer.toString(numCores));
     }
-
-
 
     /**
      * Updates the schedule display given a schedule
+     *
      * @param newSchedule A schedule
      */
 
-    public void updateScheduleView(List<int[]> newSchedule){
+    public void updateScheduleView(List<int[]> newSchedule) {
         XYChart.Series<String, Number> idleSeries = new XYChart.Series<>();
 
         //Separates tasks into lists of processors
         List<List<Integer>> processorTasks = new ArrayList<>();
-        for(int i = 0; i < this.numProcessors; i++){
+        for (int i = 0; i < this.numProcessors; i++) {
             processorTasks.add(new ArrayList<>());
         }
 
-        for(int[] task : newSchedule){
+        for (int[] task : newSchedule) {
             processorTasks.get(task[1]).add(task[0]);
         }
 
+        List<Legend.LegendItem> legendItems = new ArrayList<>();
+
         //For each processor, iterate through each processor, then for each processor, determine if it needs idle time before it
         //Then create idle time bar
-        for(List<Integer> processor: processorTasks){
-            for(int i = 0; i < processor.size(); i++){
+        for (List<Integer> processor : processorTasks) {
+            for (int i = 0; i < processor.size(); i++) {
 
                 //Gets current Task from schedule
                 int taskID = processor.get(i);
@@ -124,18 +154,18 @@ public class GuiController {
                     int prevTaskCompletionTime = prevTask[2] + prevTask[3];
 
                     //If previous completion time is not the same as start time, then need to add idle time
-                    if(prevTaskCompletionTime != startTime){
-                            //Add transparent idle block
-                            XYChart.Data<String, Number> block = new XYChart.Data<>(Integer.toString(currentProcessor + 1),  prevTaskCompletionTime - startTime);
-                            block.nodeProperty().addListener((ov, oldNode, node) ->{
-                                        node.setStyle("-fx-bar-fill: transparent");
-                            });
+                    if (prevTaskCompletionTime != startTime) {
+                        //Add transparent idle block
+                        XYChart.Data<String, Number> block = new XYChart.Data<>(Integer.toString(currentProcessor + 1), prevTaskCompletionTime - startTime);
+                        block.nodeProperty().addListener((ov, oldNode, node) -> {
+                            node.setStyle("-fx-bar-fill: transparent");
+                        });
 
-                            idleSeries.getData().add(block);
+                        idleSeries.getData().add(block);
                     }
 
-                //If previous task doesn't exist then it is the first task on the processor
-                } catch (ArrayIndexOutOfBoundsException e){
+                    //If previous task doesn't exist then it is the first task on the processor
+                } catch (IndexOutOfBoundsException e) {
                     XYChart.Data<String, Number> block = new XYChart.Data<>(Integer.toString(currentProcessor + 1), startTime);
                     block.nodeProperty().addListener((ov, oldNode, node) -> {
                         node.setStyle("-fx-bar-fill: transparent");
@@ -145,12 +175,22 @@ public class GuiController {
 
                 //Add block to schedule
                 XYChart.Series<String, Number> newSeries = new XYChart.Series<>();
-//                newSeries.setName("Task " + taskID);
-                newSeries.getData().add(new XYChart.Data<>(Integer.toString(currentProcessor + 1), weight));
-                newSeries.setName(Integer.toString(i));
+                XYChart.Data<String, Number> block = new XYChart.Data<>(Integer.toString(currentProcessor + 1), weight);
+
+                //Assigns random colour to bar.
+                Color colour = generateRandomRGBColor();
+                block.nodeProperty().addListener((ov, oldNode, node) -> {
+                    node.setStyle("-fx-bar-fill: " + colour.toString().replace("0x", "#") + "");
+                });
+
+                newSeries.getData().add(block);
                 schedule.getData().addAll(newSeries);
 
+                legendItems.add(new Legend.LegendItem(taskNames.get(taskID).getId(), new Rectangle(10, 10, colour)));
             }
+            Legend legend = (Legend) schedule.lookup(".chart-legend");
+            legend.getItems().removeAll();
+            legend.getItems().setAll(legendItems);
             schedule.getData().addAll(idleSeries);
 
         }
@@ -159,20 +199,21 @@ public class GuiController {
     /**
      * Increments the timer label each second incrementing by one second
      */
-    public void updateTimer(){
+    public void updateTimer() {
         timer = timer.plusSeconds(1);
         TimerText.setText(timer.format(formatter));
     }
 
     /**
      * Helper method used to find index of task in schedule list given a taskID
+     *
      * @param schedule A list of tasks
-     * @param taskID ID to search for
+     * @param taskID   ID to search for
      * @return Returns the index of task with given taskID, returns -1 if doesn't exist
      */
-    private int findTaskIndex(List<int[]> schedule, int taskID){
-        for(int i = 0; i < schedule.size(); i++){
-            if(schedule.get(i)[0] == taskID){
+    private int findTaskIndex(List<int[]> schedule, int taskID) {
+        for (int i = 0; i < schedule.size(); i++) {
+            if (schedule.get(i)[0] == taskID) {
                 return i;
             }
         }
@@ -180,4 +221,37 @@ public class GuiController {
         return -1;
     }
 
+    public void updateNumProcessors(String numProcessors) {
+        numProcessorsLabel.setText(numProcessors);
+    }
+
+    public void updateNumCores(String numCores) {
+        numCoresLabel.setText(numCores);
+    }
+
+    public void updateScheduleStatus(String scheduleStatus) {
+        scheduleLengthLabel.setText(scheduleStatus);
+    }
+
+    public void updateOptimalLength(String optimalLength) {
+        optimalLengthLabel.setText(optimalLength);
+    }
+
+    public void updateNumTasks(String numTasks) {
+        numTasksLabel.setText(numTasks);
+    }
+
+    public void updateScheduleLength(String scheduleLength) {
+        scheduleLengthLabel.setText(scheduleLength);
+    }
+
+    /**
+     * Generates a random RGB colour
+     *
+     * @return Returns the colour object
+     */
+    private Color generateRandomRGBColor() {
+        Color color = Color.color(Math.random(), Math.random(), Math.random());
+        return color;
+    }
 }
