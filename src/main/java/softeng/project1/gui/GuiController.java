@@ -3,11 +3,13 @@ package softeng.project1.gui;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.collections.FXCollections;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.StackedBarChart;
 import javafx.scene.chart.XYChart;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
@@ -19,10 +21,12 @@ import org.graphstream.ui.view.Viewer;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class GuiController {
+
+    @FXML
+    private Button startScheduleButton;
 
     @FXML
     private CategoryAxis processors;
@@ -42,6 +46,7 @@ public class GuiController {
     private LocalTime timer = LocalTime.parse("00:00");
     private Timeline timeline;
     private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("mm:ss");
+    private AlgorithmDataCache dataCache;
 
     private int numProcessors;
 
@@ -54,16 +59,16 @@ public class GuiController {
         timeline = new Timeline();
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(1), ae -> updateTimer()));
-        timeline.play();
     }
 
     /**
      * Setups required fields for controller
      * @param numProcessors number of processors to divide tasks on
      */
-    public void setup(int numProcessors, Graph g){
+    public void setup(int numProcessors, Graph g, AlgorithmDataCache dataCache){
         //Setup fields
         this.numProcessors = numProcessors;
+        this.dataCache = dataCache;
 
         //Setup requirements for schedule display
         List<String> processorNums = new ArrayList<>();
@@ -81,7 +86,20 @@ public class GuiController {
         InputContainer.getChildren().add(viewPanel);
     }
 
+    @FXML
+    void startSchedule(ActionEvent event) {
+        timeline.play();
+        startScheduleButton.setDisable(true);
+        GuiMain.startAlgorithm();
+    }
 
+    public void updateView(GuiData data){
+        updateScheduleView(data.getCurrentBestSchedule().rebuildPath());
+    }
+
+    public void stopGui(){
+        timeline.stop();
+    }
 
     /**
      * Updates the schedule display given a schedule
@@ -89,7 +107,11 @@ public class GuiController {
      */
 
     public void updateScheduleView(List<int[]> newSchedule){
+        schedule.getData().clear();
+
+        List<XYChart.Series<String, Number>> seriesList = new ArrayList<>();
         XYChart.Series<String, Number> idleSeries = new XYChart.Series<>();
+        seriesList.add(idleSeries);
 
         //Separates tasks into lists of processors
         List<List<Integer>> processorTasks = new ArrayList<>();
@@ -145,15 +167,14 @@ public class GuiController {
 
                 //Add block to schedule
                 XYChart.Series<String, Number> newSeries = new XYChart.Series<>();
-//                newSeries.setName("Task " + taskID);
                 newSeries.getData().add(new XYChart.Data<>(Integer.toString(currentProcessor + 1), weight));
                 newSeries.setName(Integer.toString(i));
-                schedule.getData().addAll(newSeries);
 
+                seriesList.add(newSeries);
             }
-            schedule.getData().addAll(idleSeries);
-
         }
+
+        schedule.getData().addAll(seriesList);
     }
 
     /**

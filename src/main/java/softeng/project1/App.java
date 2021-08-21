@@ -52,6 +52,7 @@ public final class App {
         HeuristicManager heuristicManager = new AStarHeuristicManager(ioHandler.getSumWeights(), clp.getNumProcessors());
         SchedulingAlgorithm algorithm;
 
+        //Sequential or Parallel
         if (clp.getNumThreads() > 1) {
             algorithm = new ParallelAStarSchedulingAlgorithm(
                     originalSchedule,
@@ -69,16 +70,14 @@ public final class App {
 
         Graph inputGraph = ((AStarIOHandler) ioHandler).getGraph();
         AlgorithmDataCache dataCache = new AlgorithmDataCache(algorithm);
-        List<int[]> testSchedule = algorithm.generateSchedule();
 
-        System.out.println(testSchedule);
+        GuiMain.setupGui(clp.getNumProcessors(), inputGraph, dataCache, algorithm);
+        GuiMain.main(args);
 
-        String result = ioHandler.writeFile(testSchedule);
+        String result = ioHandler.writeFile(algorithm.generateSchedule());
         System.out.println(result);
 
         System.out.println("Successfully created " + clp.getOutputFileName() + '\n');
 
-        GuiMain.setupGui(clp.getNumProcessors(), testSchedule, inputGraph);
-        GuiMain.main(args);
     }
 }
