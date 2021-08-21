@@ -33,6 +33,7 @@ public final class App {
      * @param args The arguments of the program.
      */
     public static void main(String[] args) {
+        long startTime = System.nanoTime();
         System.setProperty("org.graphstream.ui", "javafx");
         CommandLineProcessor clp = new CommandLineProcessor(args);
 
@@ -59,12 +60,15 @@ public final class App {
         SchedulingAlgorithm algorithm;
 
         if (clp.getNumThreads() > 1) {
+            // PARALLEL
             algorithm = new ParallelAStarSchedulingAlgorithm(
                     originalSchedule,
                     heuristicManager,
-                    clp.getNumThreads()
+                    clp.getNumThreads(),
+                    ioHandler.getListSchedulingAlgoStep()
             );
         } else {
+            // SEQUENTIAL
             algorithm = new SequentialAStarSchedulingAlgorithm(
                     originalSchedule,
                     heuristicManager,
@@ -74,6 +78,13 @@ public final class App {
             );
         }
 
+
+        String result = ioHandler.writeFile(algorithm.generateSchedule());
+        long endTime = System.nanoTime();
+        long duration = (endTime - startTime) / 1000000;  //divide by  to get milliseconds.
+
+        System.out.printf("Took: %d ms to complete.%n", duration);
+        System.out.println(result);
 
         Graph inputGraph = ioHandler.getGraph();
         AlgorithmDataCache dataCache = new AlgorithmDataCache(algorithm);

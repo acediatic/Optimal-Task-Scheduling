@@ -57,7 +57,7 @@ public class SequentialAStarSchedulingAlgorithm implements AStarSchedulingAlgori
     @Override
     public List<Schedule> pruneExpandedSchedulesAndAddToMap(List<Schedule> expandedSchedules) {
         List<Schedule> unexploredSchedules = new ArrayList<>();
-        for (Schedule expandedSchedule: expandedSchedules) {
+        for (Schedule expandedSchedule : expandedSchedules) {
             if (!this.closedSchedules.containsKey(expandedSchedule.getHashKey())) {
                 this.closedSchedules.put(expandedSchedule.getHashKey(), expandedSchedule);
                 unexploredSchedules.add(expandedSchedule);
