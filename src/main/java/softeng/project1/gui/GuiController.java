@@ -19,16 +19,12 @@ import org.graphstream.ui.fx_viewer.FxViewer;
 import org.graphstream.ui.javafx.FxGraphRenderer;
 import org.graphstream.ui.view.Viewer;
 import javafx.scene.paint.Color;
-import javafx.scene.Node.*;
 
-
-//import java.awt.*;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 public class GuiController {
 
@@ -87,7 +83,7 @@ public class GuiController {
      * Setups required fields for controller
      * @param numProcessors number of processors to divide tasks on
      */
-    public void setup(int numProcessors, Graph g, Map<Short, String> taskNames){
+    public void setup(int numProcessors, int numCores, Graph g, Map<Short, String> taskNames){
         //Setup fields
         this.numProcessors = numProcessors;
 
@@ -105,8 +101,12 @@ public class GuiController {
         FxViewPanel viewPanel = (FxViewPanel)viewer.addDefaultView(false, new FxGraphRenderer());
 
         InputContainer.getChildren().add(viewPanel);
-
         this.taskNames = taskNames;
+
+        //Sets up labels
+        updateNumProcessors(Integer.toString(numProcessors));
+        updateNumTasks(Integer.toString(taskNames.keySet().size()));
+        updateNumCores(Integer.toString(numCores));
     }
 
     /**
@@ -127,9 +127,7 @@ public class GuiController {
             processorTasks.get(task[1]).add(task[0]);
         }
 
-
         List<Legend.LegendItem> legendItems = new ArrayList<>();
-//        legend.getItems().seta
 
         //For each processor, iterate through each processor, then for each processor, determine if it needs idle time before it
         //Then create idle time bar
@@ -175,26 +173,18 @@ public class GuiController {
 
                 //Add block to schedule
                 XYChart.Series<String, Number> newSeries = new XYChart.Series<>();
-//                newSeries.setName("Task " + taskID);
-
                 XYChart.Data<String, Number>block = new XYChart.Data<>(Integer.toString(currentProcessor + 1), weight);
+
+                //Assigns random colour to bar.
                 Color colour = generateRandomRGBColor();
-
-                System.out.println(colour.toString().replace("0x", "#"));
-
-                String colorString = String.format("%f, %f, %f", colour.getRed(), colour.getBlue(), colour.getRed());
-                System.out.println(colorString);
                 block.nodeProperty().addListener((ov, oldNode, node) -> {
                     node.setStyle("-fx-bar-fill: " + colour.toString().replace("0x", "#") + "");
                 });
 
                 newSeries.getData().add(block);
-                newSeries.setName(taskNames.get((short)taskID));
-
                 schedule.getData().addAll(newSeries);
 
                 legendItems.add(new Legend.LegendItem(taskNames.get((short)taskID), new Rectangle(10, 10, colour)));
-
             }
             Legend legend = (Legend)schedule.lookup(".chart-legend");
             legend.getItems().removeAll();
@@ -228,11 +218,36 @@ public class GuiController {
         return -1;
     }
 
+    public void updateNumProcessors(String numProcessors){
+        numProcessorsLabel.setText(numProcessors);
+    }
+
+    public void updateNumCores(String numCores){
+        numCoresLabel.setText(numCores);
+    }
+
+    public void updateScheduleStatus(String scheduleStatus){
+        scheduleLengthLabel.setText(scheduleStatus);
+    }
+
+    public void updateOptimalLength(String optimalLength){
+        optimalLengthLabel.setText(optimalLength);
+    }
+
+    public void updateNumTasks(String numTasks){
+        numTasksLabel.setText(numTasks);
+    }
+
+    public void updateScheduleLength(String scheduleLength){
+        scheduleLengthLabel.setText(scheduleLength);
+    }
+
+    /**
+     * Generates a random RGB colour
+     * @return Returns the colour object
+     */
     private Color generateRandomRGBColor(){
-
         Color color = Color.color(Math.random(), Math.random(), Math.random());
-
-
         return color;
     };
 }

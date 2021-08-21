@@ -98,7 +98,7 @@ public final class App {
 
         System.out.println("Successfully created " + clp.getOutputFileName() + '\n');
 
-        GuiMain.setupGui(clp.getNumProcessors(), testSchedule, inputGraph, ((AStarIOHandler) ioHandler).getTaskName());
+        GuiMain.setupGui(clp.getNumProcessors(), clp.getNumThreads(), testSchedule, inputGraph, ((AStarIOHandler) ioHandler).getTaskName());
         GuiMain.main(args);
     }
 }

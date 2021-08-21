@@ -16,6 +16,7 @@ public class GuiMain extends Application {
 
     private static GuiController guiController;
     private static int numProcessors;
+    private static int numCores;
     private static List<int[]> testSchedule;
     private static Graph inputGraph;
     private static Map<Short, String> taskNames;
@@ -32,7 +33,7 @@ public class GuiMain extends Application {
         Scene scene = new Scene(root);
 
         guiController = loader.getController();
-        guiController.setup(numProcessors, inputGraph, taskNames);
+        guiController.setup(numProcessors, numCores, inputGraph, taskNames);
         guiController.updateScheduleView(testSchedule);
 
         primaryStage.setTitle("Task Scheduler");
@@ -44,10 +45,11 @@ public class GuiMain extends Application {
         primaryStage.setOnCloseRequest(e -> System.exit(0));
     }
 
-    public static void setupGui(int processors, List<int[]> schedule, Graph graph, Map<Short, String> names){
+    public static void setupGui(int processors, int cores, List<int[]> schedule, Graph graph, Map<Short, String> names){
         numProcessors = processors;
         testSchedule = schedule;
         inputGraph = graph;
         taskNames = names;
+        numCores = cores;
     }
 }
