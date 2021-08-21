@@ -70,23 +70,24 @@ public class ChangedProcessorsState extends ProcessorsState {
     private Processor[] orderProcessorsByFirstTaskNum() {
         Processor[] orderedProcessors = this.processors.clone();
         Processor temp;
-        while (true) {
-            int i;
-            for (i = 1; i < orderedProcessors.length; i++) {
+        while (!isInsertionSorted(orderedProcessors));
+        return orderedProcessors;
+    }
 
-                if (orderedProcessors[i].getFirstTaskId() < orderedProcessors[i-1].getFirstTaskId()) {
+    private boolean isInsertionSorted(Processor[] orderedProcessors) {
+        Processor temp;
+        for (int i = 1; i < orderedProcessors.length; i++) {
 
-                    temp = orderedProcessors[i];
-                    orderedProcessors[i] = orderedProcessors[i-1];
-                    orderedProcessors[i-1] = temp;
+            if (orderedProcessors[i].getFirstTaskId() < orderedProcessors[i-1].getFirstTaskId()) {
 
-                    break;
-                }
-            }
-            if (i == orderedProcessors.length - 1 ) {
-                return orderedProcessors;
+                temp = orderedProcessors[i];
+                orderedProcessors[i] = orderedProcessors[i-1];
+                orderedProcessors[i-1] = temp;
+
+                return false;
             }
         }
+        return true;
     }
 
     /**
