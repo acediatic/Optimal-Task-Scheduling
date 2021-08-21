@@ -143,6 +143,11 @@ public class ListSchedulingAlgorithm implements SchedulingAlgorithm {
         return this.graph;
     }
 
+    @Override
+    public int addReporterTask() {
+        return 0; // TODO..
+    }
+
     private Node findNode(int i){
         for(Node n: nodeToIDMap.keySet()){
             if(nodeToIDMap.get(n) == i){
