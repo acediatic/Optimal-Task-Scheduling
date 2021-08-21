@@ -30,7 +30,7 @@ public class AStarIOHandler implements IOHandler {
     private Graph graph;
     private AlgorithmStep listScheduleAlgoStep;
     private List<Node> sortedNodes;
-    private Map<Node, Short> nodeShortMap;
+    private final Map<Node, Short> nodeShortMap;
 
     public AStarIOHandler(String inputFilePath, String outputFilePath, String graphName, short numProcessors) {
 
@@ -201,7 +201,7 @@ public class AStarIOHandler implements IOHandler {
         return childLinkArrays;
     }
 
-    private int getScheduleMaxLength(List<int[]> scheduleLocations) {
+    public int getScheduleMaxLength(List<int[]> scheduleLocations) {
         int maxLength = 0;
 
         for (int[] scheduleLocation : scheduleLocations) {
