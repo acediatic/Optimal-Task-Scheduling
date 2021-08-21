@@ -21,7 +21,7 @@
          <font>
             <Font size="18.0" />
          </font></Label>
-      <Label fx:id="TimerText" layoutX="617.0" layoutY="100.0" prefHeight="59.0" prefWidth="82.0" textAlignment="CENTER">
+      <Label fx:id="TimerText" layoutX="564.0" layoutY="101.0" prefHeight="59.0" prefWidth="188.0" textAlignment="CENTER">
          <font>
             <Font size="34.0" />
          </font>
@@ -39,5 +39,10 @@
             <Font size="39.0" />
          </font>
       </Label>
+      <Button fx:id="startScheduleButton" layoutX="533.0" layoutY="581.0" mnemonicParsing="false" onAction="#startSchedule" text="Start Scheduler">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Button>
    </children>
 </AnchorPane>
