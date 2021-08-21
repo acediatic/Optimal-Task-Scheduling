@@ -8,4 +8,6 @@ public interface SchedulingAlgorithm {
 
 
     List<int[]> generateSchedule();
+
+    int addReporterTask();
 }

@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class SequentialAStarSchedulingAlgorithm implements AStarSchedulingAlgorithm {
 
@@ -17,6 +18,8 @@ public class SequentialAStarSchedulingAlgorithm implements AStarSchedulingAlgori
     private final Map<Processors, Schedule> closedSchedules;
     private final PriorityQueue<AlgorithmStep> priorityQueue;
     private final Schedule originalSchedule;
+
+    private final AtomicInteger numSchedulesChecked;
 
     public SequentialAStarSchedulingAlgorithm(Schedule originalSchedule,
                                               HeuristicManager heuristicManager,
@@ -29,6 +32,7 @@ public class SequentialAStarSchedulingAlgorithm implements AStarSchedulingAlgori
         // TODO... Calculate a relevant initial size
         this.closedSchedules = closedSchedules;
         this.priorityQueue = priorityQueue;
+        this.numSchedulesChecked = new AtomicInteger(0);
     }
 
     @Override
@@ -41,6 +45,7 @@ public class SequentialAStarSchedulingAlgorithm implements AStarSchedulingAlgori
 
         // TODO... Find a better way to indicate finish than null
         while ((fringeSchedules = (step = this.priorityQueue.poll()).takeStep()) != null) {
+            this.numSchedulesChecked.incrementAndGet();
             this.priorityQueue.addAll(this.heuristicManager.getAlgorithmStepsFromSchedules(pruneExpandedSchedulesAndAddToMap(fringeSchedules)));
         }
         // Just calling ScheduleStateChange.rebuildSolutionPath() but via a few parent objects.
@@ -60,6 +65,13 @@ public class SequentialAStarSchedulingAlgorithm implements AStarSchedulingAlgori
         }
 
         return unexploredSchedules;
+    }
+
+    @Override
+    public int addReporterTask() {
+
+        return this.numSchedulesChecked.intValue();
+
     }
 
 }
