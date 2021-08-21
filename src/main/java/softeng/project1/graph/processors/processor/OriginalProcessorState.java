@@ -145,5 +145,10 @@ public class OriginalProcessorState implements Processor {
         return -1; // TODO... Should this throw an error?
     }
 
+    @Override
+    public int getFirstTaskId() {
+        return Integer.MAX_VALUE; // max value for far flung values makes ordering them faster
+    }
+
 
 }

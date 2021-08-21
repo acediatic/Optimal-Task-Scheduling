@@ -318,4 +318,9 @@ public class ProcessorState implements Processor {
         return this.changeInIdleTime;
     }
 
+    @Override
+    public int getFirstTaskId() {
+        return this.processorSpaces[0][2];
+    }
+
 }
