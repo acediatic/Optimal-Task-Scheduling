@@ -201,18 +201,6 @@ public class AStarIOHandler implements IOHandler {
         return childLinkArrays;
     }
 
-//    private short getKeyFromTaskName(String taskName) {
-//
-//        // Lazy O(n) search for backwards value -> key mapping. Importing a bi-map would make this better
-//        for (Map.Entry<Short, String> taskNameIDMapping : this.taskNames.entrySet()) {
-//            if (taskNameIDMapping.getValue().equals(taskName)) {
-//                return taskNameIDMapping.getKey();
-//            }
-//        }
-//
-//        throw new RuntimeException("Failed to find Task: " + taskName + " in task ID -> name map"); // TODO... add better error handling
-//    }
-
     private int getScheduleMaxLength(List<int[]> scheduleLocations) {
         int maxLength = 0;
 
@@ -224,6 +212,10 @@ public class AStarIOHandler implements IOHandler {
 
         }
         return maxLength;
+    }
+
+    public Graph getGraph(){
+        return this.graph;
     }
 
 

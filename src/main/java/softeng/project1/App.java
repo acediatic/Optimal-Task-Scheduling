@@ -1,22 +1,31 @@
 package softeng.project1;
 
+import com.sun.javafx.application.PlatformImpl;
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+import org.graphstream.graph.Graph;
 import softeng.project1.algorithms.SchedulingAlgorithm;
 import softeng.project1.algorithms.astar.heuristics.AStarHeuristicManager;
 import softeng.project1.algorithms.astar.heuristics.HeuristicManager;
 import softeng.project1.algorithms.astar.parallel.ParallelAStarSchedulingAlgorithm;
 import softeng.project1.algorithms.astar.sequential.SequentialAStarSchedulingAlgorithm;
 import softeng.project1.graph.Schedule;
+import softeng.project1.gui.AlgorithmDataCache;
+import softeng.project1.gui.GuiController;
+import softeng.project1.gui.GuiMain;
 import softeng.project1.io.AStarIOHandler;
 import softeng.project1.io.CommandLineProcessor;
 import softeng.project1.io.IOHandler;
 
+import java.util.List;
 import java.util.HashMap;
 import java.util.PriorityQueue;
 
 
 public final class App {
-    private App() {
-    }
 
     /**
      * Runs the scheduling program
@@ -26,6 +35,7 @@ public final class App {
     public static void main(String[] args) {
         long startTime = System.nanoTime();
 
+        System.setProperty("org.graphstream.ui", "javafx");
         CommandLineProcessor clp = new CommandLineProcessor(args);
 
         String runInformation = "***** Outsourced to Pakistan - Scheduling Algorithm *****\n" +
@@ -39,8 +49,7 @@ public final class App {
         System.out.println(runInformation);
 
         // use clp here to make choices about what parts to execute.
-
-        IOHandler ioHandler = new AStarIOHandler(
+        AStarIOHandler ioHandler = new AStarIOHandler(
                 clp.getInputFileName(),
                 clp.getOutputFileName(),
                 clp.getGraphName(),
@@ -71,12 +80,22 @@ public final class App {
         }
 
 
-        String result = ioHandler.writeFile(algorithm.generateSchedule());
+        Graph inputGraph = ioHandler.getGraph();
+        AlgorithmDataCache dataCache = new AlgorithmDataCache(algorithm);
+        List<int[]> testSchedule = algorithm.generateSchedule();
+
+        System.out.println(testSchedule);
+
+        String result = ioHandler.writeFile(testSchedule);
         long endTime = System.nanoTime();
         long duration = (endTime - startTime) / 1000000;  //divide by  to get milliseconds.
 
         System.out.printf("Took: %d ms to complete.%n", duration);
         System.out.println(result);
+
         System.out.println("Successfully created " + clp.getOutputFileName() + '\n');
+
+        GuiMain.setupGui(clp.getNumProcessors(), testSchedule, inputGraph);
+        GuiMain.main(args);
     }
 }
