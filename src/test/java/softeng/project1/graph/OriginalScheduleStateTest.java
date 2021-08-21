@@ -8,6 +8,7 @@ import softeng.project1.graph.tasks.OriginalTaskNodeState;
 import softeng.project1.graph.tasks.TaskNode;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -103,8 +104,6 @@ public class OriginalScheduleStateTest {
         Processors p2 = new OriginalProcessorsState(0);
         assertEquals(p1.toString(), o1.getHashKey().toString());
         assertEquals(p2.toString(), o3.getHashKey().toString());
-        assertNotEquals(p2.toString(), o1.getHashKey().toString());
-        assertNotEquals(p1.toString(), o3.getHashKey().toString());
     }
 
     @Test
