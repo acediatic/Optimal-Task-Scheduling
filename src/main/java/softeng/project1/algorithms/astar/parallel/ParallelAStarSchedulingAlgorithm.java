@@ -10,8 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class ParallelAStarSchedulingAlgorithm extends ThreadPoolExecutor implements AStarSchedulingAlgorithm {
 
@@ -77,7 +77,7 @@ public class ParallelAStarSchedulingAlgorithm extends ThreadPoolExecutor impleme
 
         if ((fringeSchedules = algorithmStep.getFringeSchedules()) == null) {
             this.optimalSchedules.add(algorithmStep.rebuildPath());
-            shutdownNow();
+            clearAndShutdown();
         } else {
             List<AlgorithmStep> algoSteps = this.heuristicManager.getAlgorithmStepsFromSchedules(pruneExpandedSchedulesAndAddToMap(fringeSchedules));
             int algoStepsSize;
@@ -92,10 +92,15 @@ public class ParallelAStarSchedulingAlgorithm extends ThreadPoolExecutor impleme
                 }
             } else {
                 if (atomicLong.decrementAndGet() == 0) {
-                    shutdownNow();
+                    clearAndShutdown();
                 }
             }
         }
+    }
+
+    private synchronized void clearAndShutdown() {
+        this.getQueue().clear();
+        shutdown();
     }
 
 
