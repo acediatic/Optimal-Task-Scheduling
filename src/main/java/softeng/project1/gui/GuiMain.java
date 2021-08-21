@@ -27,10 +27,12 @@ public class GuiMain extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+
         FXMLLoader loader = new FXMLLoader(getClass().getResource("MainScreen.fxml"));
 
         Parent root = loader.load();
         Scene scene = new Scene(root);
+        scene.getStylesheets().add(getClass().getResource("style.css").toExternalForm());
 
         guiController = loader.getController();
         guiController.setup(numProcessors, numCores, inputGraph, taskNames);
