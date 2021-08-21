@@ -185,7 +185,7 @@ public class AStarIOHandler implements IOHandler {
         throw new RuntimeException("Failed to find Task: " + taskName + " in task ID -> name map"); // TODO... add better error handling
     }
 
-    private int getScheduleMaxLength(List<int[]> scheduleLocations) {
+    public int getScheduleMaxLength(List<int[]> scheduleLocations) {
         int maxLength = 0;
 
         for (int[] scheduleLocation: scheduleLocations) {

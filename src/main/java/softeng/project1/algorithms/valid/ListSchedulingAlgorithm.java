@@ -8,6 +8,7 @@ import softeng.project1.algorithms.SchedulingAlgorithm;
 import softeng.project1.graph.processors.processor.ListProcessor;
 import softeng.project1.graph.tasks.edges.ListCommunicationCost;
 import softeng.project1.graph.tasks.ListTask;
+import softeng.project1.gui.GuiData;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -141,6 +142,11 @@ public class ListSchedulingAlgorithm implements SchedulingAlgorithm {
         });
 
         return this.graph;
+    }
+
+    @Override
+    public GuiData getGuiData() {
+        return null;
     }
 
     private Node findNode(int i){

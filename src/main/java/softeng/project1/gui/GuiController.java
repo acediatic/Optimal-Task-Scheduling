@@ -4,11 +4,13 @@ import com.sun.javafx.charts.Legend;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.collections.FXCollections;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.StackedBarChart;
 import javafx.scene.chart.XYChart;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
@@ -25,8 +27,12 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.*;
 
 public class GuiController {
+
+    @FXML
+    private Button startScheduleButton;
 
     @FXML
     private CategoryAxis processors;
@@ -64,6 +70,7 @@ public class GuiController {
     private LocalTime timer = LocalTime.parse("00:00");
     private Timeline timeline;
     private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("mm:ss");
+    private AlgorithmDataCache dataCache;
 
     private int numProcessors;
     private Map<Short, String> taskNames;
@@ -73,19 +80,20 @@ public class GuiController {
      */
     public void initialize(){
         TimerText.setText(timer.format(formatter));
+
         timeline = new Timeline();
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(1), ae -> updateTimer()));
-        timeline.play();
     }
 
     /**
      * Setups required fields for controller
      * @param numProcessors number of processors to divide tasks on
      */
-    public void setup(int numProcessors, int numCores, Graph g, Map<Short, String> taskNames){
+    public void setup(int numProcessors,int numCores, Graph g, Map<Short, String> taskNames, AlgorithmDataCache dataCache) {
         //Setup fields
         this.numProcessors = numProcessors;
+        this.dataCache = dataCache;
 
         //Setup requirements for schedule display
         List<String> processorNums = new ArrayList<>();
@@ -98,15 +106,26 @@ public class GuiController {
         //Setup input graph display
         FxViewer viewer = new FxViewer(g, Viewer.ThreadingModel.GRAPH_IN_GUI_THREAD);
         viewer.enableAutoLayout();
-        FxViewPanel viewPanel = (FxViewPanel)viewer.addDefaultView(false, new FxGraphRenderer());
+        FxViewPanel viewPanel = (FxViewPanel) viewer.addDefaultView(false, new FxGraphRenderer());
 
         InputContainer.getChildren().add(viewPanel);
         this.taskNames = taskNames;
+    }
 
-        //Sets up labels
-        updateNumProcessors(Integer.toString(numProcessors));
-        updateNumTasks(Integer.toString(taskNames.keySet().size()));
-        updateNumCores(Integer.toString(numCores));
+    @FXML
+    void startSchedule(ActionEvent event) {
+        timeline.play();
+        startScheduleButton.setDisable(true);
+        GuiMain.startAlgorithm();
+    }
+
+    public void updateView(GuiData data){
+        updateScheduleView(data.getCurrentBestSchedule().rebuildPath());
+        updateScheduleStatus("COMPLETED");
+    }
+
+    public void stopGui(){
+        timeline.stop();
     }
 
     /**
@@ -115,7 +134,11 @@ public class GuiController {
      */
 
     public void updateScheduleView(List<int[]> newSchedule){
+        schedule.getData().clear();
+
+        List<XYChart.Series<String, Number>> seriesList = new ArrayList<>();
         XYChart.Series<String, Number> idleSeries = new XYChart.Series<>();
+        seriesList.add(idleSeries);
 
         //Separates tasks into lists of processors
         List<List<Integer>> processorTasks = new ArrayList<>();
@@ -173,31 +196,34 @@ public class GuiController {
 
                 //Add block to schedule
                 XYChart.Series<String, Number> newSeries = new XYChart.Series<>();
-                XYChart.Data<String, Number>block = new XYChart.Data<>(Integer.toString(currentProcessor + 1), weight);
+                XYChart.Data<String, Number> block = new XYChart.Data<>(Integer.toString(currentProcessor + 1), weight);
 
                 //Assigns random colour to bar.
                 Color colour = generateRandomRGBColor();
                 block.nodeProperty().addListener((ov, oldNode, node) -> {
                     node.setStyle("-fx-bar-fill: " + colour.toString().replace("0x", "#") + "");
                 });
-
                 newSeries.getData().add(block);
-                schedule.getData().addAll(newSeries);
+                seriesList.add(newSeries);
 
+                //Generates Legend entry for series
                 legendItems.add(new Legend.LegendItem(taskNames.get((short)taskID), new Rectangle(10, 10, colour)));
             }
-            Legend legend = (Legend)schedule.lookup(".chart-legend");
-            legend.getItems().removeAll();
-            legend.getItems().setAll(legendItems);
-            schedule.getData().addAll(idleSeries);
 
         }
+        schedule.getData().addAll(seriesList);
+
+        //Creates legend
+        Legend legend = (Legend)schedule.lookup(".chart-legend");
+        legend.getItems().removeAll();
+        legend.getItems().setAll(legendItems);
+
     }
 
     /**
      * Increments the timer label each second incrementing by one second
      */
-    public void updateTimer(){
+    public void updateTimer() {
         timer = timer.plusSeconds(1);
         TimerText.setText(timer.format(formatter));
     }
@@ -227,11 +253,13 @@ public class GuiController {
     }
 
     public void updateScheduleStatus(String scheduleStatus){
-        scheduleLengthLabel.setText(scheduleStatus);
+        scheduleStatusLabel.setText(scheduleStatus);
+        scheduleStatusLabel.setStyle("-fx-text-fill: green");
     }
 
     public void updateOptimalLength(String optimalLength){
         optimalLengthLabel.setText(optimalLength);
+
     }
 
     public void updateNumTasks(String numTasks){

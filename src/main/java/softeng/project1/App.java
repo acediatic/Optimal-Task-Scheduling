@@ -14,6 +14,7 @@ import softeng.project1.algorithms.astar.heuristics.HeuristicManager;
 import softeng.project1.algorithms.astar.parallel.ParallelAStarSchedulingAlgorithm;
 import softeng.project1.algorithms.astar.sequential.SequentialAStarSchedulingAlgorithm;
 import softeng.project1.graph.Schedule;
+import softeng.project1.gui.AlgorithmDataCache;
 import softeng.project1.gui.GuiController;
 import softeng.project1.gui.GuiMain;
 import softeng.project1.io.AStarIOHandler;
@@ -58,6 +59,7 @@ public final class App {
         HeuristicManager heuristicManager = new AStarHeuristicManager(ioHandler.getSumWeights(), clp.getNumProcessors());
         SchedulingAlgorithm algorithm;
 
+        //Sequential or Parallel
         if (clp.getNumThreads() > 1) {
             algorithm = new ParallelAStarSchedulingAlgorithm(
                     originalSchedule,
@@ -89,16 +91,14 @@ public final class App {
         });
 
 
-        List<int[]> testSchedule = algorithm.generateSchedule();
+        AlgorithmDataCache dataCache = new AlgorithmDataCache(algorithm);
 
-        System.out.println(testSchedule);
+        GuiMain.setupGui(clp.getNumProcessors(), clp.getNumProcessors(), inputGraph, dataCache, ((AStarIOHandler) ioHandler).getTaskName(), algorithm);
+        GuiMain.main(args);
 
-        String result = ioHandler.writeFile(testSchedule);
+        String result = ioHandler.writeFile(algorithm.generateSchedule());
         System.out.println(result);
 
         System.out.println("Successfully created " + clp.getOutputFileName() + '\n');
-
-        GuiMain.setupGui(clp.getNumProcessors(), clp.getNumThreads(), testSchedule, inputGraph, ((AStarIOHandler) ioHandler).getTaskName());
-        GuiMain.main(args);
     }
 }
