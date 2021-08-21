@@ -83,19 +83,25 @@ public class ParallelAStarSchedulingAlgorithm extends ThreadPoolExecutor impleme
             int algoStepsSize;
             if ((algoStepsSize = algoSteps.size()) != 0) {
                 atomicLong.addAndGet(algoStepsSize);
-                for (AlgorithmStep algoStep : algoSteps) {
-                    try {
-                        execute(algoStep);
-                    } catch (RejectedExecutionException e) {
-                        // pool is shutting down
-                    }
-                }
+                executeSteps(algoSteps);
             } else {
                 if (atomicLong.decrementAndGet() == 0) {
                     shutdownNow();
                 }
             }
         }
+    }
+
+    // Unsure if necessary
+    private synchronized void executeSteps(List<AlgorithmStep> algoSteps) {
+        try {
+            for (AlgorithmStep algoStep : algoSteps) {
+                execute(algoStep);
+            }
+        } catch (RejectedExecutionException e) {
+            // pool is shutting down
+        }
+
     }
 
 
