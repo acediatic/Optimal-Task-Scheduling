@@ -72,10 +72,32 @@ public abstract class ProcessorsState implements Processors {
         newProcessors[processorID] = newProcessor;
 
         return new ChangedProcessorsState(
-                newProcessors,
+                orderProcessorsByFirstTaskNum(newProcessors),
                 calculateMaxProcessorLength(newProcessor),
                 calculateIdleTime(newProcessor)
         );
+    }
+
+    // TODO... do this when making new objects not in hashcode
+    private Processor[] orderProcessorsByFirstTaskNum(Processor[] newProcessors) {
+        while (!isInsertionSorted(newProcessors));
+        return newProcessors;
+    }
+
+    private boolean isInsertionSorted(Processor[] orderedProcessors) {
+        Processor temp;
+        for (int i = 1; i < orderedProcessors.length; i++) {
+
+            if (orderedProcessors[i].getFirstTaskId() < orderedProcessors[i-1].getFirstTaskId()) {
+
+                temp = orderedProcessors[i];
+                orderedProcessors[i] = orderedProcessors[i-1];
+                orderedProcessors[i-1] = temp;
+
+                return false;
+            }
+        }
+        return true;
     }
 
     /**

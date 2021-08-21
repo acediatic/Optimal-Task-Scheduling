@@ -4,6 +4,10 @@ import com.sangupta.murmur.Murmur3;
 
 import softeng.project1.graph.processors.processor.Processor;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+
 /**
  * @author Remus Courtenay
  * @version 1.0
@@ -43,14 +47,14 @@ public class ChangedProcessorsState extends ProcessorsState {
         
         int numBytesNeeded = 0;
 
-        for (Processor processor: processors) {
+        for (Processor processor: this.processors) {
             // we multiply by 3 because each space has 3 values
             numBytesNeeded = numBytesNeeded + processor.getNumSpaces()*3;
         }
         // Kind of dirty to do this with two loops
         byte[] byteArrayForHash = new byte[numBytesNeeded];
         int index = 0;
-        for (Processor processor: processors) {
+        for (Processor processor: this.processors) {
             processor.asByteArray(index, byteArrayForHash);
             index = index + processor.getNumSpaces()*3;
         }
@@ -77,8 +81,9 @@ public class ChangedProcessorsState extends ProcessorsState {
         } catch (ClassCastException e) {
             return false;
         }
-        for (int i = 0; i < processors.length; i++) {
-            if (!otherProcessors.getProcessor(i).deepEquals(processors[i])) {
+
+        for (int i = 0; i < this.processors.length; i++) {
+            if (!otherProcessors.getProcessor(i).deepEquals(this.processors[i])) {
                 return false;
             }
         }
