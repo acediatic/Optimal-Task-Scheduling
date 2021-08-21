@@ -91,12 +91,13 @@ public class OriginalScheduleState extends ScheduleState {
      * @return : The top level StateChange object created from the generation of a state from the original state.
      */
     @Override
-    protected ScheduleStateChange generateStateChange(int freeTaskID, int processorID, int insertLocation) {
+    protected ScheduleStateChange generateStateChange(int freeTaskID, int processorID, int insertLocation, int freeTaskWeight) {
         return new ScheduleStateChange(
                 ORIGINAL_STATE_CHANGE, // No previous change
                 freeTaskID,
                 processorID,
-                insertLocation
+                insertLocation,
+                freeTaskWeight
         );
     }
 

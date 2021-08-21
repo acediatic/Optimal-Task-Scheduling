@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class ParallelAStarSchedulingAlgorithm extends ThreadPoolExecutor implements AStarSchedulingAlgorithm {
 
@@ -22,6 +23,8 @@ public class ParallelAStarSchedulingAlgorithm extends ThreadPoolExecutor impleme
     private final Schedule originalSchedule;
     private final AlgorithmStep listSchedule;
     private final AtomicLong atomicLong;
+    private final BlockingQueue<Runnable> queue;
+    private final AtomicInteger numSchedulesChecked;
 
     public ParallelAStarSchedulingAlgorithm(Schedule originalSchedule,
                                             HeuristicManager heuristicManager,
@@ -36,6 +39,8 @@ public class ParallelAStarSchedulingAlgorithm extends ThreadPoolExecutor impleme
         this.originalSchedule = originalSchedule;
         this.listSchedule = listSchedule;
         this.atomicLong = new AtomicLong();
+        this.queue = super.getQueue();
+        this.numSchedulesChecked = new AtomicInteger(0);
     }
 
     @Override
@@ -69,6 +74,8 @@ public class ParallelAStarSchedulingAlgorithm extends ThreadPoolExecutor impleme
     protected void afterExecute(Runnable runnable, Throwable throwable) {
         List<Schedule> fringeSchedules;
         AlgorithmStep algorithmStep = (AlgorithmStep) runnable;
+
+        updateData(algorithmStep);
 
         if ((fringeSchedules = algorithmStep.getFringeSchedules()) == null) {
             this.optimalSchedules.add(algorithmStep.rebuildPath());
@@ -105,6 +112,14 @@ public class ParallelAStarSchedulingAlgorithm extends ThreadPoolExecutor impleme
         return unexploredSchedules;
     }
 
+    public int addReporterTask() {
+        return this.numSchedulesChecked.intValue();
+    }
+
+    private void updateData(AlgorithmStep step) {
+        this.numSchedulesChecked.incrementAndGet();
+    }
+
     private List<int[]> getBestStoredSchedule() {
 
         List<int[]> bestSchedule = null;
@@ -129,7 +144,5 @@ public class ParallelAStarSchedulingAlgorithm extends ThreadPoolExecutor impleme
             }
         }
         return bestSchedule;
-
-
     }
 }
