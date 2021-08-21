@@ -106,8 +106,11 @@ public class ChangedProcessorsState extends ProcessorsState {
         } catch (ClassCastException e) {
             return false;
         }
-        for (int i = 0; i < processors.length; i++) {
-            if (!otherProcessors.getProcessor(i).deepEquals(processors[i])) {
+
+        Processor[] orderedProcessors = orderProcessorsByFirstTaskNum();
+
+        for (int i = 0; i < orderedProcessors.length; i++) {
+            if (!otherProcessors.getProcessor(i).deepEquals(orderedProcessors[i])) {
                 return false;
             }
         }
