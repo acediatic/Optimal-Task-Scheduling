@@ -47,7 +47,8 @@ public class ParallelAStarSchedulingAlgorithm extends ThreadPoolExecutor impleme
         if ((firstStep = heuristicManager.getAlgorithmStepFromSchedule(originalSchedule)) != null) {
             execute(firstStep);
         } else {
-            // TODO... Return list schedule
+            System.out.println("testing");
+            return null;
         }
 
         try {
@@ -74,7 +75,7 @@ public class ParallelAStarSchedulingAlgorithm extends ThreadPoolExecutor impleme
             shutdown();
         } else {
 
-            for (AlgorithmStep step: this.heuristicManager.getAlgorithmStepsFromSchedules(pruneExpandedSchedulesAndAddToMap(fringeSchedules))) {
+            for (AlgorithmStep step : this.heuristicManager.getAlgorithmStepsFromSchedules(pruneExpandedSchedulesAndAddToMap(fringeSchedules))) {
                 try {
                     execute(step);
                 } catch (RejectedExecutionException e) {
@@ -131,12 +132,12 @@ public class ParallelAStarSchedulingAlgorithm extends ThreadPoolExecutor impleme
         int maxLength;
         int endLocation;
 
-        for (AlgorithmStep step: this.optimalSchedules) {
+        for (AlgorithmStep step : this.optimalSchedules) {
 
             List<int[]> schedule = step.rebuildPath();
 
             maxLength = 0;
-            for (int[] task: schedule) {
+            for (int[] task : schedule) {
 
                 endLocation = this.originalSchedule.getTaskNode((short) task[0]).getTaskCost() + task[2];
                 if (endLocation > maxLength) {
