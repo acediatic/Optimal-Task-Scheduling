@@ -7,18 +7,18 @@
 * Remus Courtenay
 * Syed Ahmad Kazmi
 
-## Project Outline
+# Project Outline
 For this project, we have been tasked with developing a program used to schedule a certain number of tasks over a certain number of processors whilst
 keeping to a list of constraints. As part of the project there are two milestones.
 
-# Milestone 1
+## Milestone 1
 Milestone 1 requires that we develop a scheduler which is able to return a valid schedule. A valid schedule refers to a schedule for the tasks which
 keeps to the constraints, but is not neccessarily the most optimal solution. The runnable jar for our Milestone 1 release can be found [here](https://github.com/SoftEng306-2021/project-1-p1t16-outsourced-to-pakistan/releases/tag/v1.0)
 
-# Milestone 2
+## Milestone 2
 Milestone 2 requires that we develop a scheduler which is able to return a schedule which is not only valid, but is also optimal. A schedule is considered optimal if it has the shortest possible finishing time, whilst adhering to all the constraints. We are also required to develop a meaningful visualisation, as well as the option to parallelize the search by running the algorithm on multiple threads. For the scheduling algorithm, we used an A* searching algorithm with various pruning techniques. The runnable jar for our Milestone 2 release can be found here
 
-## Running the program
+# Running the program
 Before running the program, check that the runnable jar along with the input DOT file are located in the same folder. The runnable 
 jar files can be found on the [Releases](https://github.com/SoftEng306-2021/project-1-p1t16-outsourced-to-pakistan/releases) page.
 
@@ -53,7 +53,7 @@ mvn package
 
 This will generate a runnable jar called ```scheduler.jar```. Instructions for running the jar can be found in the above section.
 
-## Acknowledgements
+# Acknowledgements
 * [Graphstream](https://graphstream-project.org/)
 * [Commons CLI](https://commons.apache.org/proper/commons-cli/)
 * [JUnit 5](https://junit.org/junit5/docs/current/user-guide/#overview)
