@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# Testing script for running various permutations of example graphs with different input options.
+
 for FILE in src/test/java/softeng/project1/full_graph_tests/inputGraphs/*; do
   if [[ $FILE == *"output"* ]]; then
     continue
