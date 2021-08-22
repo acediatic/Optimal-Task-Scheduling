@@ -38,13 +38,12 @@ public class AStarIOHandler implements IOHandler {
 
     public AStarIOHandler(String inputFilePath, String outputFilePath, short numProcessors, String graphName, boolean isVisual) {
 
-        // TODO... sanitise inputs, check accessibility etc.
         try {
             this.inputFileStream = new FileInputStream(inputFilePath);
             outputPath = outputFilePath;
         } catch (FileNotFoundException e) {
             e.printStackTrace();
-            throw new RuntimeException(); // TODO... fix this
+            throw new RuntimeException();
         }
         this.numProcessors = numProcessors;
         this.nodeShortMap = new HashMap<>();
@@ -213,7 +212,7 @@ public class AStarIOHandler implements IOHandler {
             }
 
         } catch (IOException e) {
-            e.printStackTrace(); // TODO...
+            e.printStackTrace();
             throw new RuntimeException();
         }
 

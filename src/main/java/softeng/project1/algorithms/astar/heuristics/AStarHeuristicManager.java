@@ -37,8 +37,13 @@ public class AStarHeuristicManager implements HeuristicManager {
         return getAlgoStep(newFringeSchedule);
     }
 
-    // TODO describe heuristic
     /*
+     * The heuristic value chosen here is that described in the paper
+     * [here](https://www.sciencedirect.com/science/article/abs/pii/S0305054813002542?via%3Dihub)
+     *
+     * The heuristic is the maximum of the f-idle time, f-bl, and f-drt. For more information, please
+     * see Wiki.
+     *
      * f(s) = max{f_idle-time(s), f_bl(s), f_DRT(s)}
      */
     int calculateHeuristicValue(Schedule schedule) {

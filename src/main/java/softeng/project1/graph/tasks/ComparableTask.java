@@ -11,7 +11,8 @@ import java.util.stream.Collectors;
 
 /**
  * A utility class to make it easier to compare GraphStream nodes,
- * to determine equivalent nodes.
+ * to determine equivalent nodes. This is done by hashing the parent and children edge sets,
+ * and also by comparing their weights.
  */
 public class ComparableTask implements Comparable<ComparableTask> {
     private static final String PROCESSING_COST_ATTRIBUTE_KEY = "Weight";
@@ -20,7 +21,6 @@ public class ComparableTask implements Comparable<ComparableTask> {
     private final HashMap<Node, Integer> parentEdgeHashMap;
     private final HashMap<Node, Integer> childEdgeHashMap;
 
-    // TODO confirm the edge object is the same, and so can be used for equality comparison.
     public ComparableTask(Node task, int taskWeight) {
         this.task = task;
         this.taskWeight = taskWeight;
@@ -49,7 +49,6 @@ public class ComparableTask implements Comparable<ComparableTask> {
         return task;
     }
 
-    // TODO confirm this is all kosher.
     @Override
     public int compareTo(@NotNull ComparableTask o) {
         if (this.taskWeight != o.taskWeight) {

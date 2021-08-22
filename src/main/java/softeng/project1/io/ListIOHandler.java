@@ -32,7 +32,6 @@ public class ListIOHandler {
 
     /**
      * Writes graphObject out as DOT File
-     * TODO optimise this!
      */
 
     public void writeFile(Graph graph, String graphName, String outputFileName) {

@@ -56,7 +56,8 @@ public class OriginalProcessorsState extends ProcessorsState {
      */
     @Override
     public int hashCode() {
-        return 0; // TODO... fix comment
+        return 0;   // The hash code for the original schedule can be 0, as it is unique, and doesn't have to be
+                    // recalculated.
     }
 
     /**

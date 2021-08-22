@@ -22,7 +22,6 @@ public class ListSchedulingAlgorithmStep extends AlgorithmStep {
     public void run() {
     }
 
-    // TODO Remus, is this what I should return? or null?
     public List<Schedule> getFringeSchedules() {
         return new ArrayList<>();
     }

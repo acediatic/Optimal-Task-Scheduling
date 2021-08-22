@@ -64,8 +64,7 @@ public interface Processor {
     boolean deepEquals(Processor otherProcessor);
 
     /**
-     * TODO.... fix
-     * Returns the stored state data as a byte array for use in the generation of 
+     * Returns the stored state data as a byte array for use in the generation of
      * hash keys.
      * Casting ints > 255 to bytes may cause differing Processors to produce
      * similar byte arrays. 
