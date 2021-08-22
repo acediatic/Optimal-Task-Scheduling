@@ -56,6 +56,7 @@ This will generate a runnable jar called ```scheduler.jar```. Instructions for r
 # Acknowledgements
 * [Graphstream](https://graphstream-project.org/)
 * [Commons CLI](https://commons.apache.org/proper/commons-cli/)
+* [Sandeep Gupta - MurmurHash](https://github.com/sangupta/murmur)
 * [JUnit 5](https://junit.org/junit5/docs/current/user-guide/#overview)
 * [Maven Surefire Plugin](https://maven.apache.org/surefire/maven-surefire-plugin/#)
 * [Reducing the solution space of optimal task scheduling](https://www.sciencedirect.com/science/article/abs/pii/S0305054813002542?via%3Dihub)
