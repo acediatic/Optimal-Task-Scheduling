@@ -48,6 +48,7 @@ public final class App {
                 clp.getInputFileName(),
                 clp.getOutputFileName(),
                 clp.getNumProcessors(),
+                clp.getGraphName(),
                 clp.isVisual()
         );
 

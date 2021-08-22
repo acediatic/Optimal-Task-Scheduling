@@ -24,10 +24,11 @@ public class AStarIOHandler implements IOHandler {
     private static final int NUM_CHILD_LINK_DATA_FIELDS = 2;
     private static final String PROCESSING_COST_ATTRIBUTE_KEY = "Weight";
     private final InputStream inputFileStream;
-    private final OutputStream outputStream;
     private final short numProcessors; // Kinda cursed that this has to be here tbh
     private final Map<Node, Short> nodeShortMap;
     private final boolean isVisual;
+    private final String outputPath;
+    private final String graphName;
     private int sumTaskWeights = 0;
     private Graph graph;
     private Graph uneditedGraph;
@@ -35,18 +36,19 @@ public class AStarIOHandler implements IOHandler {
     private List<Node> sortedNodes;
     private List<String> editedEdges;
 
-    public AStarIOHandler(String inputFilePath, String outputFilePath, short numProcessors, boolean isVisual) {
+    public AStarIOHandler(String inputFilePath, String outputFilePath, short numProcessors, String graphName, boolean isVisual) {
 
         // TODO... sanitise inputs, check accessibility etc.
         try {
             this.inputFileStream = new FileInputStream(inputFilePath);
-            this.outputStream = new FileOutputStream(outputFilePath);
+            outputPath = outputFilePath;
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             throw new RuntimeException(); // TODO... fix this
         }
         this.numProcessors = numProcessors;
         this.nodeShortMap = new HashMap<>();
+        this.graphName = graphName;
         this.isVisual = isVisual;
     }
 
@@ -180,7 +182,36 @@ public class AStarIOHandler implements IOHandler {
         FileSinkDOT fileSink = new FileSinkDOT(true);
 
         try {
-            fileSink.writeAll(this.graph, this.outputStream);
+            String tempOutputName = outputPath.substring(0, outputPath.length() - 4) + "tempOutput.dot";
+            FileOutputStream outputStream = new FileOutputStream(tempOutputName);
+            fileSink.writeAll(this.graph, outputStream);
+
+            // setup new file with correct name, and reader on temp file with graph info.
+            File oldOutput = new File(tempOutputName);
+            File newOutput = new File(outputPath);
+            BufferedReader reader = new BufferedReader(new FileReader(oldOutput));
+            BufferedWriter output = new BufferedWriter(new FileWriter(newOutput));
+
+            // burn first line, to replace.
+            reader.readLine();
+
+            // Add new first line (name is surrounded in quotation marks)
+            output.write("digraph \"" + graphName + "-output\" {\n");
+
+            // replace rest of file
+            String line;
+            while ((line = reader.readLine()) != null) {
+                output.append(line);
+                output.append('\n');
+            }
+            output.close();
+            reader.close();
+
+            // delete original (temp) file
+            if (!oldOutput.delete()) {
+                throw new IOException();
+            }
+
         } catch (IOException e) {
             e.printStackTrace(); // TODO...
             throw new RuntimeException();

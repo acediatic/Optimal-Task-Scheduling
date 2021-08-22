@@ -30,6 +30,7 @@ class AStarIOHandlerTest {
                 "src/test/resources/testGraph.dot",
                 "src/test/resources/testGraphOut.dot",
                 (short) 2,
+                "compare1",
                 false
         );
         //code from for second read
@@ -37,6 +38,7 @@ class AStarIOHandlerTest {
                 "src/test/resources/testGraph2.dot",
                 "src/test/resources/testGraph2Out.dot",
                 (short) 2,
+                "compare2",
                 false
         );
         assertNotEquals(B1.readFile(), B2.readFile());
@@ -50,6 +52,7 @@ class AStarIOHandlerTest {
                 "src/test/resources/testGraph.dot",
                 "src/test/resources/testGraphOut.dot",
                 (short) 2,
+                "output1",
                 false
         );
         Schedule originalSchedule = Write1.readFile();
