@@ -106,6 +106,11 @@ public class OriginalScheduleStateTest {
         assertEquals(p2.toString(), o3.getHashKey().toString());
     }
 
+    /**
+     * Tested against String value so that in case there are any internal issues
+     * in the classes used within this class, it doesn't affect this test - also
+     * if a comparison object is made incorrectly the String avoids that.
+     */
     @Test
     public void testExpand() {
         assertNull(o4.expand());
