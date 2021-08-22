@@ -118,6 +118,7 @@ public final class App {
             List<int[]> optimalSchedule = algorithm.generateSchedule();
             if (optimalSchedule != null) {
                 success.apply(optimalSchedule);
+                System.out.printf("Time Taken: %dms", (System.nanoTime() - startTime) / 1000000);
                 System.exit(0);
             } else {
                 failure.apply(null);
