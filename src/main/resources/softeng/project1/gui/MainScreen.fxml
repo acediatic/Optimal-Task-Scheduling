@@ -1,128 +1,139 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.scene.chart.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="688.0"
-            prefWidth="1280.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="softeng.project1.gui.GuiController">
-   <VBox id="InputContainer" fx:id="InputContainer" layoutX="55.0" layoutY="158.0" prefHeight="353.0" prefWidth="505.0"
-         style="-fx-border-color: black;"/>
-   <Label id="InputLabel" layoutX="260.0" layoutY="130.0" text="Input Graph">
-      <font>
-         <Font size="18.0"/>
-      </font>
-   </Label>
-   <Label id="ScheduleLabel" layoutX="843.0" layoutY="130.0" text="Current Best Schedule">
-      <font>
-         <Font size="18.0"/>
-      </font>
-   </Label>
-   <Label id="TimerLabel" layoutX="605.0" layoutY="57.0" text="Time Elapsed">
-      <font>
-         <Font size="18.0"/>
-      </font>
-   </Label>
-   <Label fx:id="TimerText" layoutX="550.0" layoutY="84.0" prefHeight="59.0" prefWidth="215.0" textAlignment="CENTER">
-      <font>
-         <Font size="34.0"/>
-      </font>
-   </Label>
-   <StackedBarChart id="Schedule" fx:id="schedule" horizontalGridLinesVisible="false" layoutX="754.0" layoutY="21.0"
-                    legendSide="TOP" prefHeight="628.0" prefWidth="352.0" rotate="90.0"
-                    style="-fx-border-color: black;">
-      <xAxis>
-         <CategoryAxis fx:id="processors" label="Processor #" side="BOTTOM"/>
-      </xAxis>
-      <yAxis>
-         <NumberAxis label="Start Time" side="LEFT"/>
-      </yAxis>
-   </StackedBarChart>
-   <Label layoutX="535.0" layoutY="1.0" text="Task Scheduler ">
-      <font>
-         <Font size="39.0"/>
-      </font>
-   </Label>
-   <VBox alignment="TOP_CENTER" layoutX="780.0" layoutY="524.0" prefHeight="154.0" prefWidth="302.0">
-      <Label text="Status:">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="688.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="softeng.project1.gui.GuiController">
+   <children>
+      <VBox id="InputContainer" fx:id="InputContainer" layoutX="55.0" layoutY="158.0" prefHeight="353.0" prefWidth="505.0" style="-fx-border-color: black;" />
+      <Label id="InputLabel" layoutX="260.0" layoutY="130.0" text="Input Graph">
          <font>
-            <Font size="30.0"/>
+            <Font size="18.0" />
          </font>
       </Label>
-      <Label fx:id="scheduleStatusLabel" text="SCHEDULING" textFill="RED">
+      <Label id="ScheduleLabel" layoutX="843.0" layoutY="130.0" text="Current Best Schedule">
          <font>
-            <Font size="30.0"/>
+            <Font size="18.0" />
          </font>
       </Label>
-      <HBox alignment="TOP_CENTER" prefHeight="46.0" prefWidth="259.0">
-         <Label prefHeight="44.0" prefWidth="215.0" text="Optimal Schedule Length : ">
-            <font>
-               <Font size="18.0"/>
-            </font>
-         </Label>
-         <Label fx:id="optimalLengthLabel" prefHeight="46.0" prefWidth="36.0" text="0">
-            <font>
-               <Font size="18.0"/>
-            </font>
-         </Label>
-      </HBox>
-   </VBox>
-   <VBox layoutX="55.0" layoutY="530.0" prefHeight="137.0" prefWidth="347.0">
-      <HBox prefHeight="30.0" prefWidth="298.0">
-         <Label text="Number of Tasks : ">
-            <font>
-               <Font size="18.0"/>
-            </font>
-         </Label>
-         <Label fx:id="numTasksLabel" text="0">
-            <font>
-               <Font size="18.0"/>
-            </font>
-         </Label>
-      </HBox>
-      <HBox prefHeight="37.0" prefWidth="298.0">
-         <Label prefHeight="36.0" prefWidth="197.0" text="Number of Processors : ">
-            <font>
-               <Font size="18.0"/>
-            </font>
-         </Label>
-         <Label fx:id="numProcessorsLabel" prefHeight="64.0" prefWidth="48.0" text="0">
-            <font>
-               <Font size="18.0"/>
-            </font>
-         </Label>
-      </HBox>
-      <HBox prefHeight="37.0" prefWidth="298.0">
-         <Label prefHeight="51.0" prefWidth="199.0" text="Number of Cores Used : ">
-            <font>
-               <Font size="18.0"/>
-            </font>
-         </Label>
-         <Label fx:id="numCoresLabel" prefHeight="64.0" prefWidth="48.0" text="0">
-            <font>
-               <Font size="18.0"/>
-            </font>
-         </Label>
-      </HBox>
-      <HBox prefHeight="37.0" prefWidth="298.0">
-         <Label prefHeight="36.0" prefWidth="299.0" text="Current Estimated Schedule Length : ">
-            <font>
-               <Font size="18.0"/>
-            </font>
-         </Label>
-         <Label fx:id="scheduleLengthLabel" prefHeight="64.0" prefWidth="48.0" text="0">
-            <font>
-               <Font size="18.0"/>
-            </font>
-         </Label>
-      </HBox>
-   </VBox>
-   <Button fx:id="startScheduleButton" layoutX="533.0" layoutY="581.0" mnemonicParsing="false" onAction="#startSchedule"
-           text="Start Scheduler">
-      <font>
-         <Font size="18.0"/>
-      </font>
-   </Button>
+      <Label id="TimerLabel" layoutX="605.0" layoutY="57.0" text="Time Elapsed">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <Label fx:id="TimerText" alignment="TOP_CENTER" contentDisplay="CENTER" layoutX="562.0" layoutY="84.0" prefHeight="59.0" prefWidth="215.0" textAlignment="CENTER">
+         <font>
+            <Font size="34.0" />
+         </font>
+      </Label>
+      <StackedBarChart id="Schedule" fx:id="schedule" horizontalGridLinesVisible="false" layoutX="754.0" layoutY="21.0" legendSide="TOP" prefHeight="628.0" prefWidth="352.0" rotate="90.0" style="-fx-border-color: black;">
+         <xAxis>
+            <CategoryAxis fx:id="processors" label="Processor #" side="BOTTOM" />
+         </xAxis>
+         <yAxis>
+            <NumberAxis label="Start Time" side="LEFT" />
+         </yAxis>
+      </StackedBarChart>
+      <Label layoutX="535.0" layoutY="1.0" text="Task Scheduler ">
+         <font>
+            <Font size="39.0" />
+         </font>
+      </Label>
+      <VBox alignment="TOP_CENTER" layoutX="780.0" layoutY="524.0" prefHeight="154.0" prefWidth="302.0">
+         <children>
+            <Label text="Status:">
+               <font>
+                  <Font size="30.0" />
+               </font>
+            </Label>
+            <Label fx:id="scheduleStatusLabel" text="SCHEDULING" textFill="RED">
+               <font>
+                  <Font size="30.0" />
+               </font>
+            </Label>
+            <HBox alignment="TOP_CENTER" prefHeight="46.0" prefWidth="259.0">
+               <children>
+                  <Label prefHeight="44.0" prefWidth="234.0" text="Optimal Schedule Length : ">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="optimalLengthLabel" prefHeight="46.0" prefWidth="36.0" text="0">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+      <VBox layoutX="55.0" layoutY="530.0" prefHeight="137.0" prefWidth="347.0">
+         <children>
+            <HBox prefHeight="30.0" prefWidth="298.0">
+               <children>
+                  <Label prefHeight="27.0" prefWidth="163.0" text="Number of Tasks : ">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="numTasksLabel" text="0">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+               </children>
+            </HBox>
+            <HBox prefHeight="37.0" prefWidth="298.0">
+               <children>
+                  <Label prefHeight="36.0" prefWidth="207.0" text="Number of Processors : ">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="numProcessorsLabel" prefHeight="64.0" prefWidth="48.0" text="0">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+               </children>
+            </HBox>
+            <HBox prefHeight="37.0" prefWidth="298.0">
+               <children>
+                  <Label prefHeight="36.0" prefWidth="212.0" text="Number of Cores Used : ">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="numCoresLabel" prefHeight="64.0" prefWidth="48.0" text="0">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+               </children>
+            </HBox>
+            <HBox prefHeight="37.0" prefWidth="298.0">
+               <children>
+                  <Label prefHeight="36.0" prefWidth="310.0" text="Current Estimated Schedule Length : ">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="scheduleLengthLabel" prefHeight="64.0" prefWidth="48.0" text="0">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+      <Button fx:id="startScheduleButton" layoutX="533.0" layoutY="581.0" mnemonicParsing="false" onAction="#startSchedule" prefHeight="39.0" prefWidth="156.0" text="Start Scheduler">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Button>
+   </children>
 </AnchorPane>
