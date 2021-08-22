@@ -22,7 +22,9 @@ import org.graphstream.ui.fx_viewer.FxViewer;
 import org.graphstream.ui.javafx.FxGraphRenderer;
 import org.graphstream.ui.view.Viewer;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class GuiController {
 
@@ -138,7 +140,9 @@ public class GuiController {
      * @param data GuiData object which provides data fetched from algorithm
      */
     public void updateView(GuiData data) {
-        updateScheduleView(data.getCurrentBestScheduleArray());
+        if (data.getCurrentBestScheduleArray() != null) {
+            updateScheduleView(data.getCurrentBestScheduleArray());
+        }
         updateScheduleLength(data.getHeuristic());
         updateSchedulesChecked(data.getNumSchedulesChecked());
     }
