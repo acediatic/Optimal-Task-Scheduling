@@ -46,7 +46,8 @@ Initially the scheduler shows the graph along with some other information such a
 
 <img src="./readme_images/not_started.jpg">
 
-After the Scheduler is started it will stop once it has found the optimal schedule. During the running period the schedule can be seen changing along with the values of the estimate length and schedules checked. 
+Click `Start Scheduler` to start the scheduler.
+Once the Scheduler has started, it will stop when it has found the optimal schedule. During the running period the schedule can be seen changing along with the values of the estimate length and schedules checked. 
 Once it is done, we can see the final estimated length, the number of schedules checked, the optimal schedule length, as well as the optimal schedule.
 
 <img src="./readme_images/scheduled.jpg">
