@@ -36,7 +36,10 @@ OPTIONAL ARGUMENTS:
 Once the program has completed execution, the output file will be generated in the same folder
 
 # Scheduler Display
+
 <img src="./readme_images/not_started.jpg">
+
+<img src="./readme_images/scheduled.jpg">
 
 # Building and Compiling
 The project has been built for Java 1.8, check your current java version before running the code using:
