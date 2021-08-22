@@ -44,7 +44,7 @@ java -jar scheduler.jar INPUT.dot P [OPTION] -v
 
 Initially the scheduler shows the graph along with some other information such as number of tasks, processors and cores used. However, some values are 0 and no schedule is shown until the scheduler is started.
 
-<img src="./readme_images/not_started.jpg">
+<img src="./readme_images/not_started.png">
 
 Click `Start Scheduler` to start the scheduler.
 Once the Scheduler has started, it will stop when it has found the optimal schedule. During the running period the schedule can be seen changing along with the values of the estimate length and schedules checked. 
