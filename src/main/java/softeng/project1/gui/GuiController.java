@@ -22,9 +22,7 @@ import org.graphstream.ui.fx_viewer.FxViewer;
 import org.graphstream.ui.javafx.FxGraphRenderer;
 import org.graphstream.ui.view.Viewer;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class GuiController {
 
@@ -184,12 +182,16 @@ public class GuiController {
 
         //Iterate through each processor, then schedule tasks or add idle time as needed
         for (int i = 0; i < numProcessors; i++) {
-            Collections.sort(processorStartTimes.get(i)); //Sorts processor's tasks by start time
-            List<Integer> currentProcessorStartTimes = processorStartTimes.get(i);
+            List<Integer> currentProcessorStartTimes = processorStartTimes.get(i); //Regular Indexed
 
-            for (int j = 0; j < currentProcessorStartTimes.size(); j++) {
+            //Sorts processor's tasks by start time
+            List<Integer> sortedStartTimes = new ArrayList<>(currentProcessorStartTimes);
+            Collections.sort(sortedStartTimes);
+
+            //Processes tasks in order of startTime
+            for (int j = 0; j < sortedStartTimes.size(); j++) {
                 //Gets current Task from processor
-                int taskStartTime = currentProcessorStartTimes.get(j);
+                int taskStartTime = sortedStartTimes.get(j);
                 int currentTaskIndex = currentProcessorStartTimes.indexOf(taskStartTime);
                 int[] currentTask = processorTasks.get(i).get(currentTaskIndex);
 
@@ -202,7 +204,7 @@ public class GuiController {
                 //Add idle block if there is any before current task
                 try {
                     //Get details of previous task
-                    int prevTaskStartTime = currentProcessorStartTimes.get(j - 1);
+                    int prevTaskStartTime = sortedStartTimes.get(j - 1);
                     int prevTaskIndex = currentProcessorStartTimes.indexOf(prevTaskStartTime);
                     int[] prevTask = processorTasks.get(i).get(prevTaskIndex);
                     int prevTaskCompletionTime = prevTask[2] + prevTask[3];
