@@ -1,5 +1,9 @@
 package softeng.project1.common;
 
+/**
+ * A utility class containing the commonly used error messages in the command line processor.
+ * This cleans the code up, and allows changing of multiple messages in one place.
+ */
 public enum SchedulerErrorMessages {
     CLINoArgs("Error: No arguments detected, please provide the file path for the input graph and an integer > 0 representing the number of available processors"),
     CLINoProcessorArg("Error: Missing Input, please provide the file path for the input graph and an integer > 0 representing the number of available processors"),

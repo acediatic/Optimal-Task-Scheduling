@@ -26,6 +26,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * The JavaFX controller for the visualisation GUI.
+ */
 public class GuiController {
 
     @FXML

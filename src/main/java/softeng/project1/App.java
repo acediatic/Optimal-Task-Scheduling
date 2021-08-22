@@ -31,8 +31,9 @@ public final class App {
         long startTime = System.nanoTime();
 
         System.setProperty("org.graphstream.ui", "javafx");
-        CommandLineProcessor clp = new CommandLineProcessor(args);
 
+        // reads in command line arguments and displays in console
+        CommandLineProcessor clp = new CommandLineProcessor(args);
         String runInformation = "***** Outsourced to Pakistan - Scheduling Algorithm *****\n" +
                 String.format("- Creating schedule for input graph from file: %s\n", clp.getInputFileName()) +
                 String.format("- Number of Processors Available for Tasks: %o\n", clp.getNumProcessors()) +
@@ -76,6 +77,7 @@ public final class App {
             );
         }
 
+        // a function for if the search was successful
         Function<List<int[]>, Void> success =
                 optimalSchedule -> {
                     String result = ioHandler.writeFile(optimalSchedule);
@@ -84,12 +86,15 @@ public final class App {
                     return null;
                 };
 
+        // a function for if the search was unsuccessful
         Function<Void, Void> failure = o -> {
             System.err.println("Worker error");
             return null;
         };
 
         if (clp.isVisual()) {
+            // VISUALISATION ON
+            // create service to run algorithm
             AlgorithmService algorithmRunner = new AlgorithmService();
             algorithmRunner.setAlgorithm(algorithm);
             algorithmRunner.setOnSucceeded(t -> {
@@ -115,8 +120,10 @@ public final class App {
             AlgorithmDataCache dataCache = new AlgorithmDataCache(algorithm);
             GuiMain.setupGui(clp.getNumProcessors(), clp.getNumThreads(), inputGraph, dataCache,
                     ioHandler.getListSortedNodes(), algorithmRunner, clp.getGraphName());
+            // run GUI
             GuiMain.main(args);
         } else {
+            // VISUALISATION OFF
             List<int[]> optimalSchedule = algorithm.generateSchedule();
             if (optimalSchedule != null) {
                 success.apply(optimalSchedule);

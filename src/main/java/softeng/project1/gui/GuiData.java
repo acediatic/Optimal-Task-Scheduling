@@ -5,12 +5,15 @@ import softeng.project1.algorithms.astar.heuristics.AlgorithmStep;
 
 import java.util.List;
 
+/**
+ * A class to store data used by the GUI to display the visualisation
+ */
 public class GuiData {
 
-    private final List<int[]> currentBest;
-    private final int currentHeuristic;
-    private final AlgorithmState state;
-    private final int numSchedulesChecked;
+    private final List<int[]> currentBest;  // the current best schedule (partial or optimal)
+    private final int currentHeuristic;     // the heuristc value of the corresponding schedule
+    private final AlgorithmState state;     // the AlgorithmState for the corresponding schedule
+    private final int numSchedulesChecked;  // the approximate number of states checked so far.
 
     public GuiData(AlgorithmStep step, AlgorithmState state, int numSchedulesChecked) {
 
