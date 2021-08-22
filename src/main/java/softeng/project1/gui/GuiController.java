@@ -62,6 +62,9 @@ public class GuiController {
     @FXML
     private Label scheduleLengthLabel;
 
+    @FXML
+    private Label inputFileName;
+
     private Timeline timeline;
 
     private int numProcessors;
@@ -86,7 +89,7 @@ public class GuiController {
      * @param g The input graph
      * @param taskNames List of names for each node in input graph
      */
-    public void setup(int numProcessors, int numCores, Graph g, List<Node> taskNames) {
+    public void setup(int numProcessors, int numCores, Graph g, List<Node> taskNames, String inputFileName) {
         //Setup fields
         this.numProcessors = numProcessors;
         this.taskNames = taskNames;
@@ -95,6 +98,7 @@ public class GuiController {
         updateNumProcessors(numProcessors);
         updateNumCores(numCores);
         updateNumTasks(taskNames.size());
+        updateInputFileName("Input: " + inputFileName);
 
         //Setup requirements for schedule display
         List<String> processorNums = new ArrayList<>();
@@ -304,6 +308,10 @@ public class GuiController {
      */
     public void updateScheduleLength(int scheduleLength) {
         scheduleLengthLabel.setText(Integer.toString(scheduleLength));
+    }
+
+    public void updateInputFileName(String fileName){
+        inputFileName.setText(fileName);
     }
 
     /**

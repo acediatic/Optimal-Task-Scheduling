@@ -6,30 +6,30 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="688.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="softeng.project1.gui.GuiController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="757.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="softeng.project1.gui.GuiController">
    <children>
-      <VBox id="InputContainer" fx:id="InputContainer" layoutX="55.0" layoutY="158.0" prefHeight="353.0" prefWidth="505.0" style="-fx-border-color: black;" />
-      <Label id="InputLabel" layoutX="260.0" layoutY="130.0" text="Input Graph">
+      <VBox id="InputContainer" fx:id="InputContainer" layoutX="53.0" layoutY="217.0" prefHeight="353.0" prefWidth="505.0" style="-fx-border-color: black;" />
+      <Label id="InputLabel" layoutX="258.0" layoutY="189.0" text="Input Graph">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <Label id="ScheduleLabel" layoutX="843.0" layoutY="130.0" text="Current Best Schedule">
+      <Label id="ScheduleLabel" layoutX="841.0" layoutY="189.0" text="Current Best Schedule">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <Label id="TimerLabel" layoutX="605.0" layoutY="57.0" text="Time Elapsed">
+      <Label id="TimerLabel" layoutX="603.0" layoutY="116.0" text="Time Elapsed">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <Label fx:id="TimerText" alignment="TOP_CENTER" contentDisplay="CENTER" layoutX="562.0" layoutY="84.0" prefHeight="59.0" prefWidth="215.0" textAlignment="CENTER">
+      <Label fx:id="TimerText" alignment="TOP_CENTER" contentDisplay="CENTER" layoutX="560.0" layoutY="143.0" prefHeight="59.0" prefWidth="215.0" textAlignment="CENTER">
          <font>
             <Font size="34.0" />
          </font>
       </Label>
-      <StackedBarChart id="Schedule" fx:id="schedule" horizontalGridLinesVisible="false" layoutX="754.0" layoutY="21.0" legendSide="TOP" prefHeight="628.0" prefWidth="352.0" rotate="90.0" style="-fx-border-color: black;">
+      <StackedBarChart id="Schedule" fx:id="schedule" horizontalGridLinesVisible="false" layoutX="752.0" layoutY="80.0" legendSide="TOP" prefHeight="628.0" prefWidth="352.0" rotate="90.0" style="-fx-border-color: black;">
          <xAxis>
             <CategoryAxis fx:id="processors" label="Processor #" side="BOTTOM" />
          </xAxis>
@@ -37,12 +37,12 @@
             <NumberAxis label="Start Time" side="LEFT" />
          </yAxis>
       </StackedBarChart>
-      <Label layoutX="535.0" layoutY="1.0" text="Task Scheduler ">
+      <Label layoutX="534.0" layoutY="14.0" text="Task Scheduler ">
          <font>
             <Font size="39.0" />
          </font>
       </Label>
-      <VBox alignment="TOP_CENTER" layoutX="780.0" layoutY="524.0" prefHeight="154.0" prefWidth="302.0">
+      <VBox alignment="TOP_CENTER" layoutX="778.0" layoutY="583.0" prefHeight="154.0" prefWidth="302.0">
          <children>
             <Label text="Status:">
                <font>
@@ -70,7 +70,7 @@
             </HBox>
          </children>
       </VBox>
-      <VBox layoutX="55.0" layoutY="530.0" prefHeight="137.0" prefWidth="347.0">
+      <VBox layoutX="53.0" layoutY="589.0" prefHeight="137.0" prefWidth="347.0">
          <children>
             <HBox prefHeight="30.0" prefWidth="298.0">
                <children>
@@ -130,10 +130,15 @@
             </HBox>
          </children>
       </VBox>
-      <Button fx:id="startScheduleButton" layoutX="533.0" layoutY="581.0" mnemonicParsing="false" onAction="#startSchedule" prefHeight="39.0" prefWidth="156.0" text="Start Scheduler">
+      <Button fx:id="startScheduleButton" layoutX="531.0" layoutY="640.0" mnemonicParsing="false" onAction="#startSchedule" prefHeight="39.0" prefWidth="156.0" text="Start Scheduler">
          <font>
             <Font size="16.0" />
          </font>
       </Button>
+      <Label fx:id="inputFileName" alignment="TOP_CENTER" layoutX="406.0" layoutY="70.0" prefHeight="25.0" prefWidth="562.0">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>

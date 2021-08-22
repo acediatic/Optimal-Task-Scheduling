@@ -112,7 +112,8 @@ public final class App {
             inputGraph.edges().forEach(e -> e.setAttribute("ui.label", e.getAttribute("Weight")));
 
             AlgorithmDataCache dataCache = new AlgorithmDataCache(algorithm);
-            GuiMain.setupGui(clp.getNumProcessors(), clp.getNumThreads(), inputGraph, dataCache, ioHandler.getListSortedNodes(), algorithmRunner);
+            GuiMain.setupGui(clp.getNumProcessors(), clp.getNumThreads(), inputGraph, dataCache,
+                    ioHandler.getListSortedNodes(), algorithmRunner, clp.getGraphName());
             GuiMain.main(args);
         } else {
             List<int[]> optimalSchedule = algorithm.generateSchedule();

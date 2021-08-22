@@ -25,6 +25,7 @@ public class GuiMain extends Application {
     private static AlgorithmDataCache dataCache;
     private static AlgorithmService algorithmRunner;
     private static List<Node> taskNames;
+    private static String inputFileName;
 
     public static void main(String[] args) {
         launch(args);
@@ -59,15 +60,17 @@ public class GuiMain extends Application {
      * @param cache The data cache which polls for data from the algorithm
      * @param names The list of names/IDs for each node in input graph
      * @param algorithmService The Service which runs the algorithm in a background thread
+     * @param fileName The name of the input file
      */
     public static void setupGui(int processors, int cores, Graph graph, AlgorithmDataCache cache,
-                                List<Node> names, AlgorithmService algorithmService) {
+                                List<Node> names, AlgorithmService algorithmService, String fileName) {
         numProcessors = processors;
         inputGraph = graph;
         taskNames = names;
         numCores = cores;
         dataCache = cache;
         algorithmRunner = algorithmService;
+        inputFileName = fileName;
     }
 
     @Override
@@ -81,7 +84,7 @@ public class GuiMain extends Application {
 
         //Sets up fields for the GuiController
         guiController = loader.getController();
-        guiController.setup(numProcessors, numCores, inputGraph, taskNames);
+        guiController.setup(numProcessors, numCores, inputGraph, taskNames, inputFileName);
 
         primaryStage.setTitle("Task Scheduler");
         primaryStage.setScene(scene);
