@@ -123,7 +123,8 @@ public class CommandLineProcessor {
             String rawGraphLine = fr.readLine();
             graphName = rawGraphLine.substring(rawGraphLine.indexOf('"') + 1, rawGraphLine.lastIndexOf('"'));
 
-        } catch (IOException e) { // TODO... print error message
+        } catch (IOException e) {
+            System.out.println("Unable to load from provided filename");
             e.printStackTrace();
         }
     }

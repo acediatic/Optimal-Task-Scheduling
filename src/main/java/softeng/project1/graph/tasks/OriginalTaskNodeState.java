@@ -32,7 +32,8 @@ public class OriginalTaskNodeState extends TaskNodeState {
     private final int[][] childLinks; // Array of arrays representing outgoing edges, don't expose this directly
     private final int maxCommunicationCost; // Most expensive communication cost in the childLinks set
     // If there are no child links then this = 0
-    private final int bottomLevel; // TODO... remember what bottom level is
+    private final int bottomLevel;  // the sum of task weights for this node, and all other nodes on the critical path
+    // from this node to the exit node.
 
     /**
      * Standard constructor for OriginalTaskNodeState objects.
@@ -54,7 +55,8 @@ public class OriginalTaskNodeState extends TaskNodeState {
      *                      childLink[0] -> child TaskNode's task ID.
      *                      childLink[1] -> communication cost of transferring data from this task once finished to a
      *                      different processor and then preparing it for use by the child task.
-     * @param bottomLevel   : TODO...
+     * @param bottomLevel   : The sum of task weights for this node, and all other nodes on the critical path
+     *                      from this node to the exit node.
      * @param numProcessors : The number of processors available for the task to possibly be scheduled on.
      */
     public OriginalTaskNodeState(short taskID, int taskCost, int numLinks, int[][] childLinks, int bottomLevel, int numProcessors) {
@@ -139,7 +141,9 @@ public class OriginalTaskNodeState extends TaskNodeState {
     }
 
     /**
-     * @return : // TODO... Remember what bottom level is
+     * The sum of task weights of this node, and all other nodes on the critical path from this node to the exit node.
+     *
+     * @return : the bottom level for this node
      */
     @Override
     public int getBottomLevel() {

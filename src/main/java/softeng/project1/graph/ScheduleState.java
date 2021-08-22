@@ -96,7 +96,7 @@ public abstract class ScheduleState implements Schedule {
 
         // Check if we have found the optimal solution
         if (this.freeNodes.size() == 0) {
-            return null; // TODO... Find a better way of indicating success than passing null
+            return null;
         }
 
         // Initialising empty array here for speed reasons
@@ -107,7 +107,6 @@ public abstract class ScheduleState implements Schedule {
         for (TaskNode freeTask : this.freeNodes.values()) {
 
             // Iterating through all processors
-            // TODO... Prune unnecessary processor additions
             for (int processorID = 0; processorID < processors.getNumProcessors(); processorID++) {
 
                 // Inserting task into processor and getting new objects
@@ -240,9 +239,6 @@ public abstract class ScheduleState implements Schedule {
      */
     public abstract TaskNode getTaskNode(short taskID);
 
-    /**
-     * TODO...
-     */
     protected abstract Map<Short, TaskNode> copyFreeNodesHook();
 
     protected abstract Map<Short, TaskNode> copyTaskNodesHook();

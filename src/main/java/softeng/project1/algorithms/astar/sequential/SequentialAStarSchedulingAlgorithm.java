@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class SequentialAStarSchedulingAlgorithm implements AStarSchedulingAlgorithm {
 
@@ -48,7 +47,6 @@ public class SequentialAStarSchedulingAlgorithm implements AStarSchedulingAlgori
         List<Schedule> fringeSchedules;
         AlgorithmStep step;
 
-        // TODO... Find a better way to indicate finish than null
         while ((fringeSchedules = (step = this.priorityQueue.poll()).takeStep()) != null) {
             this.priorityQueue.addAll(this.heuristicManager.getAlgorithmStepsFromSchedules(pruneExpandedSchedulesAndAddToMap(fringeSchedules)));
         }
@@ -65,9 +63,8 @@ public class SequentialAStarSchedulingAlgorithm implements AStarSchedulingAlgori
             if (!this.closedSchedules.containsKey(expandedSchedule.getHashKey())) {
                 this.closedSchedules.put(expandedSchedule.getHashKey(), expandedSchedule);
                 unexploredSchedules.add(expandedSchedule);
-            } else {
-                // TODO... ensure that our heuristic is consistent so we don't have to do anything here
             }
+            // As our heuristic is consistent, we do not have to do anything here, and can ignore the schedule.
         }
 
         return unexploredSchedules;
