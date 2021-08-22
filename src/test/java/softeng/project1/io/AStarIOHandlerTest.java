@@ -79,9 +79,7 @@ class AStarIOHandlerTest {
     void getSumWeights() {
     }
 
-    @Test
-    void getTaskName() {
-    }
+
 
     @Test
     void getGraph() {
