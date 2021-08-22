@@ -3,6 +3,7 @@ package softeng.project1;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 import softeng.project1.algorithms.SchedulingAlgorithm;
+import softeng.project1.algorithms.astar.AlgorithmService;
 import softeng.project1.algorithms.astar.heuristics.AStarHeuristicManager;
 import softeng.project1.algorithms.astar.heuristics.HeuristicManager;
 import softeng.project1.algorithms.astar.parallel.ParallelAStarSchedulingAlgorithm;
@@ -16,6 +17,7 @@ import softeng.project1.io.CommandLineProcessor;
 import java.util.HashMap;
 import java.util.List;
 import java.util.PriorityQueue;
+import java.util.function.Function;
 
 
 public final class App {
@@ -73,40 +75,54 @@ public final class App {
             );
         }
 
-        String graphStyle = "graph { fill-color: #86aff0; }" +
-                "node { size: 15px; text-color: white; text-size: 12px; }" +
-                "node:clicked {fill-color: red;}" +
-                "edge { text-mode: hidden; text-size: 12px; text-alignment: along; text-color: white; text-style: bold; text-background-mode: rounded-box; text-background-color: black; text-padding: 2px, 1px; text-offset: 0px, 2px; }";
+        Function<List<int[]>, Void> success =
+                optimalSchedule -> {
+                    String result = ioHandler.writeFile(optimalSchedule);
+                    System.out.println(result);
+                    System.out.println("Successfully created " + clp.getOutputFileName() + '\n');
+                    return null;
+                };
 
-        Graph inputGraph = ioHandler.getGraph();
-        inputGraph.setAttribute("ui.stylesheet", graphStyle);
-        for (Node n : inputGraph) {
-            n.setAttribute("ui.label", n.getId());
-        }
-
-        inputGraph.edges().forEach(e -> {
-            e.setAttribute("ui.label", e.getAttribute("Weight"));
-        });
-
-
-        List<int[]> optimalSchedule = algorithm.generateSchedule();
+        Function<Void, Void> failure = o -> {
+            System.err.println("Worker error");
+            return null;
+        };
 
         if (clp.isVisual()) {
+            AlgorithmService algorithmRunner = new AlgorithmService();
+            algorithmRunner.setAlgorithm(algorithm);
+            algorithmRunner.setOnSucceeded(t -> {
+                if (algorithmRunner.getValue() != null) {
+                    success.apply(algorithmRunner.getValue());
+                } else {
+                    failure.apply(null);
+                }
+            });
+            String graphStyle = "graph { fill-color: #86aff0; }" +
+                    "node { size: 15px; text-color: white; text-size: 12px; }" +
+                    "node:clicked {fill-color: red;}" +
+                    "edge { text-mode: hidden; text-size: 12px; text-alignment: along; text-color: white; text-style: bold; text-background-mode: rounded-box; text-background-color: black; text-padding: 2px, 1px; text-offset: 0px, 2px; }";
+
+            Graph inputGraph = ioHandler.getGraph();
+            inputGraph.setAttribute("ui.stylesheet", graphStyle);
+            for (Node n : inputGraph) {
+                n.setAttribute("ui.label", n.getId());
+            }
+
+            inputGraph.edges().forEach(e -> e.setAttribute("ui.label", e.getAttribute("Weight")));
+
             AlgorithmDataCache dataCache = new AlgorithmDataCache(algorithm);
-            GuiMain.setupGui(clp.getNumProcessors(), clp.getNumThreads(), optimalSchedule, inputGraph, ioHandler.getListSortedNodes());
+            GuiMain.setupGui(clp.getNumProcessors(), clp.getNumThreads(), inputGraph, dataCache, ioHandler.getListSortedNodes(), algorithmRunner);
             GuiMain.main(args);
-            System.out.println(optimalSchedule);
+        } else {
+            List<int[]> optimalSchedule = algorithm.generateSchedule();
+            if (optimalSchedule != null) {
+                success.apply(optimalSchedule);
+                System.exit(0);
+            } else {
+                failure.apply(null);
+                System.exit(1);
+            }
         }
-
-
-        String result = ioHandler.writeFile(optimalSchedule);
-        long endTime = System.nanoTime();
-        long duration = (endTime - startTime) / 1000000;  //divide by  to get milliseconds.
-
-        System.out.printf("Took: %d ms to complete.%n", duration);
-        System.out.println(result);
-
-        System.out.println("Successfully created " + clp.getOutputFileName() + '\n');
-
     }
 }

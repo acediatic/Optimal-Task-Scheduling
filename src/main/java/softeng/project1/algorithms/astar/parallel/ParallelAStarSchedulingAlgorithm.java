@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class ParallelAStarSchedulingAlgorithm extends ThreadPoolExecutor implements AStarSchedulingAlgorithm {
@@ -152,7 +151,7 @@ public class ParallelAStarSchedulingAlgorithm extends ThreadPoolExecutor impleme
         int maxLength;
         int endLocation;
 
-        for (AlgorithmStep step: this.optimalSchedules) {
+        for (AlgorithmStep step : this.optimalSchedules) {
 
             List<int[]> schedule = step.rebuildPath();
 

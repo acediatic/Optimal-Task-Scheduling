@@ -1,0 +1,16 @@
+.background {
+    -fx-background-color: radial-gradient(center 50% 50% , radius 100% , #ffebcd, #008080);
+    -fx-font-family: 'Work Sans', sans-serif;
+
+}
+
+.schedule {
+    -fx-background-color: white;
+    -fx-border-radius: 15px;
+    -fx-background-radius: 15px;
+}
+
+VBox {
+    -fx-border-color: black;
+}
+
