@@ -144,33 +144,37 @@ public class ParallelAStarSchedulingAlgorithm extends ThreadPoolExecutor impleme
     }
 
     private List<int[]> getBestStoredSchedule() {
+        try {
+            List<int[]> bestSchedule = null;
+            int bestScheduleLength = Integer.MAX_VALUE;
+            AlgorithmStep bestStep = this.optimalSchedules.get(0);
+            int maxLength;
+            int endLocation;
 
-        List<int[]> bestSchedule = null;
-        int bestScheduleLength = Integer.MAX_VALUE;
-        AlgorithmStep bestStep = this.optimalSchedules.get(0);
-        int maxLength;
-        int endLocation;
+            for (AlgorithmStep step : this.optimalSchedules) {
 
-        for (AlgorithmStep step : this.optimalSchedules) {
+                List<int[]> schedule = step.rebuildPath();
 
-            List<int[]> schedule = step.rebuildPath();
+                maxLength = 0;
+                for (int[] task : schedule) {
 
-            maxLength = 0;
-            for (int[] task : schedule) {
+                    endLocation = this.originalSchedule.getTaskNode((short) task[0]).getTaskCost() + task[2];
+                    if (endLocation > maxLength) {
+                        maxLength = endLocation;
+                    }
 
-                endLocation = this.originalSchedule.getTaskNode((short) task[0]).getTaskCost() + task[2];
-                if (endLocation > maxLength) {
-                    maxLength = endLocation;
                 }
+                if (maxLength < bestScheduleLength) {
+                    bestStep = step;
+                    bestScheduleLength = maxLength;
+                    bestSchedule = schedule;
+                }
+            }
+            this.bestScheduleStep = bestStep;
+            return bestSchedule;
 
-            }
-            if (maxLength < bestScheduleLength) {
-                bestStep = step;
-                bestScheduleLength = maxLength;
-                bestSchedule = schedule;
-            }
+        } catch (Exception e) {
+            return null;
         }
-        this.bestScheduleStep = bestStep;
-        return bestSchedule;
     }
 }
