@@ -56,18 +56,7 @@ public class OriginalProcessorsState extends ProcessorsState {
      */
     @Override
     public int hashCode() {
-
-        // We know that every Processor in originalProcessors is actually an OriginalProcessor,
-        // so only 3 bytes needed each
-        byte[] byteArrayForHash = new byte[3*this.processors.length];
-
-        for (int i = 0; i < this.processors.length; i++) {
-            // assuming that i passes its value not its reference
-            this.processors[i].asByteArray(i*3, byteArrayForHash);
-        }
-        // https://github.com/sangupta/murmur
-        // TODO... Find better method than casting to int
-        return (int) Murmur3.hash_x86_32(byteArrayForHash, byteArrayForHash.length, 0);
+        return 0; // TODO... fix comment
     }
 
     /**

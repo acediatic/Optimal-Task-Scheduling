@@ -29,15 +29,15 @@ class AStarIOHandlerTest {
         IOHandler B1 = new AStarIOHandler(
                 "src/test/resources/testGraph.dot",
                 "src/test/resources/testGraphOut.dot",
-                "Comp1",
-                (short) 2
+                (short) 2,
+                false
         );
         //code from for second read
         IOHandler B2 = new AStarIOHandler(
                 "src/test/resources/testGraph2.dot",
                 "src/test/resources/testGraph2Out.dot",
-                "Comp2",
-                (short) 2
+                (short) 2,
+                false
         );
         assertNotEquals(B1.readFile(), B2.readFile());
 
@@ -49,8 +49,8 @@ class AStarIOHandlerTest {
         IOHandler Write1 = new AStarIOHandler(
                 "src/test/resources/testGraph.dot",
                 "src/test/resources/testGraphOut.dot",
-                "Comp1",
-                (short) 2
+                (short) 2,
+                false
         );
         Schedule originalSchedule = Write1.readFile();
         //write schedule to string and then to text file
@@ -65,7 +65,7 @@ class AStarIOHandlerTest {
                 Write1.getListSchedulingAlgoStep()
         );
         List<int[]> PostAlgSchedule = algorithm.generateSchedule();
-        //task needs to be schduled otherwise write doesnt work
+        //task needs to be scheduled otherwise write doesn't work
         //Could replace PostAlgSchedule with a List<int[]> but so far unable to create one accepted by code
         String result = Write1.writeFile(PostAlgSchedule);
         //Read File A, then write this to file B, then readfile() on the writeFile and compare to pre calc'ed length

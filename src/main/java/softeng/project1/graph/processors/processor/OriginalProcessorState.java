@@ -83,17 +83,27 @@ public class OriginalProcessorState implements Processor {
     @Override
     public boolean deepEquals(Processor otherProcessor) {
         return this == otherProcessor; 
-    } 
+    }
+
 
     /**
-     * Simple implementation of the method described in Processor.
-     * Uses System.arraycopy to quickly copy the hard coded data into the 
-     * given byte array.
+     * Implementation of asByteArray from Processor.
+     * Iterates over every stored integer in the 2D array and inserts them into the byte array.
+     * Hashing collisions may occur if the start locations of some spaces grow larger then 255.
+     *
+     * @param arrayToFill : The array to store the values in.
+     * @return : The given array with all data from the ProcessorState added.
      */
     @Override
-    public byte[] asByteArray(int index, byte[] arrayToFill) {
-        // Doesn't expose array as data is copied
-        System.arraycopy(ORIGINAL_BYTE_DATA, 0, arrayToFill, index, ORIGINAL_BYTE_DATA.length);
+    public byte[] addToByteArray(byte[] arrayToFill) {
+
+        // Not currently checking if will fit
+        for (int i = 0; i < ORIGINAL_NUM_SPACES; i++) {
+            for (int value: ORIGINAL_BYTE_DATA) {
+                // casting to byte will have unintended consequences if value > 255, should be fine...
+                arrayToFill[i] = (byte)(arrayToFill[i] + value);
+            }
+        }
         return arrayToFill;
     }
 
@@ -143,6 +153,11 @@ public class OriginalProcessorState implements Processor {
     @Override
     public int getChangeInIdleTime() {
         return -1; // TODO... Should this throw an error?
+    }
+
+    @Override
+    public int getFirstTaskID() {
+        return -1; // TODO... Comment
     }
 
 

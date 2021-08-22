@@ -64,17 +64,17 @@ public interface Processor {
     boolean deepEquals(Processor otherProcessor);
 
     /**
+     * TODO.... fix
      * Returns the stored state data as a byte array for use in the generation of 
      * hash keys.
      * Casting ints > 255 to bytes may cause differing Processors to produce
      * similar byte arrays. 
      * 
-     * @param index : The location in the given array to start inserting the byte data.
-     * @param arrayToFill : The array in which the data for generating the hash key 
+     * @param arrayToFill : The array in which the data for generating the hash key
      *                      is being stored.
      * @return : The given array after it has had the Processor's data added to it.
      */
-    byte[] asByteArray(int index, byte[] arrayToFill);
+    byte[] addToByteArray(byte[] arrayToFill);
 
     // --------- Getter Methods ---------
 
@@ -109,4 +109,6 @@ public interface Processor {
      * @return : The increase/decrease in idle time that occurred after the insertion of the last inserted task.
      */
     int getChangeInIdleTime();
+
+    int getFirstTaskID();
 }

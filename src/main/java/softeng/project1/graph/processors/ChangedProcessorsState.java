@@ -1,14 +1,18 @@
 package softeng.project1.graph.processors;
 
 import com.sangupta.murmur.Murmur3;
-
 import softeng.project1.graph.processors.processor.Processor;
+
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Objects;
+import java.util.PriorityQueue;
 
 /**
  * @author Remus Courtenay
  * @version 1.0
  * @since 1.8
- *
+ * <p>
  * Implementation of ProcessorsState that specifically represents the state of a set of Processor objects where at least
  * one has been changed.
  */
@@ -19,12 +23,11 @@ public class ChangedProcessorsState extends ProcessorsState {
     /**
      * Protected constructor for use only by the copyAndAddProcessor method from Processors.
      * Direct instantiations should be used on OriginalProcessorsState objects only.
-     * @see OriginalProcessorsState
      *
-     * @param processors : The set of Processor objects representing the current state of each processor.
+     * @param processors         : The set of Processor objects representing the current state of each processor.
      * @param maxProcessorLength : The length of the longest stored Processor.
-     * @param idleTime : The sum total idle time of all stored Processor objects.
-     *
+     * @param idleTime           : The sum total idle time of all stored Processor objects.
+     * @see OriginalProcessorsState
      */
     protected ChangedProcessorsState(Processor[] processors, int maxProcessorLength, int idleTime) {
         super(processors, idleTime);
@@ -40,19 +43,19 @@ public class ChangedProcessorsState extends ProcessorsState {
      */
     @Override
     public int hashCode() {
-        
-        int numBytesNeeded = 0;
 
-        for (Processor processor: processors) {
-            // we multiply by 3 because each space has 3 values
-            numBytesNeeded = numBytesNeeded + processor.getNumSpaces()*3;
+        int maxNumSpaces = 0;
+
+        for (Processor processor : this.processors) {
+            if (processor.getNumSpaces() > maxNumSpaces) {
+                maxNumSpaces = processor.getNumSpaces();
+            }
         }
-        // Kind of dirty to do this with two loops
-        byte[] byteArrayForHash = new byte[numBytesNeeded];
-        int index = 0;
-        for (Processor processor: processors) {
-            processor.asByteArray(index, byteArrayForHash);
-            index = index + processor.getNumSpaces()*3;
+
+        // Multiply by three because each space has three
+        byte[] byteArrayForHash = new byte[maxNumSpaces * 3];
+        for (Processor processor : processors) {
+            processor.addToByteArray(byteArrayForHash);
         }
         // https://github.com/sangupta/murmur
         // TODO... find nicer way to do this than int casting
@@ -68,21 +71,38 @@ public class ChangedProcessorsState extends ProcessorsState {
      * @param otherObject : The other Processor set being equated to this one.
      * @return : Whether or not each Processors object store the same values in the same order.
      */
-    @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
     @Override
     public boolean equals(Object otherObject) {
-        Processors otherProcessors;
-        try {
-            otherProcessors = (Processors) otherObject;
-        } catch (ClassCastException e) {
+        ChangedProcessorsState otherProcessors;
+
+        if (otherObject.getClass() != ChangedProcessorsState.class) {
             return false;
+        } else {
+            // Will never be equal to OriginalProcessorsState so can cast to ChangedProcessor instead of Processor
+            otherProcessors = (ChangedProcessorsState) otherObject;
         }
+
+        PriorityQueue<Processor> sortedProcessors = getSortedProcessors();
+        PriorityQueue<Processor> otherSortedProcessors = otherProcessors.getSortedProcessors();
+
         for (int i = 0; i < processors.length; i++) {
-            if (!otherProcessors.getProcessor(i).deepEquals(processors[i])) {
+            if (!Objects.requireNonNull(sortedProcessors.poll()).deepEquals(otherSortedProcessors.poll())) {
                 return false;
             }
         }
         return true;
+    }
+
+
+    PriorityQueue<Processor> getSortedProcessors() {
+
+        PriorityQueue<Processor> sortedProcessors = new PriorityQueue<>(this.processors.length, Comparator.comparingInt(Processor::getFirstTaskID));
+
+        sortedProcessors.addAll(Arrays.asList(this.processors));
+
+        return sortedProcessors;
+
+
     }
 
     /**

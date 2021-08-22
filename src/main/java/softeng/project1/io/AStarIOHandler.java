@@ -23,28 +23,31 @@ public class AStarIOHandler implements IOHandler {
     private static final int NUM_CHILD_LINK_DATA_FIELDS = 2;
     private static final String PROCESSING_COST_ATTRIBUTE_KEY = "Weight";
     private final InputStream inputFileStream;
+    private final InputStream inputFileStream2;
     private final OutputStream outputStream;
     private final short numProcessors; // Kinda cursed that this has to be here tbh
-    private final String graphName;
     private int sumTaskWeights = 0;
     private Graph graph;
+    private Graph uneditedGraph;
     private AlgorithmStep listScheduleAlgoStep;
     private List<Node> sortedNodes;
-    private Map<Node, Short> nodeShortMap;
+    private final Map<Node, Short> nodeShortMap;
+    private final boolean isVisual;
 
-    public AStarIOHandler(String inputFilePath, String outputFilePath, String graphName, short numProcessors) {
+    public AStarIOHandler(String inputFilePath, String outputFilePath, short numProcessors, boolean isVisual) {
 
         // TODO... sanitise inputs, check accessibility etc.
         try {
             this.inputFileStream = new FileInputStream(inputFilePath);
+            this.inputFileStream2 = new FileInputStream(inputFilePath);
             this.outputStream = new FileOutputStream(outputFilePath);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             throw new RuntimeException(); // TODO... fix this
         }
-        this.graphName = graphName;
         this.numProcessors = numProcessors;
         this.nodeShortMap = new HashMap<>();
+        this.isVisual = isVisual;
     }
 
     private void createNodeShortMap() {
@@ -60,7 +63,7 @@ public class AStarIOHandler implements IOHandler {
      * 3. Children
      * 4. Parent Communication Weights
      * 5. Child Communication Weights
-     *
+     * <p>
      * By forcing an ordering between them, we can cut down the search space
      * As otherwise, there's a different schedule created for all the permutations
      * of these equivalent tasks.
@@ -109,6 +112,9 @@ public class AStarIOHandler implements IOHandler {
         Map<Short, TaskNode> freeTaskNodeMap = new HashMap<>();
 
         this.graph = IOHelper.readFileAsGraphStream(this.inputFileStream);
+        if (isVisual) {
+            this.uneditedGraph = IOHelper.readFileAsGraphStream(this.inputFileStream2);
+        }
         int numTasks = this.graph.getNodeCount();
 
         // Check for and create edges between equivalent children
@@ -213,8 +219,9 @@ public class AStarIOHandler implements IOHandler {
         return maxLength;
     }
 
+    // Won't be initialised if not visual, but is only used in visual case.
     public Graph getGraph() {
-        return this.graph;
+        return this.uneditedGraph;
     }
 
     public List<Node> getListSortedNodes() {
