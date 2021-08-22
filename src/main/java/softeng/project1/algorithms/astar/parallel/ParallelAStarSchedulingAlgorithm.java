@@ -94,7 +94,9 @@ public class ParallelAStarSchedulingAlgorithm extends ThreadPoolExecutor impleme
                 }
             }
             if (atomicLong.decrementAndGet() <= 0) {
-                clearAndShutdown();
+                while (getQueue().peek() != null) {
+                    clearAndShutdown();
+                }
             }
         }
     }
