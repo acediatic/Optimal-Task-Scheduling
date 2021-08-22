@@ -3,6 +3,7 @@ package softeng.project1.io;
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
+import org.graphstream.graph.implementations.Graphs;
 import org.graphstream.stream.file.FileSinkDOT;
 import softeng.project1.algorithms.astar.heuristics.AlgorithmStep;
 import softeng.project1.algorithms.astar.heuristics.ListSchedulingAlgorithmStep;
@@ -214,7 +215,7 @@ public class AStarIOHandler implements IOHandler {
     }
 
     public Graph getGraph() {
-        return this.graph;
+        return Graphs.clone(this.graph);
     }
 
     public List<Node> getListSortedNodes() {
