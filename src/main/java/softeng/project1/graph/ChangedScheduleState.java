@@ -113,11 +113,17 @@ public class ChangedScheduleState extends ScheduleState{
         }
     }
 
+    /**
+     * @return : Set of all unscheduled Tasks who currently have no unscheduled parents.
+     */
     @Override
     protected Map<Short, TaskNode> copyFreeNodesHook() {
         return new HashMap<>(this.freeNodes);
     }
 
+    /**
+     * @return : Set of all currently stored changed Tasks.
+     */
     @Override
     protected Map<Short, TaskNode> copyTaskNodesHook() {
         return new HashMap<>(this.taskNodes);

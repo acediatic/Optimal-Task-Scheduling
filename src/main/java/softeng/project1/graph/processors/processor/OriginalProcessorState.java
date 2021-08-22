@@ -155,6 +155,9 @@ public class OriginalProcessorState implements Processor {
         return -1; // There is no first task ID for this, and hence gives the error value of -1.
     }
 
+    /**
+     * @return : The unique ID of the task scheduled first in the processor, or -1 if no tasks have been scheduled.
+     */
     @Override
     public int getFirstTaskID() {
         return -1; // There is no first task ID for this, and hence gives the error value of -1.

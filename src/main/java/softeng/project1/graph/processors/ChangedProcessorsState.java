@@ -46,13 +46,14 @@ public class ChangedProcessorsState extends ProcessorsState {
 
         int maxNumSpaces = 0;
 
+        // Retrieve number of spaces stored on fullest processor
         for (Processor processor : this.processors) {
             if (processor.getNumSpaces() > maxNumSpaces) {
                 maxNumSpaces = processor.getNumSpaces();
             }
         }
 
-        // Multiply by three because each space has three
+        // Multiply by three because each space has three data values
         byte[] byteArrayForHash = new byte[maxNumSpaces * 3];
         for (Processor processor : processors) {
             processor.addToByteArray(byteArrayForHash);
@@ -81,6 +82,7 @@ public class ChangedProcessorsState extends ProcessorsState {
             otherProcessors = (ChangedProcessorsState) otherObject;
         }
 
+        // Sorting processors by first task ID in order to prune equivalent processors
         PriorityQueue<Processor> sortedProcessors = getSortedProcessors();
         PriorityQueue<Processor> otherSortedProcessors = otherProcessors.getSortedProcessors();
 
@@ -92,16 +94,13 @@ public class ChangedProcessorsState extends ProcessorsState {
         return true;
     }
 
-
-    PriorityQueue<Processor> getSortedProcessors() {
-
+    /**
+     * @return : Stored processors sorted by first task ID
+     */
+    private PriorityQueue<Processor> getSortedProcessors() {
         PriorityQueue<Processor> sortedProcessors = new PriorityQueue<>(this.processors.length, Comparator.comparingInt(Processor::getFirstTaskID));
-
         sortedProcessors.addAll(Arrays.asList(this.processors));
-
         return sortedProcessors;
-
-
     }
 
     /**

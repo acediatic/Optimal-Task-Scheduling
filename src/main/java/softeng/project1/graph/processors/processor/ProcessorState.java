@@ -312,6 +312,9 @@ public class ProcessorState implements Processor {
         return this.changeInIdleTime;
     }
 
+    /**
+     * @return : The unique ID of the task scheduled first in the processor, or -1 if no tasks have been scheduled.
+     */
     @Override
     public int getFirstTaskID() {
         return this.processorSpaces[0][2];

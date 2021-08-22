@@ -161,6 +161,10 @@ public abstract class ScheduleState implements Schedule {
         return expandedSchedules;
     }
 
+    /**
+     * @param freeNodes : Set of all Tasks who currently have no unscheduled parents.
+     * @return : The maximum data ready time out of the given set.
+     */
     private int calculateMaxDRT(Map<Short, TaskNode> freeNodes) {
         int maxAmongstNodes = 0;
 
@@ -177,6 +181,9 @@ public abstract class ScheduleState implements Schedule {
         return maxAmongstNodes;
     }
 
+    /**
+     * @return : List of integer arrays describing the insert location of each currently scheduled task.
+     */
     @Override
     public List<int[]> rebuildPath() {
         return this.change.rebuildSolutionPath();
@@ -239,8 +246,14 @@ public abstract class ScheduleState implements Schedule {
      */
     public abstract TaskNode getTaskNode(short taskID);
 
+    /**
+     * @return : Set of all Tasks who currently have no unscheduled parents.
+     */
     protected abstract Map<Short, TaskNode> copyFreeNodesHook();
 
+    /**
+     * @return : Set of all currently stored Tasks.
+     */
     protected abstract Map<Short, TaskNode> copyTaskNodesHook();
 
     /**

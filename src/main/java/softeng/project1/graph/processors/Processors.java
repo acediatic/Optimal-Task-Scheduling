@@ -72,7 +72,7 @@ public interface Processors {
     /**
      * Deep equals method which ensures that equality is based off of 
      * Processor data/location instead of Object IDs.
-     * Overrides the base hashCode() Object method.
+     * Overrides the base equals() Object method.
      * 
      * @param otherObject : The other Processor set being equated to this one.
      * @return : Whether or not each Processors object store the same values in the same order.

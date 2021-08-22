@@ -120,11 +120,17 @@ public class OriginalScheduleState extends ScheduleState {
        return this.taskNodes.get(taskID);
     }
 
+    /**
+     * @return : Set of all original Tasks who start with no unscheduled parents.
+     */
     @Override
     protected Map<Short, TaskNode> copyFreeNodesHook() {
         return new HashMap<>(this.freeNodes);
     }
 
+    /**
+     * @return : Set of all original Task states.
+     */
     @Override
     protected Map<Short, TaskNode> copyTaskNodesHook() {
         return new HashMap<>(this.branchingFactor, LOAD_FACTOR);

@@ -59,6 +59,9 @@ public interface Schedule {
      */
     List<Schedule> expand();
 
+    /**
+     * @return : List of integer arrays describing the insert location of each currently scheduled task.
+     */
     List<int[]> rebuildPath();
 
     /**
@@ -78,6 +81,10 @@ public interface Schedule {
      */
     int getMaxDataReadyTime();
 
+    /**
+     * @param taskID : Unique task ID of the task whose state object is being returned.
+     * @return : TaskNode object describing the current state of the task with the given ID.
+     */
     TaskNode getTaskNode(short taskID);
 
 }

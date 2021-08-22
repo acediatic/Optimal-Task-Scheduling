@@ -82,7 +82,6 @@ public interface Processor {
      */
     int getID();
 
-
     /**
      * The number of spaces between tasks in the current set of tasks queued
      * on the processor. Spaces can be 0 length, and one space always exists
@@ -109,5 +108,8 @@ public interface Processor {
      */
     int getChangeInIdleTime();
 
+    /**
+     * @return : The unique ID of the task scheduled first in the processor, or -1 if no tasks have been scheduled.
+     */
     int getFirstTaskID();
 }
