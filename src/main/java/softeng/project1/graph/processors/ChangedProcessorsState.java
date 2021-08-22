@@ -4,6 +4,10 @@ import com.sangupta.murmur.Murmur3;
 
 import softeng.project1.graph.processors.processor.Processor;
 
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.PriorityQueue;
+
 /**
  * @author Remus Courtenay
  * @version 1.0
@@ -40,19 +44,19 @@ public class ChangedProcessorsState extends ProcessorsState {
      */
     @Override
     public int hashCode() {
-        
-        int numBytesNeeded = 0;
 
-        for (Processor processor: processors) {
-            // we multiply by 3 because each space has 3 values
-            numBytesNeeded = numBytesNeeded + processor.getNumSpaces()*3;
+        int maxNumSpaces = 0;
+
+        for (Processor processor: this.processors) {
+            if (processor.getNumSpaces() > maxNumSpaces) {
+                maxNumSpaces = processor.getNumSpaces();
+            }
         }
-        // Kind of dirty to do this with two loops
-        byte[] byteArrayForHash = new byte[numBytesNeeded];
-        int index = 0;
+
+        // Multiply by three because each space has three
+        byte[] byteArrayForHash = new byte[maxNumSpaces*3];
         for (Processor processor: processors) {
-            processor.asByteArray(index, byteArrayForHash);
-            index = index + processor.getNumSpaces()*3;
+            processor.addToByteArray(byteArrayForHash);
         }
         // https://github.com/sangupta/murmur
         // TODO... find nicer way to do this than int casting
@@ -68,21 +72,43 @@ public class ChangedProcessorsState extends ProcessorsState {
      * @param otherObject : The other Processor set being equated to this one.
      * @return : Whether or not each Processors object store the same values in the same order.
      */
-    @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
     @Override
     public boolean equals(Object otherObject) {
-        Processors otherProcessors;
-        try {
-            otherProcessors = (Processors) otherObject;
-        } catch (ClassCastException e) {
+        ChangedProcessorsState otherProcessors;
+
+        if (otherObject.getClass() != ChangedProcessorsState.class) {
             return false;
+        } else {
+            // Will never be equal to OriginalProcessorsState so can cast to ChangedProcessor instead of Processor
+            otherProcessors = (ChangedProcessorsState) otherObject;
         }
+        
+        PriorityQueue<Processor> sortedProcessors = getSortedProcessors();
+        PriorityQueue<Processor> otherSortedProcessors = otherProcessors.getSortedProcessors();
+
         for (int i = 0; i < processors.length; i++) {
-            if (!otherProcessors.getProcessor(i).deepEquals(processors[i])) {
+            if (!sortedProcessors.poll().deepEquals(otherSortedProcessors.poll())) {
                 return false;
             }
         }
         return true;
+    }
+
+
+     PriorityQueue<Processor> getSortedProcessors() {
+
+        PriorityQueue<Processor> sortedProcessors = new PriorityQueue<>(this.processors.length, new Comparator<Processor>() {
+            @Override
+            public int compare(Processor o1, Processor o2) {
+                return o1.getFirstTaskID() - o2.getFirstTaskID();
+            }
+        });
+
+        sortedProcessors.addAll(Arrays.asList(this.processors));
+
+        return sortedProcessors;
+
+
     }
 
     /**
