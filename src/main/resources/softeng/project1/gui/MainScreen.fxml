@@ -70,7 +70,7 @@
             </HBox>
          </children>
       </VBox>
-      <VBox layoutX="53.0" layoutY="589.0" prefHeight="166.0" prefWidth="347.0">
+      <VBox layoutX="53.0" layoutY="589.0" prefHeight="166.0" prefWidth="419.0">
          <children>
             <HBox prefHeight="30.0" prefWidth="298.0">
                <children>
@@ -135,7 +135,7 @@
                         <Font size="16.0" />
                      </font>
                   </Label>
-                  <Label fx:id="numSchedulesCheckedLabel" prefHeight="64.0" prefWidth="48.0" text="0">
+                  <Label fx:id="numSchedulesCheckedLabel" prefHeight="29.0" prefWidth="160.0" text="0">
                      <font>
                         <Font size="16.0" />
                      </font>
