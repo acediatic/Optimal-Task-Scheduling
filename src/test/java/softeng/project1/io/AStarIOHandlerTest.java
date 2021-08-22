@@ -81,7 +81,5 @@ class AStarIOHandlerTest {
 
 
 
-    @Test
-    void getGraph() {
-    }
+    
 }
