@@ -35,7 +35,7 @@ OPTIONAL ARGUMENTS:
 
 Once the program has completed execution, the output file will be generated in the same folder
 
-# Scheduler Display
+# Displaying the Program 
 
 <img src="./readme_images/not_started.jpg">
 
