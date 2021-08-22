@@ -58,12 +58,12 @@
                <children>
                   <Label prefHeight="44.0" prefWidth="234.0" text="Optimal Schedule Length : ">
                      <font>
-                        <Font size="18.0" />
+                        <Font size="16.0" />
                      </font>
                   </Label>
                   <Label fx:id="optimalLengthLabel" prefHeight="46.0" prefWidth="36.0" text="0">
                      <font>
-                        <Font size="18.0" />
+                        <Font size="16.0" />
                      </font>
                   </Label>
                </children>
@@ -76,12 +76,12 @@
                <children>
                   <Label prefHeight="27.0" prefWidth="163.0" text="Number of Tasks : ">
                      <font>
-                        <Font size="18.0" />
+                        <Font size="16.0" />
                      </font>
                   </Label>
                   <Label fx:id="numTasksLabel" text="0">
                      <font>
-                        <Font size="18.0" />
+                        <Font size="16.0" />
                      </font>
                   </Label>
                </children>
@@ -90,12 +90,12 @@
                <children>
                   <Label prefHeight="36.0" prefWidth="207.0" text="Number of Processors : ">
                      <font>
-                        <Font size="18.0" />
+                        <Font size="16.0" />
                      </font>
                   </Label>
                   <Label fx:id="numProcessorsLabel" prefHeight="64.0" prefWidth="48.0" text="0">
                      <font>
-                        <Font size="18.0" />
+                        <Font size="16.0" />
                      </font>
                   </Label>
                </children>
@@ -104,12 +104,12 @@
                <children>
                   <Label prefHeight="36.0" prefWidth="212.0" text="Number of Cores Used : ">
                      <font>
-                        <Font size="18.0" />
+                        <Font size="16.0" />
                      </font>
                   </Label>
                   <Label fx:id="numCoresLabel" prefHeight="64.0" prefWidth="48.0" text="0">
                      <font>
-                        <Font size="18.0" />
+                        <Font size="16.0" />
                      </font>
                   </Label>
                </children>
@@ -118,12 +118,12 @@
                <children>
                   <Label prefHeight="36.0" prefWidth="310.0" text="Current Estimated Schedule Length : ">
                      <font>
-                        <Font size="18.0" />
+                        <Font size="16.0" />
                      </font>
                   </Label>
                   <Label fx:id="scheduleLengthLabel" prefHeight="64.0" prefWidth="48.0" text="0">
                      <font>
-                        <Font size="18.0" />
+                        <Font size="16.0" />
                      </font>
                   </Label>
                </children>
@@ -132,7 +132,7 @@
       </VBox>
       <Button fx:id="startScheduleButton" layoutX="533.0" layoutY="581.0" mnemonicParsing="false" onAction="#startSchedule" prefHeight="39.0" prefWidth="156.0" text="Start Scheduler">
          <font>
-            <Font size="18.0" />
+            <Font size="16.0" />
          </font>
       </Button>
    </children>
