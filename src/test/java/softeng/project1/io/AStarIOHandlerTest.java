@@ -21,8 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
  * @author Syed Kazmi
  */
 class AStarIOHandlerTest {
-
-
+    
     @Test
     void readFile() {
         //code for first read
@@ -74,6 +73,5 @@ class AStarIOHandlerTest {
         //Read File A, then write this to file B, then readfile() on the writeFile and compare to pre calc'ed length
         assertEquals("Max processor length: 45", result);
     }
-
 
 }
