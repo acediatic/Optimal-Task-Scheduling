@@ -33,6 +33,7 @@ public class AStarIOHandler implements IOHandler {
     private Graph uneditedGraph;
     private AlgorithmStep listScheduleAlgoStep;
     private List<Node> sortedNodes;
+    private List<String> editedEdges;
 
     public AStarIOHandler(String inputFilePath, String outputFilePath, short numProcessors, boolean isVisual) {
 
@@ -81,11 +82,12 @@ public class AStarIOHandler implements IOHandler {
 
         // Sorted (log(n)), means we only have to compare with our neighbour.
         Arrays.sort(nodeEqArr);
-
+        editedEdges = new LinkedList<>();
         // compare for equality in O(n) (rather than O(n^2))
         for (int i = 0; i < nodeEqArr.length - 1; i++) {
             if (nodeEqArr[i].compareTo(nodeEqArr[i + 1]) == 0) {
                 String edgeID = UUID.randomUUID().toString();
+                editedEdges.add(edgeID);
                 graph.addEdge(edgeID, nodeEqArr[i].getTask(), nodeEqArr[i + 1].getTask(), true);
                 graph.getEdge(edgeID).setAttribute(PROCESSING_COST_ATTRIBUTE_KEY, (double) 0);
             }
@@ -169,6 +171,10 @@ public class AStarIOHandler implements IOHandler {
             IOHelper.addSchedulingToTask(
                     this.sortedNodes.get(scheduling[0]), // Get name from task ID
                     scheduling);
+        }
+
+        for (String edgeID : editedEdges) {
+            this.graph.removeEdge(edgeID);
         }
 
         FileSinkDOT fileSink = new FileSinkDOT(true);
