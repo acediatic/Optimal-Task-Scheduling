@@ -23,7 +23,6 @@ import org.graphstream.ui.javafx.FxGraphRenderer;
 import org.graphstream.ui.view.Viewer;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -64,6 +63,9 @@ public class GuiController {
 
     @FXML
     private Label inputFileName;
+
+    @FXML
+    private Label numSchedulesCheckedLabel;
 
     private Timeline timeline;
 
@@ -137,6 +139,7 @@ public class GuiController {
     public void updateView(GuiData data) {
         updateScheduleView(data.getCurrentBestSchedule().rebuildPath());
         updateScheduleLength(data.getHeuristic());
+        updateSchedulesChecked(data.getNumSchedulesChecked());
     }
 
     /**
@@ -296,6 +299,14 @@ public class GuiController {
      */
     public void updateScheduleLength(int scheduleLength) {
         scheduleLengthLabel.setText(Integer.toString(scheduleLength));
+    }
+
+    /**
+     * Updates Label displaying number of schedules checked
+     * @param numStatesChecked number of schedules checked
+     */
+    public void updateSchedulesChecked(int numStatesChecked){
+        numSchedulesCheckedLabel.setText(Integer.toString(numStatesChecked));
     }
 
     public void updateInputFileName(String fileName){
