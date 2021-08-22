@@ -12,6 +12,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
+/**
+ * A helper class with functions for I/O
+ */
 public class IOHelper {
 
     private static final String DEFAULT_GRAPH_ID = "graph";
@@ -19,6 +22,12 @@ public class IOHelper {
     private static final String SCHEDULE_START_LOCATION_KEY = "Start";
     private static final String SCHEDULE_PROCESSOR_KEY = "Processor";
 
+    /**
+     * Reads a file stream and converts it into a GraphStream graph object.
+     *
+     * @param fileStream the dot file stream to read
+     * @return the graph object
+     */
     static Graph readFileAsGraphStream(InputStream fileStream) {
         FileSourceDOT dotFile = new FileSourceDOT();
 
@@ -28,7 +37,7 @@ public class IOHelper {
         try {
             dotFile.readAll(fileStream);
         } catch (IOException e) {
-            e.printStackTrace(); // Input should be sanitised outside this helper method
+            e.printStackTrace();
         } finally {
             dotFile.removeSink(returnGraph);
         }
@@ -37,18 +46,42 @@ public class IOHelper {
     }
 
 
+    /**
+     * get the task weight (processing cost) of the input element
+     *
+     * @param graphElement the graph element
+     * @return the graph element's processing weight
+     */
     static int getProcessingCost(Element graphElement) {
         return ((Number) graphElement.getAttribute(PROCESSING_COST_ATTRIBUTE_KEY)).intValue();
     }
 
+    /**
+     * get the number of parents of the input element
+     *
+     * @param task the task
+     * @return the number of parents
+     */
     static int getNumParents(Node task) {
         return task.getInDegree();
     }
 
+    /**
+     * get the edges representing the incoming links to this task
+     *
+     * @param task the task
+     * @return the edges coming into this task
+     */
     static Edge[] getChildLinks(Node task) {
         return task.leavingEdges().toArray(Edge[]::new);
     }
 
+    /**
+     * get the edges representing the outgoing links for this task
+     *
+     * @param task the task
+     * @return the edges going out of this task
+     */
     static Edge[] getParentLinks(Node task) {
         return task.enteringEdges().toArray(Edge[]::new);
     }
@@ -74,11 +107,25 @@ public class IOHelper {
         return bottomLevel;
     }
 
+    /**
+     * Adds scheduling information for the current task, so it can be
+     * output to file
+     *
+     * @param task           the task
+     * @param schedulingData the corresponding data to add.
+     */
     static void addSchedulingToTask(Node task, int[] schedulingData) {
         task.setAttribute(SCHEDULE_PROCESSOR_KEY, schedulingData[1]);
         task.setAttribute(SCHEDULE_START_LOCATION_KEY, schedulingData[2]);
     }
 
+    /**
+     * Returns the branching factor for this particular graph.
+     * Used to intelligently initialise the size of some datastructures.
+     *
+     * @param graph the input graph
+     * @return the branching factor
+     */
     static short getBranchingFactor(Graph graph) {
         short branchingFactor = 0;
 
@@ -91,6 +138,12 @@ public class IOHelper {
         return branchingFactor;
     }
 
+    /**
+     * Retrieves the topological ordering of nodes in this graph
+     *
+     * @param graph the graph
+     * @return the list of nodes in topologically sorted order.
+     */
     static List<Node> getSortedNodes(Graph graph) {
         //Sorts nodes into a topological ordering
         TopologicalSortDFS sorter = new TopologicalSortDFS();

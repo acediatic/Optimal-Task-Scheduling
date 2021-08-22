@@ -10,6 +10,9 @@ import java.io.IOException;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Paths;
 
+/**
+ * A class to process the command line inputs from the user.
+ */
 public class CommandLineProcessor {
     private final String[] args;
     private CommandLine cmd;
@@ -33,6 +36,7 @@ public class CommandLineProcessor {
             System.exit(1);
         }
 
+        // display errors if the user has not entered the correct number of parameters
         switch (cmd.getArgList().size()) {
             case 0:
                 System.err.println(SchedulerErrorMessages.CLINoArgs);
@@ -115,6 +119,9 @@ public class CommandLineProcessor {
         }
     }
 
+    /**
+     * Determines the graph name from the input graph.
+     */
     private void initGraphName() {
         File input = new File(inputFileName);
 
