@@ -47,7 +47,7 @@ public class SequentialAStarSchedulingAlgorithm implements AStarSchedulingAlgori
      * This is done by repeatedly expanding schedules, and placing them in a priority
      * queue till the optimal is found, at which case this method returns
      *
-     * @return List<int [ ]> generatedSchedule, the optiaml scheduling for the given original schedule state.
+     * @return List<int [ ]> generatedSchedule, the optimal scheduling for the given original schedule state.
      */
     @Override
     public List<int[]> generateSchedule() {

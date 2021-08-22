@@ -73,7 +73,7 @@ public class AlgorithmStep implements Comparable<AlgorithmStep>, Runnable {
     }
 
     /**
-     * Rebuild path turns the Schedule object (which is esentially a series
+     * Rebuild path turns the Schedule object (which is essentially a series
      * of diffs) to an actual int array which represents the scheduling.
      * It does this by making its way up the path, rebuilding into a schedule.
      * Hence, rebuildPath

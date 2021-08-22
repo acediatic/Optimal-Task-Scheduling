@@ -12,9 +12,9 @@ import java.util.List;
 public interface AStarSchedulingAlgorithm extends SchedulingAlgorithm {
 
     /**
-     * A method to
-     * @param fringeSchedules
-     * @return
+     * Removes already checked schedules from the given list and then stores them.
+     * @param fringeSchedules : List of generated partial schedules.
+     * @return : List of pruned partial schedules which should be added to the priority queue
      */
     List<Schedule> pruneExpandedSchedulesAndAddToMap(List<Schedule> fringeSchedules);
 

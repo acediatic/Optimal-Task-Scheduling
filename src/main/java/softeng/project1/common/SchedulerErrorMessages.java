@@ -1,6 +1,9 @@
 package softeng.project1.common;
 
 /**
+ * @author Remus Courtenay
+ * @version 1.0
+ * @since 1.8
  * A utility class containing the commonly used error messages in the command line processor.
  * This cleans the code up, and allows changing of multiple messages in one place.
  */

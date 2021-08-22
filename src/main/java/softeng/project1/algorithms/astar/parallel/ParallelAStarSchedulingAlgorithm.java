@@ -89,14 +89,17 @@ public class ParallelAStarSchedulingAlgorithm extends ThreadPoolExecutor impleme
      * when parallel threads simultaneously find optimal solutions.
      * In this case, the best heuristic value is kept, with ties broken
      * randomly.
-     *
-     * @param algorithmStep
      */
     public synchronized void addOptimal(AlgorithmStep algorithmStep) {
         this.optimalSchedules.add(algorithmStep);
     }
 
 
+    /**
+     * Hook method from ThreadPoolExecutor that runs after each Runnable completes its execution.
+     * Used here to retrieve the generated schedules from the AlgorithmStep's run() method and then handle them.
+     * @param runnable : The AlgorithmStep object which just finished running its schedule's expand() method.
+     */
     @Override
     protected void afterExecute(Runnable runnable, Throwable throwable) {
         List<Schedule> fringeSchedules;
