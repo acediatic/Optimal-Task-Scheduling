@@ -57,13 +57,9 @@ public class ParallelAStarSchedulingAlgorithm extends ThreadPoolExecutor impleme
 
         try {
             if (this.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS)) {
-                this.state = AlgorithmState.FINISHED;
                 List<int[]> bestStoredSchedule = getBestStoredSchedule();
-                if (bestStoredSchedule != null) {
-                    return bestStoredSchedule;
-                } else {
-                    return listSchedule.rebuildPath();
-                }
+                this.state = AlgorithmState.FINISHED;
+                return bestStoredSchedule;
             } else {
                 throw new RuntimeException();
             }
@@ -100,7 +96,6 @@ public class ParallelAStarSchedulingAlgorithm extends ThreadPoolExecutor impleme
             }
             if (atomicLong.decrementAndGet() <= 0) {
                 clearAndShutdown();
-
             }
         }
     }
@@ -139,24 +134,21 @@ public class ParallelAStarSchedulingAlgorithm extends ThreadPoolExecutor impleme
                     this.state,
                     this.closedSchedules.size()
             );
-        } else if (this.state == AlgorithmState.FINISHED) {
+        } else {
             return new GuiData(
                     this.bestScheduleStep,
                     this.state,
                     this.closedSchedules.size()
             );
-        } else {
-            throw new RuntimeException("Case not setup in getGuiData");
         }
     }
 
     private List<int[]> getBestStoredSchedule() {
-        try {
-            Collections.sort(optimalSchedules);
-            this.bestScheduleStep = this.optimalSchedules.get(0);
-            return bestScheduleStep.rebuildPath();
-        } catch (Exception e) {
-            return null;
+        Collections.sort(optimalSchedules);
+        if (this.optimalSchedules.size() == 0) {
+            this.optimalSchedules.add(listSchedule);
         }
+        this.bestScheduleStep = this.optimalSchedules.get(0);
+        return bestScheduleStep.rebuildPath();
     }
 }

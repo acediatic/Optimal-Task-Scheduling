@@ -2,11 +2,12 @@ package softeng.project1.gui;
 
 import softeng.project1.algorithms.AlgorithmState;
 import softeng.project1.algorithms.astar.heuristics.AlgorithmStep;
-import softeng.project1.graph.Schedule;
+
+import java.util.List;
 
 public class GuiData {
 
-    private final Schedule currentBest;
+    private final List<int[]> currentBest;
     private final int currentHeuristic;
     private final AlgorithmState state;
     private final int numSchedulesChecked;
@@ -17,7 +18,7 @@ public class GuiData {
             this.currentBest = null;
             this.currentHeuristic = 0;
         } else {
-            this.currentBest = step.getSchedule();
+            this.currentBest = step.rebuildPath();
             this.currentHeuristic = step.getPriorityValue();
         }
 
@@ -27,7 +28,7 @@ public class GuiData {
     }
 
 
-    public Schedule getCurrentBestSchedule() {
+    public List<int[]> getCurrentBestScheduleArray() {
         return this.currentBest;
     }
 
@@ -42,10 +43,6 @@ public class GuiData {
     public int getNumSchedulesChecked() {
         return this.numSchedulesChecked;
     }
-
-
-
-
 
 
 }

@@ -86,10 +86,11 @@ public class GuiController {
 
     /**
      * Sets up required fields and input graph display
+     *
      * @param numProcessors The number of processors the task is scheduled on
-     * @param numCores The number of cores/threads the algorithm is run on
-     * @param g The input graph
-     * @param taskNames List of names for each node in input graph
+     * @param numCores      The number of cores/threads the algorithm is run on
+     * @param g             The input graph
+     * @param taskNames     List of names for each node in input graph
      */
     public void setup(int numProcessors, int numCores, Graph g, List<Node> taskNames, String inputFileName) {
         //Setup fields
@@ -121,6 +122,7 @@ public class GuiController {
      * Event handler for when start button is pressed.
      * Starts the timer as well as the scheduling algorithm.
      * Also disables start button
+     *
      * @param event Button event
      */
     @FXML
@@ -134,10 +136,11 @@ public class GuiController {
 
     /**
      * Method for updating the gui view given data from the algorithm
+     *
      * @param data GuiData object which provides data fetched from algorithm
      */
     public void updateView(GuiData data) {
-        updateScheduleView(data.getCurrentBestSchedule().rebuildPath());
+        updateScheduleView(data.getCurrentBestScheduleArray());
         updateScheduleLength(data.getHeuristic());
         updateSchedulesChecked(data.getNumSchedulesChecked());
     }
@@ -145,6 +148,7 @@ public class GuiController {
     /**
      * Stops the timer and updates the schedule status
      * Also updates
+     *
      * @param data GuiData object which provides data fetched from algorithm
      */
     public void stopGui(GuiData data) {
@@ -254,6 +258,7 @@ public class GuiController {
 
     /**
      * Updates Label displaying number of processors tasks are scheduled on
+     *
      * @param numProcessors number of processors tasks are scheduled on
      */
     public void updateNumProcessors(int numProcessors) {
@@ -262,6 +267,7 @@ public class GuiController {
 
     /**
      * Updates Label displaying number of cores/threads the algorithm is running on
+     *
      * @param numCores number of cores/threads the algorithm is running on
      */
     public void updateNumCores(int numCores) {
@@ -270,6 +276,7 @@ public class GuiController {
 
     /**
      * Sets Label displaying current status of algorithm to complete
+     *
      * @param scheduleStatus Schedule status
      */
     public void updateScheduleStatus(String scheduleStatus) {
@@ -279,6 +286,7 @@ public class GuiController {
 
     /**
      * Updates label displaying optimal length of the schedule
+     *
      * @param optimalLength optimal length of schedule
      */
     public void updateOptimalLength(int optimalLength) {
@@ -287,6 +295,7 @@ public class GuiController {
 
     /**
      * Updates label displaying number of tasks to be scheduled
+     *
      * @param numTasks Number of tasks to be scheduled
      */
     public void updateNumTasks(int numTasks) {
@@ -295,6 +304,7 @@ public class GuiController {
 
     /**
      * Updates Label displaying current estimate for best schedule length
+     *
      * @param scheduleLength estimate for schedule length
      */
     public void updateScheduleLength(int scheduleLength) {
@@ -303,18 +313,20 @@ public class GuiController {
 
     /**
      * Updates Label displaying number of schedules checked
+     *
      * @param numStatesChecked number of schedules checked
      */
-    public void updateSchedulesChecked(int numStatesChecked){
+    public void updateSchedulesChecked(int numStatesChecked) {
         numSchedulesCheckedLabel.setText(Integer.toString(numStatesChecked));
     }
 
-    public void updateInputFileName(String fileName){
+    public void updateInputFileName(String fileName) {
         inputFileName.setText(fileName);
     }
 
     /**
      * Helper method to calculate the time elapsed since start button pressed
+     *
      * @return time elapsed
      */
     private String getTimeElapsed() {
