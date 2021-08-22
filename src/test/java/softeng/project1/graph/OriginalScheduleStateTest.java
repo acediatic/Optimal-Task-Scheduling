@@ -76,6 +76,13 @@ public class OriginalScheduleStateTest {
         assertEquals(o1.getTaskNode((short)0),o2.getTaskNode((short)0));
     }
 
+    /**
+     * Tested against String value so that in case there are any internal issues
+     * in the classes used within this class, it doesn't affect this test - also
+     * if a comparison object is made incorrectly the String avoids that.
+     *
+     * Test may be redundant due to how the method works.
+     */
     @Test
     public void testCopyFreeNodesHook() {
         assertEquals("{0=TaskNodeState:\n" +
