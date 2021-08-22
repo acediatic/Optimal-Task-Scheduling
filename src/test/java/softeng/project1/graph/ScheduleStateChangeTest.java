@@ -24,6 +24,7 @@ public class ScheduleStateChangeTest {
         // toArray done along with assertArrayEquals to check the contents rather than object id
         assertArrayEquals(check.toArray(), trial.rebuildSolutionPath().toArray());
         check.add(new int[]{1,1,2,3});
+        // toArray done along with assertArrayEquals to check the contents rather than object id
         assertArrayEquals(check.toArray(), trialChild.rebuildSolutionPath().toArray());
     }
 
