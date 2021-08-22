@@ -78,14 +78,18 @@ public class GuiController {
     }
 
     /**
-     * Setups required fields for controller
-     *
-     * @param numProcessors number of processors to divide tasks on
+     * Sets up required fields and input graph display
+     * @param numProcessors The number of processors the task is scheduled on
+     * @param numCores The number of cores/threads the algorithm is run on
+     * @param g The input graph
+     * @param taskNames List of names for each node in input graph
      */
     public void setup(int numProcessors, int numCores, Graph g, List<Node> taskNames) {
         //Setup fields
         this.numProcessors = numProcessors;
+        this.taskNames = taskNames;
 
+        //Sets description labels
         updateNumProcessors(numProcessors);
         updateNumCores(numCores);
         updateNumTasks(taskNames.size());
@@ -102,11 +106,15 @@ public class GuiController {
         FxViewer viewer = new FxViewer(g, Viewer.ThreadingModel.GRAPH_IN_GUI_THREAD);
         viewer.enableAutoLayout();
         FxViewPanel viewPanel = (FxViewPanel) viewer.addDefaultView(false, new FxGraphRenderer());
-
         InputContainer.getChildren().add(viewPanel);
-        this.taskNames = taskNames;
     }
 
+    /**
+     * Event handler for when start button is pressed.
+     * Starts the timer as well as the scheduling algorithm.
+     * Also disables start button
+     * @param event Button event
+     */
     @FXML
     void startSchedule(ActionEvent event) {
         timeline.play();
@@ -116,13 +124,21 @@ public class GuiController {
         GuiMain.startAlgorithm();
     }
 
+    /**
+     * Method for updating the gui view given data from the algorithm
+     * @param data GuiData object
+     */
     public void updateView(GuiData data) {
         updateScheduleView(data.getCurrentBestSchedule().rebuildPath());
         updateScheduleLength(data.getHeuristic());
     }
 
+    /**
+     * Stops the timer and updates the schedule status
+     * Also updates
+     * @param data
+     */
     public void stopGui(GuiData data) {
-
         timeline.stop();
         updateScheduleStatus("COMPLETED");
         updateOptimalLength(data.getHeuristic());
@@ -133,7 +149,6 @@ public class GuiController {
      *
      * @param newSchedule A schedule
      */
-
     public void updateScheduleView(List<int[]> newSchedule) {
         schedule.getData().clear();
 
@@ -150,6 +165,7 @@ public class GuiController {
         for (int[] task : newSchedule) {
             processorTasks.get(task[1]).add(task[0]);
         }
+
 
         List<Legend.LegendItem> legendItems = new ArrayList<>();
 
@@ -212,7 +228,6 @@ public class GuiController {
         Legend legend = (Legend) schedule.lookup(".chart-legend");
         legend.getItems().removeAll();
         legend.getItems().setAll(legendItems);
-
     }
 
     /**
