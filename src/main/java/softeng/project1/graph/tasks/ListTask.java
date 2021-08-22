@@ -23,7 +23,7 @@ public class ListTask {
         this.processorPrerequisites = new int[numberOfProcessors];
     }
 
-    public void setLocation (int start, int processorID) {
+    public void setLocation(int start, int processorID) {
         this.start = start;
         this.processor = processorID;
     }
@@ -45,6 +45,14 @@ public class ListTask {
     }
 
 
+    /**
+     * Notify children informs the children that their parent has been successfully scheduled, and thus that this
+     * prerequisite is met.
+     *
+     * @param processorID the processor id upon which this (parent) task was scheduled
+     * @param insertPoint the time at which this task was inserted
+     * @param children    the children of this task
+     */
     public void notifyChildren(int processorID, int insertPoint, ListCommunicationCost[] children) {
 
         this.setLocation(insertPoint, processorID);
@@ -52,7 +60,7 @@ public class ListTask {
         int[] fulfilledPrerequisite = new int[this.processorPrerequisites.length];
         int taskEndPoint = insertPoint + this.weight;
 
-        for (ListCommunicationCost communicationCost: children) {
+        for (ListCommunicationCost communicationCost : children) {
 
             Arrays.fill(fulfilledPrerequisite, taskEndPoint + communicationCost.getCost());
             fulfilledPrerequisite[processorID] = taskEndPoint;
@@ -61,6 +69,12 @@ public class ListTask {
         }
     }
 
+    /**
+     * A utility method used by to notify children method in order to create the representation
+     * of the fulfilled prerequisite.
+     *
+     * @param fulfilledPrerequisite
+     */
     public void notifyPrerequisiteFulfilled(int[] fulfilledPrerequisite) {
         for (int i = 0; i < this.processorPrerequisites.length; i++) {
             this.processorPrerequisites[i] = Math.max(this.processorPrerequisites[i], fulfilledPrerequisite[i]);

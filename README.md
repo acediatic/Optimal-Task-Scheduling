@@ -16,7 +16,7 @@ Milestone 1 requires that we develop a scheduler which is able to return a valid
 keeps to the constraints, but is not necessarily the most optimal solution. The runnable jar for our Milestone 1 release can be found [here](https://github.com/SoftEng306-2021/project-1-p1t16-outsourced-to-pakistan/releases/tag/v1.0)
 
 ## Milestone 2
-Milestone 2 requires that we develop a scheduler which is able to return a schedule which is not only valid, but is also optimal. A schedule is optimal if it has the shortest possible finishing time, whilst adhering to all the constraints. We are also required to develop a meaningful visualisation, as well as the option to parallelize the search by running the algorithm on multiple threads. For the scheduling algorithm, we used an A* searching algorithm with various pruning techniques. The runnable jar for our Milestone 2 release can be found here TODO....
+Milestone 2 requires that we develop a scheduler which is able to return a schedule which is not only valid, but is also optimal. A schedule is optimal if it has the shortest possible finishing time, whilst adhering to all the constraints. We are also required to develop a meaningful visualisation, as well as the option to parallelize the search by running the algorithm on multiple threads. For the scheduling algorithm, we used an A* searching algorithm with various pruning techniques. The runnable jar for our Milestone 2 release can be found [here](https://github.com/SoftEng306-2021/project-1-p1t16-outsourced-to-pakistan/releases/tag/2.0)
 
 # Running the program
 Before running the program, check that the runnable jar along with the input DOT file are located in the same folder. The runnable 
@@ -34,6 +34,23 @@ OPTIONAL ARGUMENTS:
 * ```-o OUTPUT```: name of output file (default name is INPUT-output.dot)
 
 Once the program has completed execution, the output file will be generated in the same folder
+
+# Displaying the Program GUI
+
+To display the program with the GUI you have to use the `-v` option.
+```
+java -jar scheduler.jar INPUT.dot P [OPTION] -v
+```
+
+Initially the scheduler shows the graph along with some other information such as number of tasks, processors and cores used. However, some values are 0 and no schedule is shown until the scheduler is started.
+
+<img src="./readme_images/not_started.jpg">
+
+Click `Start Scheduler` to start the scheduler.
+Once the Scheduler has started, it will stop when it has found the optimal schedule. During the running period the schedule can be seen changing along with the values of the estimate length and schedules checked. 
+Once it is done, we can see the final estimated length, the number of schedules checked, the optimal schedule length, as well as the optimal schedule.
+
+<img src="./readme_images/scheduled.jpg">
 
 # Building and Compiling
 The project has been built for Java 1.8, check your current java version before running the code using:
