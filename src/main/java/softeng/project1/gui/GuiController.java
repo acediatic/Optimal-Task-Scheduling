@@ -132,6 +132,7 @@ public class GuiController {
         timer = System.nanoTime();
         // Starts the algorithm service, which finds the optimal schedule.
         GuiMain.startAlgorithm();
+        updateScheduleStatus("SCHEDULING", "red");
     }
 
     /**
@@ -155,7 +156,7 @@ public class GuiController {
      */
     public void stopGui(GuiData data) {
         timeline.stop();
-        updateScheduleStatus("COMPLETED");
+        updateScheduleStatus("COMPLETED", "green");
         updateOptimalLength(data.getHeuristic());
     }
 
@@ -285,9 +286,9 @@ public class GuiController {
      *
      * @param scheduleStatus Schedule status
      */
-    public void updateScheduleStatus(String scheduleStatus) {
+    public void updateScheduleStatus(String scheduleStatus, String colourString) {
         scheduleStatusLabel.setText(scheduleStatus);
-        scheduleStatusLabel.setStyle("-fx-text-fill: green");
+        scheduleStatusLabel.setStyle("-fx-text-fill: " + colourString);
     }
 
     /**
