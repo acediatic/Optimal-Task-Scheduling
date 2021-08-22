@@ -75,9 +75,5 @@ class AStarIOHandlerTest {
         assertEquals("Max processor length: 45", result);
     }
 
-    
-
-
-
 
 }
