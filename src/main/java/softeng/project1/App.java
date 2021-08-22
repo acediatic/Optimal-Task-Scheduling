@@ -47,8 +47,8 @@ public final class App {
         AStarIOHandler ioHandler = new AStarIOHandler(
                 clp.getInputFileName(),
                 clp.getOutputFileName(),
-                clp.getGraphName(),
-                clp.getNumProcessors()
+                clp.getNumProcessors(),
+                clp.isVisual()
         );
 
         Schedule originalSchedule = ioHandler.readFile();
