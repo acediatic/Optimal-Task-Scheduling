@@ -37,6 +37,12 @@ Once the program has completed execution, the output file will be generated in t
 
 # Displaying the Program 
 
+To display the program with the GUI you have to use the `-v` option.
+```
+java -jar scheduler.jar INPUT.dot P [OPTION] -v
+```
+
+
 <img src="./readme_images/not_started.jpg">
 
 <img src="./readme_images/scheduled.jpg">
