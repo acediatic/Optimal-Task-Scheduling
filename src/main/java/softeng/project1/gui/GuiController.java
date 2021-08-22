@@ -23,6 +23,8 @@ import org.graphstream.ui.javafx.FxGraphRenderer;
 import org.graphstream.ui.view.Viewer;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 public class GuiController {
@@ -162,8 +164,9 @@ public class GuiController {
             processorTasks.add(new ArrayList<>());
         }
 
+        //Add start times to processor
         for (int[] task : newSchedule) {
-            processorTasks.get(task[1]).add(task[0]);
+            processorTasks.get(task[1]).add(task[2]);
         }
 
 
@@ -172,14 +175,17 @@ public class GuiController {
         //For each processor, iterate through each processor, then for each processor, determine if it needs idle time before it
         //Then create idle time bar
         for (List<Integer> processor : processorTasks) {
+            Collections.sort(processor);
+
             for (int i = 0; i < processor.size(); i++) {
 
                 //Gets current Task from schedule
-                int taskID = processor.get(i);
-                int currentTaskIndex = findTaskIndex(newSchedule, taskID);
+                int taskStartTime = processor.get(i);
+                int currentTaskIndex = findTaskIndex(newSchedule, taskStartTime);
                 int[] currentTask = newSchedule.get(currentTaskIndex);
 
                 //Current Task's attributes
+                int taskID = currentTask[0];
                 int currentProcessor = currentTask[1];
                 int startTime = currentTask[2];
                 int weight = currentTask[3];
@@ -187,8 +193,8 @@ public class GuiController {
                 //Add idle block if there is any before current task
                 try {
                     //Get details of previous task
-                    int prevTaskID = processor.get(i - 1);
-                    int[] prevTask = newSchedule.get(findTaskIndex(newSchedule, prevTaskID));
+                    int prevTaskStartTime = processor.get(i - 1);
+                    int[] prevTask = newSchedule.get(findTaskIndex(newSchedule, prevTaskStartTime));
                     int prevTaskCompletionTime = prevTask[2] + prevTask[3];
 
                     //If previous completion time is not the same as start time, then need to add idle time
@@ -239,15 +245,15 @@ public class GuiController {
     }
 
     /**
-     * Helper method used to find index of task in schedule list given a taskID
+     * Helper method used to find index of task in schedule list given a startTime
      *
      * @param schedule A list of tasks
-     * @param taskID   ID to search for
+     * @param startTime   ID to search for
      * @return Returns the index of task with given taskID, returns -1 if doesn't exist
      */
-    private int findTaskIndex(List<int[]> schedule, int taskID) {
+    private int findTaskIndex(List<int[]> schedule, int startTime) {
         for (int i = 0; i < schedule.size(); i++) {
-            if (schedule.get(i)[0] == taskID) {
+            if (schedule.get(i)[2] == startTime) {
                 return i;
             }
         }
