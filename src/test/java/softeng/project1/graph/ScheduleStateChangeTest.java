@@ -21,6 +21,7 @@ public class ScheduleStateChangeTest {
         ScheduleStateChange trialChild = new ScheduleStateChange(trial, 1, 1, 2, 3);
         int [] path = new int [] {0, 0, 0, 0};
         List<int[]> check = new LinkedList<>(Arrays.asList(new int[][]{path}));
+        // toArray done along with assertArrayEquals to check the contents rather than id
         assertArrayEquals(check.toArray(), trial.rebuildSolutionPath().toArray());
         check.add(new int[]{1,1,2,3});
         assertArrayEquals(check.toArray(), trialChild.rebuildSolutionPath().toArray());
