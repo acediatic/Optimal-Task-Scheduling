@@ -32,6 +32,8 @@ COMPULSORY ARGUMENTS:
 
 OPTIONAL ARGUMENTS:
 * ```-o OUTPUT```: name of output file (default name is INPUT-output.dot)
+* ```-v ```: Turns on visualization
+* ```-p NUM_THREADS```: Number of threads to execute parallel algorithm on
 
 Once the program has completed execution, the output file will be generated in the same folder
 
