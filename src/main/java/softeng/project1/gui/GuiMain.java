@@ -30,18 +30,36 @@ public class GuiMain extends Application {
         launch(args);
     }
 
+    /**
+     * Calls update method from GuiController to update the view with new data
+     */
     public static void notifyGuiUpdate() {
         guiController.updateView(dataCache.readData());
     }
 
+    /**
+     * Notifies the gui that the algorithm has completed and stops the Gui from updating view
+     */
     public static void notifyGuiCompleted() {
         guiController.stopGui(dataCache.readData());
     }
 
+    /**
+     * Starts running the scheduling algorithm
+     */
     public static void startAlgorithm() {
         algorithmRunner.start();
     }
 
+    /**
+     * Setting up variables to be used in start method
+     * @param processors The number of processors to schedule tasks on
+     * @param cores The number of cores/threads the scheduling algorithm uses
+     * @param graph The input graph
+     * @param cache The data cache which polls for data from the algorithm
+     * @param names The list of names/IDs for each node in input graph
+     * @param algorithmService The Service which runs the algorithm in a background thread
+     */
     public static void setupGui(int processors, int cores, Graph graph, AlgorithmDataCache cache,
                                 List<Node> names, AlgorithmService algorithmService) {
         numProcessors = processors;
@@ -55,12 +73,13 @@ public class GuiMain extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
 
+        //Sets up FXML file and loads scene
         FXMLLoader loader = new FXMLLoader(getClass().getResource("MainScreen.fxml"));
-
         Parent root = loader.load();
         Scene scene = new Scene(root);
         scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("style.css")).toExternalForm());
 
+        //Sets up fields for the GuiController
         guiController = loader.getController();
         guiController.setup(numProcessors, numCores, inputGraph, taskNames);
 
@@ -71,15 +90,18 @@ public class GuiMain extends Application {
         primaryStage.setResizable(false);
         primaryStage.setOnCloseRequest(e -> System.exit(0));
 
+        //Timer polls AlgorithmDataCache object for data every 50ms
         Timer repeat = new Timer();
         repeat.schedule(new TimerTask() {
             @Override
             public void run() {
                 Platform.runLater(() -> {
                     GuiData data = dataCache.readData();
+                    //If the data object is not null, then the algoritm must have started
                     if (!Objects.isNull(data)) {
                         notifyGuiUpdate();
 
+                        //Stop polling and notify gui once the algorithm finised
                         if (data.getAlgorithmState().equals(AlgorithmState.FINISHED)) {
                             notifyGuiCompleted();
                             cancel();

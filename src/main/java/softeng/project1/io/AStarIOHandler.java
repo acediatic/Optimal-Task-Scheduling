@@ -3,6 +3,7 @@ package softeng.project1.io;
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
+import org.graphstream.graph.implementations.Graphs;
 import org.graphstream.stream.file.FileSinkDOT;
 import softeng.project1.algorithms.astar.heuristics.AlgorithmStep;
 import softeng.project1.algorithms.astar.heuristics.ListSchedulingAlgorithmStep;
@@ -23,23 +24,21 @@ public class AStarIOHandler implements IOHandler {
     private static final int NUM_CHILD_LINK_DATA_FIELDS = 2;
     private static final String PROCESSING_COST_ATTRIBUTE_KEY = "Weight";
     private final InputStream inputFileStream;
-    private final InputStream inputFileStream2;
     private final OutputStream outputStream;
     private final short numProcessors; // Kinda cursed that this has to be here tbh
+    private final Map<Node, Short> nodeShortMap;
+    private final boolean isVisual;
     private int sumTaskWeights = 0;
     private Graph graph;
     private Graph uneditedGraph;
     private AlgorithmStep listScheduleAlgoStep;
     private List<Node> sortedNodes;
-    private final Map<Node, Short> nodeShortMap;
-    private final boolean isVisual;
 
     public AStarIOHandler(String inputFilePath, String outputFilePath, short numProcessors, boolean isVisual) {
 
         // TODO... sanitise inputs, check accessibility etc.
         try {
             this.inputFileStream = new FileInputStream(inputFilePath);
-            this.inputFileStream2 = new FileInputStream(inputFilePath);
             this.outputStream = new FileOutputStream(outputFilePath);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -113,7 +112,7 @@ public class AStarIOHandler implements IOHandler {
 
         this.graph = IOHelper.readFileAsGraphStream(this.inputFileStream);
         if (isVisual) {
-            this.uneditedGraph = IOHelper.readFileAsGraphStream(this.inputFileStream2);
+            this.uneditedGraph = Graphs.clone(this.graph);
         }
         int numTasks = this.graph.getNodeCount();
 
@@ -219,7 +218,6 @@ public class AStarIOHandler implements IOHandler {
         return maxLength;
     }
 
-    // Won't be initialised if not visual, but is only used in visual case.
     public Graph getGraph() {
         return this.uneditedGraph;
     }

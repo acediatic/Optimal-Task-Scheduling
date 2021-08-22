@@ -23,6 +23,8 @@ import org.graphstream.ui.javafx.FxGraphRenderer;
 import org.graphstream.ui.view.Viewer;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 public class GuiController {
@@ -78,14 +80,18 @@ public class GuiController {
     }
 
     /**
-     * Setups required fields for controller
-     *
-     * @param numProcessors number of processors to divide tasks on
+     * Sets up required fields and input graph display
+     * @param numProcessors The number of processors the task is scheduled on
+     * @param numCores The number of cores/threads the algorithm is run on
+     * @param g The input graph
+     * @param taskNames List of names for each node in input graph
      */
     public void setup(int numProcessors, int numCores, Graph g, List<Node> taskNames) {
         //Setup fields
         this.numProcessors = numProcessors;
+        this.taskNames = taskNames;
 
+        //Sets description labels
         updateNumProcessors(numProcessors);
         updateNumCores(numCores);
         updateNumTasks(taskNames.size());
@@ -102,11 +108,15 @@ public class GuiController {
         FxViewer viewer = new FxViewer(g, Viewer.ThreadingModel.GRAPH_IN_GUI_THREAD);
         viewer.enableAutoLayout();
         FxViewPanel viewPanel = (FxViewPanel) viewer.addDefaultView(false, new FxGraphRenderer());
-
         InputContainer.getChildren().add(viewPanel);
-        this.taskNames = taskNames;
     }
 
+    /**
+     * Event handler for when start button is pressed.
+     * Starts the timer as well as the scheduling algorithm.
+     * Also disables start button
+     * @param event Button event
+     */
     @FXML
     void startSchedule(ActionEvent event) {
         timeline.play();
@@ -116,13 +126,21 @@ public class GuiController {
         GuiMain.startAlgorithm();
     }
 
+    /**
+     * Method for updating the gui view given data from the algorithm
+     * @param data GuiData object which provides data fetched from algorithm
+     */
     public void updateView(GuiData data) {
         updateScheduleView(data.getCurrentBestSchedule().rebuildPath());
         updateScheduleLength(data.getHeuristic());
     }
 
+    /**
+     * Stops the timer and updates the schedule status
+     * Also updates
+     * @param data GuiData object which provides data fetched from algorithm
+     */
     public void stopGui(GuiData data) {
-
         timeline.stop();
         updateScheduleStatus("COMPLETED");
         updateOptimalLength(data.getHeuristic());
@@ -133,7 +151,6 @@ public class GuiController {
      *
      * @param newSchedule A schedule
      */
-
     public void updateScheduleView(List<int[]> newSchedule) {
         schedule.getData().clear();
 
@@ -147,23 +164,26 @@ public class GuiController {
             processorTasks.add(new ArrayList<>());
         }
 
+        //Add start times to processor
         for (int[] task : newSchedule) {
-            processorTasks.get(task[1]).add(task[0]);
+            processorTasks.get(task[1]).add(task[2]);
         }
+
 
         List<Legend.LegendItem> legendItems = new ArrayList<>();
 
-        //For each processor, iterate through each processor, then for each processor, determine if it needs idle time before it
-        //Then create idle time bar
+        //Iterate through each processor, then schedule tasks or add idle time as needed
         for (List<Integer> processor : processorTasks) {
-            for (int i = 0; i < processor.size(); i++) {
+            Collections.sort(processor); //Sorts processor's tasks by start time
 
+            for (int i = 0; i < processor.size(); i++) {
                 //Gets current Task from schedule
-                int taskID = processor.get(i);
-                int currentTaskIndex = findTaskIndex(newSchedule, taskID);
+                int taskStartTime = processor.get(i);
+                int currentTaskIndex = findTaskIndex(newSchedule, taskStartTime);
                 int[] currentTask = newSchedule.get(currentTaskIndex);
 
                 //Current Task's attributes
+                int taskID = currentTask[0];
                 int currentProcessor = currentTask[1];
                 int startTime = currentTask[2];
                 int weight = currentTask[3];
@@ -171,8 +191,8 @@ public class GuiController {
                 //Add idle block if there is any before current task
                 try {
                     //Get details of previous task
-                    int prevTaskID = processor.get(i - 1);
-                    int[] prevTask = newSchedule.get(findTaskIndex(newSchedule, prevTaskID));
+                    int prevTaskStartTime = processor.get(i - 1);
+                    int[] prevTask = newSchedule.get(findTaskIndex(newSchedule, prevTaskStartTime));
                     int prevTaskCompletionTime = prevTask[2] + prevTask[3];
 
                     //If previous completion time is not the same as start time, then need to add idle time
@@ -180,7 +200,6 @@ public class GuiController {
                         //Add transparent idle block
                         XYChart.Data<String, Number> block = new XYChart.Data<>(Integer.toString(currentProcessor + 1), prevTaskCompletionTime - startTime);
                         block.nodeProperty().addListener((ov, oldNode, node) -> node.setStyle("-fx-bar-fill: transparent"));
-
                         idleSeries.getData().add(block);
                     }
 
@@ -191,17 +210,17 @@ public class GuiController {
                     idleSeries.getData().add(block);
                 }
 
-                //Add block to schedule
+                //Add task block to schedule
                 XYChart.Series<String, Number> newSeries = new XYChart.Series<>();
                 XYChart.Data<String, Number> block = new XYChart.Data<>(Integer.toString(currentProcessor + 1), weight);
 
-                //Assigns random colour to bar.
+                //Assigns random colour to block
                 Color colour = generateRandomRGBColor();
                 block.nodeProperty().addListener((ov, oldNode, node) -> node.setStyle("-fx-bar-fill: " + colour.toString().replace("0x", "#") + ""));
                 newSeries.getData().add(block);
                 seriesList.add(newSeries);
 
-                //Generates Legend entry for series
+                //Generates Legend entry for task
                 legendItems.add(new Legend.LegendItem(taskNames.get(taskID).getId(), new Rectangle(10, 10, colour)));
             }
 
@@ -212,27 +231,25 @@ public class GuiController {
         Legend legend = (Legend) schedule.lookup(".chart-legend");
         legend.getItems().removeAll();
         legend.getItems().setAll(legendItems);
-
     }
 
     /**
-     * Increments the timer label each second incrementing by one second
+     * Increments Timer label
      */
     public void updateTimer() {
-//        timer = timer.plusSeconds(1);
         TimerText.setText(getTimeElapsed());
     }
 
     /**
-     * Helper method used to find index of task in schedule list given a taskID
+     * Helper method used to find index of task in schedule list given a startTime
      *
      * @param schedule A list of tasks
-     * @param taskID   ID to search for
+     * @param startTime   startTime to search for
      * @return Returns the index of task with given taskID, returns -1 if doesn't exist
      */
-    private int findTaskIndex(List<int[]> schedule, int taskID) {
+    private int findTaskIndex(List<int[]> schedule, int startTime) {
         for (int i = 0; i < schedule.size(); i++) {
-            if (schedule.get(i)[0] == taskID) {
+            if (schedule.get(i)[2] == startTime) {
                 return i;
             }
         }
@@ -240,31 +257,59 @@ public class GuiController {
         return -1;
     }
 
+    /**
+     * Updates Label displaying number of processors tasks are scheduled on
+     * @param numProcessors number of processors tasks are scheduled on
+     */
     public void updateNumProcessors(int numProcessors) {
         numProcessorsLabel.setText(Integer.toString(numProcessors));
     }
 
+    /**
+     * Updates Label displaying number of cores/threads the algorithm is running on
+     * @param numCores number of cores/threads the algorithm is running on
+     */
     public void updateNumCores(int numCores) {
         numCoresLabel.setText(Integer.toString(numCores));
     }
 
+    /**
+     * Sets Label displaying current status of algorithm to complete
+     * @param scheduleStatus Schedule status
+     */
     public void updateScheduleStatus(String scheduleStatus) {
         scheduleStatusLabel.setText(scheduleStatus);
         scheduleStatusLabel.setStyle("-fx-text-fill: green");
     }
 
+    /**
+     * Updates label displaying optimal length of the schedule
+     * @param optimalLength optimal length of schedule
+     */
     public void updateOptimalLength(int optimalLength) {
         optimalLengthLabel.setText(Integer.toString(optimalLength));
     }
 
+    /**
+     * Updates label displaying number of tasks to be scheduled
+     * @param numTasks Number of tasks to be scheduled
+     */
     public void updateNumTasks(int numTasks) {
         numTasksLabel.setText(Integer.toString(numTasks));
     }
 
+    /**
+     * Updates Label displaying current estimate for best schedule length
+     * @param scheduleLength estimate for schedule length
+     */
     public void updateScheduleLength(int scheduleLength) {
         scheduleLengthLabel.setText(Integer.toString(scheduleLength));
     }
 
+    /**
+     * Helper method to calculate the time elapsed since start button pressed
+     * @return time elapsed
+     */
     private String getTimeElapsed() {
         long end = System.nanoTime();
         long duration = (end - timer) / 1000000;
