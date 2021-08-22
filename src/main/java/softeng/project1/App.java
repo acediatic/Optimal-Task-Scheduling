@@ -47,8 +47,8 @@ public final class App {
         AStarIOHandler ioHandler = new AStarIOHandler(
                 clp.getInputFileName(),
                 clp.getOutputFileName(),
-                clp.getGraphName(),
-                clp.getNumProcessors()
+                clp.getNumProcessors(),
+                clp.isVisual()
         );
 
         Schedule originalSchedule = ioHandler.readFile();
@@ -119,6 +119,7 @@ public final class App {
             List<int[]> optimalSchedule = algorithm.generateSchedule();
             if (optimalSchedule != null) {
                 success.apply(optimalSchedule);
+                System.out.printf("Time Taken: %dms", (System.nanoTime() - startTime) / 1000000);
                 System.exit(0);
             } else {
                 failure.apply(null);

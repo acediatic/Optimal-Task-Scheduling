@@ -154,7 +154,7 @@ public class ProcessorState implements Processor {
                             i + 1,                            // destination start - one after source because of added spot in middle
                             this.processorSpaces.length - i // length of copied section
                     );
-                    ;
+
                     return newProcessorSpaces;
 
                     // is the node long enough to compensate for the prerequisite position being after the space start?
@@ -229,7 +229,6 @@ public class ProcessorState implements Processor {
      * Implementation of deepEquals from Processor, using Arrays.deepEquals.
      * Note that:
      * - deepEquals returns FALSE if it is given a Processor implementation that isn't ProcessorState, regardless of stored data.
-     * - deepEquals returns FALSE if it is given a Processor with a different ID to itself, regardless of stored data.
      *
      * @param otherProcessor : The other processor being equated to this one.
      * @return : Whether or not the data stored in the given processor is the same as is stored in this one, with the caveats mentioned above.
@@ -240,10 +239,7 @@ public class ProcessorState implements Processor {
         try {
             // DeepEquals should handle the fact that we're comparing two dimensional arrays
             ProcessorState otherProcessorState = (ProcessorState) otherProcessor;
-            return
-                    Arrays.deepEquals(otherProcessorState.processorSpaces,this.processorSpaces)
-                            &&
-                            this.processorID == otherProcessorState.processorID;
+            return Arrays.deepEquals(otherProcessorState.processorSpaces,this.processorSpaces);
         } catch (ClassCastException e) {
             return false; // This is allowed because ProcessorStates will never directly equal OriginalProcessors
         }
@@ -254,19 +250,17 @@ public class ProcessorState implements Processor {
      * Iterates over every stored integer in the 2D array and inserts them into the byte array.
      * Hashing collisions may occur if the start locations of some spaces grow larger then 255.
      *
-     * @param index : The location in the array where the values should be inserted.
      * @param arrayToFill : The array to store the values in.
      * @return : The given array with all data from the ProcessorState added.
      */
     @Override
-    public byte[] asByteArray(int index, byte[] arrayToFill) {
+    public byte[] addToByteArray(byte[] arrayToFill) {
 
         // Not currently checking if will fit
-        for (int[] spaceValue: this.processorSpaces) {
-            for (int value: spaceValue) {
+        for (int i = 0; i < this.processorSpaces.length; i++) {
+            for (int value: this.processorSpaces[i]) {
                 // casting to byte will have unintended consequences if value > 255, should be fine...
-                arrayToFill[index] = (byte) value;
-                index++;
+                arrayToFill[i] = (byte)(arrayToFill[i] + value);
             }
         }
         return arrayToFill;
@@ -316,6 +310,11 @@ public class ProcessorState implements Processor {
     @Override
     public int getChangeInIdleTime() {
         return this.changeInIdleTime;
+    }
+
+    @Override
+    public int getFirstTaskID() {
+        return this.processorSpaces[0][2];
     }
 
 }

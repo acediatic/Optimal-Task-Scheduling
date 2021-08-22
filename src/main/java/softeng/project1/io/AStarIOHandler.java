@@ -26,14 +26,15 @@ public class AStarIOHandler implements IOHandler {
     private final InputStream inputFileStream;
     private final OutputStream outputStream;
     private final short numProcessors; // Kinda cursed that this has to be here tbh
-    private final String graphName;
+    private final Map<Node, Short> nodeShortMap;
+    private final boolean isVisual;
     private int sumTaskWeights = 0;
     private Graph graph;
+    private Graph uneditedGraph;
     private AlgorithmStep listScheduleAlgoStep;
     private List<Node> sortedNodes;
-    private Map<Node, Short> nodeShortMap;
 
-    public AStarIOHandler(String inputFilePath, String outputFilePath, String graphName, short numProcessors) {
+    public AStarIOHandler(String inputFilePath, String outputFilePath, short numProcessors, boolean isVisual) {
 
         // TODO... sanitise inputs, check accessibility etc.
         try {
@@ -43,9 +44,9 @@ public class AStarIOHandler implements IOHandler {
             e.printStackTrace();
             throw new RuntimeException(); // TODO... fix this
         }
-        this.graphName = graphName;
         this.numProcessors = numProcessors;
         this.nodeShortMap = new HashMap<>();
+        this.isVisual = isVisual;
     }
 
     private void createNodeShortMap() {
@@ -61,7 +62,7 @@ public class AStarIOHandler implements IOHandler {
      * 3. Children
      * 4. Parent Communication Weights
      * 5. Child Communication Weights
-     *
+     * <p>
      * By forcing an ordering between them, we can cut down the search space
      * As otherwise, there's a different schedule created for all the permutations
      * of these equivalent tasks.
@@ -110,6 +111,9 @@ public class AStarIOHandler implements IOHandler {
         Map<Short, TaskNode> freeTaskNodeMap = new HashMap<>();
 
         this.graph = IOHelper.readFileAsGraphStream(this.inputFileStream);
+        if (isVisual) {
+            this.uneditedGraph = Graphs.clone(this.graph);
+        }
         int numTasks = this.graph.getNodeCount();
 
         // Check for and create edges between equivalent children
@@ -215,7 +219,7 @@ public class AStarIOHandler implements IOHandler {
     }
 
     public Graph getGraph() {
-        return Graphs.clone(this.graph);
+        return this.uneditedGraph;
     }
 
     public List<Node> getListSortedNodes() {
