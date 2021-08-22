@@ -35,7 +35,7 @@ OPTIONAL ARGUMENTS:
 
 Once the program has completed execution, the output file will be generated in the same folder
 
-## Building and Compiling
+# Building and Compiling
 This project is intended to be run using Java 1.8, check your current java version before running the code using:
 ```
 java -version
