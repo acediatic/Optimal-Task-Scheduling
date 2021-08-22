@@ -103,7 +103,7 @@ public class GuiController {
         //Setup requirements for schedule display
         List<String> processorNums = new ArrayList<>();
         for (int i = 0; i < numProcessors; i++) {
-            processorNums.add(Integer.toString(i + 1));
+            processorNums.add(Integer.toString(i));
         }
         processors.setCategories(FXCollections.observableArrayList(processorNums));
         schedule.setAnimated(false);
@@ -163,28 +163,32 @@ public class GuiController {
         seriesList.add(idleSeries);
 
         //Separates tasks into lists of processors
-        List<List<Integer>> processorTasks = new ArrayList<>();
+        List<List<Integer>> processorStartTimes = new ArrayList<>();
+        List<List<int[]>> processorTasks = new ArrayList<>();
+
         for (int i = 0; i < this.numProcessors; i++) {
             processorTasks.add(new ArrayList<>());
+            processorStartTimes.add(new ArrayList<>());
         }
 
         //Add start times to processor
         for (int[] task : newSchedule) {
-            processorTasks.get(task[1]).add(task[2]);
+            processorTasks.get(task[1]).add(task);
+            processorStartTimes.get(task[1]).add(task[2]);
         }
-
 
         List<Legend.LegendItem> legendItems = new ArrayList<>();
 
         //Iterate through each processor, then schedule tasks or add idle time as needed
-        for (List<Integer> processor : processorTasks) {
-            Collections.sort(processor); //Sorts processor's tasks by start time
+        for (int i = 0; i < numProcessors; i++) {
+            Collections.sort(processorStartTimes.get(i)); //Sorts processor's tasks by start time
+            List<Integer> currentProcessorStartTimes = processorStartTimes.get(i);
 
-            for (int i = 0; i < processor.size(); i++) {
-                //Gets current Task from schedule
-                int taskStartTime = processor.get(i);
-                int currentTaskIndex = findTaskIndex(newSchedule, taskStartTime);
-                int[] currentTask = newSchedule.get(currentTaskIndex);
+            for (int j = 0; j < currentProcessorStartTimes.size(); j++) {
+                //Gets current Task from processor
+                int taskStartTime = currentProcessorStartTimes.get(j);
+                int currentTaskIndex = currentProcessorStartTimes.indexOf(taskStartTime);
+                int[] currentTask = processorTasks.get(i).get(currentTaskIndex);
 
                 //Current Task's attributes
                 int taskID = currentTask[0];
@@ -195,28 +199,29 @@ public class GuiController {
                 //Add idle block if there is any before current task
                 try {
                     //Get details of previous task
-                    int prevTaskStartTime = processor.get(i - 1);
-                    int[] prevTask = newSchedule.get(findTaskIndex(newSchedule, prevTaskStartTime));
+                    int prevTaskStartTime = currentProcessorStartTimes.get(j - 1);
+                    int prevTaskIndex = currentProcessorStartTimes.indexOf(prevTaskStartTime);
+                    int[] prevTask = processorTasks.get(i).get(prevTaskIndex);
                     int prevTaskCompletionTime = prevTask[2] + prevTask[3];
 
                     //If previous completion time is not the same as start time, then need to add idle time
                     if (prevTaskCompletionTime != startTime) {
                         //Add transparent idle block
-                        XYChart.Data<String, Number> block = new XYChart.Data<>(Integer.toString(currentProcessor + 1), prevTaskCompletionTime - startTime);
+                        XYChart.Data<String, Number> block = new XYChart.Data<>(Integer.toString(currentProcessor), startTime - prevTaskCompletionTime);
                         block.nodeProperty().addListener((ov, oldNode, node) -> node.setStyle("-fx-bar-fill: transparent"));
                         idleSeries.getData().add(block);
                     }
 
                     //If previous task doesn't exist then it is the first task on the processor
                 } catch (IndexOutOfBoundsException e) {
-                    XYChart.Data<String, Number> block = new XYChart.Data<>(Integer.toString(currentProcessor + 1), startTime);
+                    XYChart.Data<String, Number> block = new XYChart.Data<>(Integer.toString(currentProcessor), startTime);
                     block.nodeProperty().addListener((ov, oldNode, node) -> node.setStyle("-fx-bar-fill: transparent"));
                     idleSeries.getData().add(block);
                 }
 
                 //Add task block to schedule
                 XYChart.Series<String, Number> newSeries = new XYChart.Series<>();
-                XYChart.Data<String, Number> block = new XYChart.Data<>(Integer.toString(currentProcessor + 1), weight);
+                XYChart.Data<String, Number> block = new XYChart.Data<>(Integer.toString(currentProcessor), weight);
 
                 //Assigns random colour to block
                 Color colour = generateRandomRGBColor();
@@ -242,23 +247,6 @@ public class GuiController {
      */
     public void updateTimer() {
         TimerText.setText(getTimeElapsed());
-    }
-
-    /**
-     * Helper method used to find index of task in schedule list given a startTime
-     *
-     * @param schedule A list of tasks
-     * @param startTime   startTime to search for
-     * @return Returns the index of task with given taskID, returns -1 if doesn't exist
-     */
-    private int findTaskIndex(List<int[]> schedule, int startTime) {
-        for (int i = 0; i < schedule.size(); i++) {
-            if (schedule.get(i)[2] == startTime) {
-                return i;
-            }
-        }
-
-        return -1;
     }
 
     /**
