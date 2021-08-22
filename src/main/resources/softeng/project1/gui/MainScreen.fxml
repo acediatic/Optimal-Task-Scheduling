@@ -6,7 +6,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="softeng.project1.gui.GuiController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="688.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="softeng.project1.gui.GuiController">
    <children>
       <VBox id="InputContainer" fx:id="InputContainer" layoutX="55.0" layoutY="158.0" prefHeight="353.0" prefWidth="505.0" style="-fx-border-color: black;" />
       <Label id="InputLabel" layoutX="260.0" layoutY="130.0" text="Input Graph">
@@ -17,11 +17,11 @@
          <font>
             <Font size="18.0" />
          </font></Label>
-      <Label id="TimerLabel" layoutX="605.0" layoutY="73.0" text="Time Elapsed">
+      <Label id="TimerLabel" layoutX="605.0" layoutY="57.0" text="Time Elapsed">
          <font>
             <Font size="18.0" />
          </font></Label>
-      <Label fx:id="TimerText" layoutX="617.0" layoutY="100.0" prefHeight="59.0" prefWidth="82.0" textAlignment="CENTER">
+      <Label fx:id="TimerText" layoutX="550.0" layoutY="84.0" prefHeight="59.0" prefWidth="215.0" textAlignment="CENTER">
          <font>
             <Font size="34.0" />
          </font>
@@ -34,7 +34,7 @@
           <NumberAxis fx:id="startTime" label="Start Time" side="LEFT" />
         </yAxis>
       </StackedBarChart>
-      <Label layoutX="535.0" layoutY="17.0" text="Task Scheuler ">
+      <Label layoutX="535.0" layoutY="1.0" text="Task Scheuler ">
          <font>
             <Font size="39.0" />
          </font>

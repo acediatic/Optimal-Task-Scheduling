@@ -66,22 +66,22 @@ public class GuiController {
     @FXML
     private Label scheduleLengthLabel;
 
-    private LocalTime timer = LocalTime.parse("00:00");
     private Timeline timeline;
     private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("mm:ss");
 
     private int numProcessors;
     private Map<Short, String> taskNames;
+    private long timer = 0;
 
     /**
      * Initializes the timer
      */
     public void initialize() {
-        TimerText.setText(timer.format(formatter));
+        TimerText.setText("00:00:000");
 
         timeline = new Timeline();
         timeline.setCycleCount(Timeline.INDEFINITE);
-        timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(1), ae -> updateTimer()));
+        timeline.getKeyFrames().add(new KeyFrame(Duration.millis(1), ae -> updateTimer()));
     }
 
     /**
@@ -118,6 +118,7 @@ public class GuiController {
     void startSchedule(ActionEvent event) {
         timeline.play();
         startScheduleButton.setDisable(true);
+        timer = System.nanoTime();
         // Starts the algorithm service, which finds the optimal schedule.
         GuiMain.startAlgorithm();
     }
@@ -225,8 +226,11 @@ public class GuiController {
      * Increments the timer label each second incrementing by one second
      */
     public void updateTimer() {
-        timer = timer.plusSeconds(1);
-        TimerText.setText(timer.format(formatter));
+//        timer = timer.plusSeconds(1);
+
+
+
+        TimerText.setText(getTimeElapsed());
     }
 
     /**
@@ -269,6 +273,18 @@ public class GuiController {
 
     public void updateScheduleLength(int scheduleLength) {
         scheduleLengthLabel.setText(Integer.toString(scheduleLength));
+    }
+
+    private String getTimeElapsed(){
+        long end = System.nanoTime();
+        long duration = (end - timer) / 1000000;
+
+        int minutes = (int) (duration / 60000);
+        int seconds = (int) ((duration - minutes * 60000) / 1000);
+        int millis = (int) (duration - (minutes * 60000) - (seconds * 1000));
+        String formattedTime = String.format("%02d:%02d:%03d", minutes, seconds, millis);
+
+        return formattedTime;
     }
 
     /**
