@@ -42,6 +42,8 @@ To display the program with the GUI you have to use the `-v` option.
 java -jar scheduler.jar INPUT.dot P [OPTION] -v
 ```
 
+Initially the scheduler shows the graph along with some other information such as number of tasks, processors and cores used.
+However, some values are 0 and no schedule is shown until the scheduler is started.
 
 <img src="./readme_images/not_started.jpg">
 
