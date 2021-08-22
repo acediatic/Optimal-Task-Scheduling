@@ -49,7 +49,7 @@
                   <Font size="30.0" />
                </font>
             </Label>
-            <Label fx:id="scheduleStatusLabel" text="SCHEDULING" textFill="RED">
+            <Label fx:id="scheduleStatusLabel" text="WAITING">
                <font>
                   <Font size="30.0" />
                </font>
