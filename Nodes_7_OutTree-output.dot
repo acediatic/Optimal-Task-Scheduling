@@ -1,0 +1,16 @@
+digraph {
+	graph [ "ui.stylesheet"="graph { fill-color: #86aff0; }node { size: 15px; text-color: white; text-size: 12px; }node:clicked {fill-color: red;}edge { text-mode: hidden; text-size: 12px; text-alignment: along; text-color: white; text-style: bold; text-background-mode: rounded-box; text-background-color: black; text-padding: 2px, 1px; text-offset: 0px, 2px; }" ];
+	"0" ["Processor"=1,"ui.label"="0","Start"=0,"Weight"=5.0];
+	"1" ["Processor"=1,"ui.label"="1","Start"=5,"Weight"=6.0];
+	"2" ["Processor"=2,"ui.label"="2","Start"=16,"Weight"=5.0];
+	"3" ["Processor"=0,"ui.label"="3","Start"=16,"Weight"=6.0];
+	"4" ["Processor"=1,"ui.label"="4","Start"=11,"Weight"=4.0];
+	"5" ["Processor"=3,"ui.label"="5","Start"=15,"Weight"=7.0];
+	"6" ["Processor"=1,"ui.label"="6","Start"=15,"Weight"=7.0];
+	"0" -> "1" ["ui.label"=15.0,"Weight"=15.0];
+	"0" -> "2" ["ui.label"=11.0,"Weight"=11.0];
+	"0" -> "3" ["ui.label"=11.0,"Weight"=11.0];
+	"1" -> "4" ["ui.label"=19.0,"Weight"=19.0];
+	"1" -> "5" ["ui.label"=4.0,"Weight"=4.0];
+	"1" -> "6" ["ui.label"=21.0,"Weight"=21.0];
+}
