@@ -9,6 +9,7 @@ import softeng.project1.graph.processors.Processors;
 import softeng.project1.gui.GuiData;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
@@ -20,7 +21,7 @@ public class ParallelAStarSchedulingAlgorithm extends ThreadPoolExecutor impleme
 
     private final HeuristicManager heuristicManager;
     private final Map<Processors, Schedule> closedSchedules;
-    private final List<AlgorithmStep> optimalSchedules;
+    private final ArrayList<AlgorithmStep> optimalSchedules;
     private final Schedule originalSchedule;
     private final AlgorithmStep listSchedule;
     private final AtomicLong atomicLong;
@@ -36,7 +37,7 @@ public class ParallelAStarSchedulingAlgorithm extends ThreadPoolExecutor impleme
         // TODO... give map a useful original size
         this.heuristicManager = heuristicManager;
         this.closedSchedules = new ConcurrentHashMap<>();
-        this.optimalSchedules = new CopyOnWriteArrayList<>();
+        this.optimalSchedules = new ArrayList<>();
         this.originalSchedule = originalSchedule;
         this.listSchedule = listSchedule;
         this.atomicLong = new AtomicLong();
@@ -72,13 +73,17 @@ public class ParallelAStarSchedulingAlgorithm extends ThreadPoolExecutor impleme
         }
     }
 
+    public synchronized void addOptimal(AlgorithmStep algorithmStep) {
+        this.optimalSchedules.add(algorithmStep);
+    }
+
     @Override
     protected void afterExecute(Runnable runnable, Throwable throwable) {
         List<Schedule> fringeSchedules;
         AlgorithmStep algorithmStep = (AlgorithmStep) runnable;
 
         if ((fringeSchedules = algorithmStep.getFringeSchedules()) == null) {
-            this.optimalSchedules.add(algorithmStep);
+            addOptimal(algorithmStep);
             clearAndShutdown();
         } else {
             List<AlgorithmStep> algoSteps = this.heuristicManager.getAlgorithmStepsFromSchedules(pruneExpandedSchedulesAndAddToMap(fringeSchedules));
@@ -94,16 +99,17 @@ public class ParallelAStarSchedulingAlgorithm extends ThreadPoolExecutor impleme
                 }
             }
             if (atomicLong.decrementAndGet() <= 0) {
-                while (getQueue().peek() != null) {
-                    clearAndShutdown();
-                }
+                clearAndShutdown();
+
             }
         }
     }
 
     private synchronized void clearAndShutdown() {
-        this.getQueue().clear();
         shutdown();
+        if (this.getQueue().peek() != null) {
+            this.getQueue().clear();
+        }
     }
 
 
@@ -146,34 +152,9 @@ public class ParallelAStarSchedulingAlgorithm extends ThreadPoolExecutor impleme
 
     private List<int[]> getBestStoredSchedule() {
         try {
-            List<int[]> bestSchedule = null;
-            int bestScheduleLength = Integer.MAX_VALUE;
-            AlgorithmStep bestStep = this.optimalSchedules.get(0);
-            int maxLength;
-            int endLocation;
-
-            for (AlgorithmStep step : this.optimalSchedules) {
-
-                List<int[]> schedule = step.rebuildPath();
-
-                maxLength = 0;
-                for (int[] task : schedule) {
-
-                    endLocation = this.originalSchedule.getTaskNode((short) task[0]).getTaskCost() + task[2];
-                    if (endLocation > maxLength) {
-                        maxLength = endLocation;
-                    }
-
-                }
-                if (maxLength < bestScheduleLength) {
-                    bestStep = step;
-                    bestScheduleLength = maxLength;
-                    bestSchedule = schedule;
-                }
-            }
-            this.bestScheduleStep = bestStep;
-            return bestSchedule;
-
+            Collections.sort(optimalSchedules);
+            this.bestScheduleStep = this.optimalSchedules.get(0);
+            return bestScheduleStep.rebuildPath();
         } catch (Exception e) {
             return null;
         }
