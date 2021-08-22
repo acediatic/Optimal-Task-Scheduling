@@ -35,7 +35,7 @@ OPTIONAL ARGUMENTS:
 
 Once the program has completed execution, the output file will be generated in the same folder
 
-# Displaying the Program 
+# Displaying the Program GUI
 
 To display the program with the GUI you have to use the `-v` option.
 ```
