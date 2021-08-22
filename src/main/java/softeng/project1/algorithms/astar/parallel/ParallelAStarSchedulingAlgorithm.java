@@ -92,10 +92,9 @@ public class ParallelAStarSchedulingAlgorithm extends ThreadPoolExecutor impleme
                         // pool is shutting down
                     }
                 }
-            } else {
-                if (atomicLong.decrementAndGet() == 0) {
-                    clearAndShutdown();
-                }
+            }
+            if (atomicLong.decrementAndGet() <= 0) {
+                clearAndShutdown();
             }
         }
     }
