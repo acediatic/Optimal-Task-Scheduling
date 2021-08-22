@@ -26,7 +26,7 @@ public class ProcessorState implements Processor {
     private final short processorID; // ID of the processor this object represents a state of
     private final int[][] processorSpaces; // Array of spaces between tasks currently scheduled on this processor
     private final int lastInsertLocation; // Start location of the task that was last inserted
-    private int currentInsert; // TODO... find some way not to store this
+    private int currentInsert;
     private short changeInIdleTime; // The increase/decrease in idle time due to the insertion of last inserted task
 
     /**

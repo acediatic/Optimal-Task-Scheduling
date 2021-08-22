@@ -135,7 +135,7 @@ public class OriginalProcessorState implements Processor {
      */
     @Override
     public int getLastInsertLocation() {
-        return -1; // TODO... Should this throw an error?
+        return -1; // There is no first task ID for this, and hence gives the error value of -1.
     }
 
     /**
@@ -152,12 +152,12 @@ public class OriginalProcessorState implements Processor {
      */
     @Override
     public int getChangeInIdleTime() {
-        return -1; // TODO... Should this throw an error?
+        return -1; // There is no first task ID for this, and hence gives the error value of -1.
     }
 
     @Override
     public int getFirstTaskID() {
-        return -1; // TODO... Comment
+        return -1; // There is no first task ID for this, and hence gives the error value of -1.
     }
 
 

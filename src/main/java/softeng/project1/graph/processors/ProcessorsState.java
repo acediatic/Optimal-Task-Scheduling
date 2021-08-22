@@ -66,7 +66,6 @@ public abstract class ProcessorsState implements Processors {
      */
     @Override
     public Processors copyAndAddProcessor(TaskNode newNode, int processorID) {
-        // TODO... See if this can be done faster without copying the replaceable Processor.
         Processor[] newProcessors = Arrays.copyOf(this.processors, this.processors.length);
         Processor newProcessor = this.processors[processorID].copyAndInsert(newNode);
         newProcessors[processorID] = newProcessor;

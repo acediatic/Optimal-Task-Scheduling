@@ -58,7 +58,6 @@ public class ChangedProcessorsState extends ProcessorsState {
             processor.addToByteArray(byteArrayForHash);
         }
         // https://github.com/sangupta/murmur
-        // TODO... find nicer way to do this than int casting
         return (int) Murmur3.hash_x86_32(byteArrayForHash, byteArrayForHash.length, 0);
 
     }
