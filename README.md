@@ -27,7 +27,7 @@ jar files can be found on the [Releases](https://github.com/SoftEng306-2021/proj
 
 To run the jar files, run the follow command in the terminal: 
 ```
-[-Xmx4G] java -jar scheduler.jar INPUT.dot P [OPTION]
+java [-Xmx4G] -jar scheduler.jar INPUT.dot P [OPTION]
 ```
 COMPULSORY ARGUMENTS:
 * ```INPUT.dot```: a directed acyclic task graph with integer weights using the DOT file format.
