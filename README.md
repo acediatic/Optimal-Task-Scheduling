@@ -1,4 +1,4 @@
-# SE306 Project 1 - Team 1 : Outsourced to Pakistan
+# SE306 Project 1 - Team 1
 
 ### Note to the Markers
 There have been some issues which show up depending on what operating system the jar is being run on. To ensure that the runnable jar works, please run using Ubuntu1804LTS on FlexIT.
